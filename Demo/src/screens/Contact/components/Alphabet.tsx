@@ -1,5 +1,45 @@
-import {StyleSheet, Text, View, SectionList, SafeAreaView} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  SectionList,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
 import React from 'react';
+
+import styled from 'styled-components/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../../../nav/RootStack';
+
+const char = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+];
 
 const Data_section = [
   {
@@ -127,42 +167,106 @@ const Data_section = [
 ];
 
 const Alphabet = () => {
-  const renderItem = ({item, index}) => {
-    return <Text style={styles.itemStyle}>{item}</Text>;
-  };
+  const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const renderSectionHeader = ({section}) => {
+  const renderItem = ({item, index}) => {
     return (
-      <Text
-        style={{
-          padding: 10,
-          fontSize: 25,
-          fontWeight: 'bold',
-          backgroundColor: 'gray',
-        }}>
-        {section.title}
-      </Text>
+      <TouchableOpacity onPress={() => navigate('SingleContact')}>
+        <WrapCard>
+          <Avatar source={require('../../../assets/avt.png')} />
+          <WrapText>
+            <Name>{item}</Name>
+            <PhoneNumber>0123456789</PhoneNumber>
+          </WrapText>
+        </WrapCard>
+      </TouchableOpacity>
     );
   };
 
+  const renderSectionHeader = ({section}) => {
+    return <Title>{section.title}</Title>;
+  };
+
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View>
+      <View style={{position: 'absolute', zIndex: 1, right: 0}}>
+        <SideChar>
+          {char.map((char, key) => (
+            <SideCharBtn key={key} onPress={() => {}}>
+              <SideCharText>{char}</SideCharText>
+            </SideCharBtn>
+          ))}
+        </SideChar>
+      </View>
       <SectionList
+        showsVerticalScrollIndicator={false}
         sections={Data_section}
         renderItem={renderItem}
         renderSectionHeader={renderSectionHeader}
         keyExtractor={(item, index) => index.toString()}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 export default Alphabet;
 
-const styles = StyleSheet.create({
-  itemStyle: {
-    padding: 10,
-    fontSize: 25,
-    height: 50,
-  },
-});
+const SideChar = styled.View`
+  right: 10px;
+`;
+
+const SideCharBtn = styled.TouchableOpacity``;
+
+const SideCharText = styled.Text`
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 22px;
+  text-align: center;
+  letter-spacing: 0.12px;
+  color: #f2a54a;
+`;
+
+const Name = styled.Text`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 16px;
+  letter-spacing: 0.12px;
+  color: #333333;
+`;
+
+const Title = styled.Text`
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 16px;
+  letter-spacing: 0.12px;
+  color: #333333;
+  background-color: #e0e0e0;
+  opacity: 0.5;
+  height: 16px;
+`;
+
+const Avatar = styled.Image`
+background-blend-mode: normal;, 
+width: 40px;
+height: 40px;
+margin-horizontal: 16px
+`;
+
+const PhoneNumber = styled.Text`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 16px;
+  letter-spacing: 0.12px;
+  color: #828282;
+`;
+
+const WrapText = styled.View``;
+
+const WrapCard = styled.View`
+  background-color: white;
+  height: 64px;
+  align-items: center;
+  flex-direction: row;
+  border-bottom-width: 0.5px;
+  border-bottom-color: #0000001a;
+`;

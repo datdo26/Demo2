@@ -12,6 +12,8 @@ target 'Demo' do
     :hermes_enabled => false
   )
 
+  pod 'RNSearchBar', :path => '../node_modules/react-native-search-bar'
+
   target 'DemoTests' do
     inherit! :complete
     # Pods for testing

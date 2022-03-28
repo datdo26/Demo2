@@ -1,10 +1,11 @@
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import Header from '../../components/Header';
 
 const RecentScreen = () => {
   return (
     <SafeAreaView>
-      <Text>Recent</Text>
+      <Header title="Lịch sử" />
     </SafeAreaView>
   );
 };

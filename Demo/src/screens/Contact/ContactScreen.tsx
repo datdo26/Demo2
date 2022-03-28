@@ -1,13 +1,15 @@
-import {SafeAreaView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import React from 'react';
-import SearchBar from './components/SearchBar';
-import Card from './components/Card';
+import SearchBar from 'react-native-search-bar';
+import Header from '../../components/Header';
+import Alphabet from './components/Alphabet';
 
 const ContactScreen = () => {
   return (
     <SafeAreaView>
-      <SearchBar />
-      <Card />
+      <Header title="Liên hệ" />
+      <SearchBar placeholder="Tìm kiếm danh bạ" />
+      <Alphabet />
     </SafeAreaView>
   );
 };

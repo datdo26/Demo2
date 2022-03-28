@@ -3,6 +3,8 @@ import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import MainTab from '../../nav/MainTab';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {useState} from 'react';
+import DrawerContent from './DrawerContent';
 
 export function All({navigation}) {
   return (
@@ -28,9 +30,10 @@ const Drawer = createDrawerNavigator();
 const Stack = createBottomTabNavigator();
 
 const SideDrawer = () => {
+  const [active, setActive] = useState();
   return (
-    <Drawer.Navigator>
-      <Stack.Screen name="Home" component={MainTab} />
+    <Drawer.Navigator screenOptions={{headerShown: false}}>
+      <Drawer.Screen name="Home" component={MainTab} />
       <Drawer.Screen name="All" component={All} />
       <Drawer.Screen name="Notifications" component={General} />
     </Drawer.Navigator>
