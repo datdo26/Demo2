@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
 import {updateContactActions} from '../../store';
+import moment from 'moment';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -87,7 +88,7 @@ const AddContactScreen = () => {
   const {goBack} = useNavigation();
 
   const [params, setParams] = useState<RawContact>({
-    id: moment.valueOf().toString(),
+    id: moment().valueOf().toString(),
     firstName: '',
     lastName: '',
     company: '',
