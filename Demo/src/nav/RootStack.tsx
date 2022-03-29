@@ -3,14 +3,14 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
 import MainTab from './MainTab';
-import SingleContact from '../screens/SingleContact/SingleContact';
+import ContactDetail from '../screens/ContactDetail/ContactDetail';
 import SideDrawer from '../screens/Drawer/Drawer';
 import {LoginScreen} from '../screens/LoginScreen';
 
 export type RootStackParamList = {
   MainTab: undefined;
   AddContactScreen: undefined;
-  SingleContact: undefined;
+  ContactDetail: undefined;
   LoginScreen: undefined;
   SideDrawer: undefined;
 };
@@ -32,8 +32,8 @@ const RootStack = () => {
           options={{headerShown: false}}
         />
         <Stack.Screen
-          name="SingleContact"
-          component={SingleContact}
+          name="ContactDetail"
+          component={ContactDetail}
           options={{headerShown: false}}
         />
         <Stack.Screen

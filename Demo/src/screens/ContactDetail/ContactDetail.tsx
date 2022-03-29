@@ -106,7 +106,7 @@ const FieldNameDelete = styled(FieldNameMsg)`
   color: #ff4a4a;
 `;
 
-const SingleContact = () => {
+const ContactDetail = () => {
   return (
     <Container>
       <Header />
@@ -162,6 +162,6 @@ const SingleContact = () => {
   );
 };
 
-export default SingleContact;
+export default ContactDetail;
 
 const styles = StyleSheet.create({});

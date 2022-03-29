@@ -1,7 +1,9 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
+import {RawContact} from '../../store/types';
+import {updateContactActions} from '../../store';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -83,6 +85,26 @@ const Birthday = styled(PhoneNumber)``;
 
 const AddContactScreen = () => {
   const {goBack} = useNavigation();
+
+  const [params, setParams] = useState<RawContact>({
+    id: moment.valueOf().toString(),
+    firstName: '',
+    lastName: '',
+    company: '',
+    phone: '',
+    email: '',
+    address: '',
+    birthday: '',
+    avatar: '',
+  });
+
+  const onDone = useCallback(() => {
+    updateContactActions({...params});
+    setTimeout(() => {
+      goBack();
+    }, 200);
+  }, [params]);
+
   return (
     <Container>
       <Section1>
@@ -90,20 +112,47 @@ const AddContactScreen = () => {
           <Button onPress={goBack}>
             <CancelText>Huỷ</CancelText>
           </Button>
-          <Button onPress={goBack}>
+          <Button onPress={onDone}>
             <DoneText>Xong</DoneText>
           </Button>
         </WrapButton>
-
         <Button>
           <Avatar source={require('../../assets/img_avatar.png')} />
         </Button>
       </Section1>
+
       <Section2>
         <WrapInputText>
-          <LastName placeholder={'Họ'} />
-          <FirstName placeholder={'Tên'} />
-          <CompanyName placeholder={'Công ty'} />
+          <LastName
+            placeholder={'Họ'}
+            value={params.firstName}
+            onChangeText={value => {
+              setParams({
+                ...params,
+                firstName: value,
+              });
+            }}
+          />
+          <FirstName
+            placeholder={'Tên'}
+            value={params.lastName}
+            onChangeText={value => {
+              setParams({
+                ...params,
+                lastName: value,
+              });
+            }}
+          />
+          <CompanyName
+            placeholder={'Công ty'}
+            value={params.company}
+            onChangeText={value => {
+              setParams({
+                ...params,
+                company: value,
+              });
+            }}
+          />
         </WrapInputText>
       </Section2>
 
@@ -112,25 +161,61 @@ const AddContactScreen = () => {
           <Button>
             <AddButton source={require('../../assets/ic_add.png')} />
           </Button>
-          <PhoneNumber placeholder={'Thêm số điện thoại'} />
+          <PhoneNumber
+            placeholder={'Thêm số điện thoại'}
+            value={params.phone}
+            onChangeText={value => {
+              setParams({
+                ...params,
+                phone: value,
+              });
+            }}
+          />
         </WrapInputDetail>
         <WrapInputDetail>
           <Button>
             <AddButton source={require('../../assets/ic_add.png')} />
           </Button>
-          <Email placeholder={'Thêm email'} />
+          <Email
+            placeholder={'Thêm email'}
+            value={params.email}
+            onChangeText={value => {
+              setParams({
+                ...params,
+                email: value,
+              });
+            }}
+          />
         </WrapInputDetail>
         <WrapInputDetail>
           <Button>
             <AddButton source={require('../../assets/ic_add.png')} />
           </Button>
-          <Address placeholder={'Thêm địa chỉ'} />
+          <Address
+            placeholder={'Thêm địa chỉ'}
+            value={params.address}
+            onChangeText={value => {
+              setParams({
+                ...params,
+                address: value,
+              });
+            }}
+          />
         </WrapInputDetail>
         <WrapInputDetail>
           <Button>
             <AddButton source={require('../../assets/ic_add.png')} />
           </Button>
-          <Birthday placeholder={'Thêm ngày sinh'} />
+          <Birthday
+            placeholder={'Thêm ngày sinh'}
+            value={params.birthday}
+            onChangeText={value => {
+              setParams({
+                ...params,
+                birthday: value,
+              });
+            }}
+          />
         </WrapInputDetail>
       </Section3>
     </Container>
