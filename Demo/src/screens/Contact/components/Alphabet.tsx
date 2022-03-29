@@ -211,22 +211,22 @@ const Alphabet = ({detail}: {detail: RawContact}) => {
         text={searchText}
         onChangeText={text => setSearchText(text)}
       />
-      {/*<SectionList*/}
-      {/*    showsVerticalScrollIndicator={false}*/}
-      {/*    sections={Data_section.filter(Data_section =>*/}
-      {/*        Data_section.title.toLowerCase().includes(searchText.toLowerCase()),*/}
-      {/*    )}*/}
-      {/*    renderItem={renderItem}*/}
-      {/*    renderSectionHeader={renderSectionHeader}*/}
-      {/*    keyExtractor={(item, index) => index.toString()}*/}
+      <SectionList
+          showsVerticalScrollIndicator={false}
+          sections={Data_section.filter(Data_section =>
+              Data_section.title.toLowerCase().includes(searchText.toLowerCase()),
+          )}
+           renderItem={renderItem}
+          renderSectionHeader={renderSectionHeader}
+          keyExtractor={(item, index) => index.toString()}
 
-      {/*/>*/}
+      />
       <TouchableOpacity onPress={() => navigate('ContactDetail')}>
         <WrapCard>
           <Avatar source={require('../../../assets/avt.png')} />
           <WrapText>
-            <Name>{detail?.lastName}</Name>
-            <PhoneNumber>{detail?.phone}</PhoneNumber>
+            <Name>a</Name>
+            <PhoneNumber>0123456789</PhoneNumber>
           </WrapText>
         </WrapCard>
       </TouchableOpacity>
