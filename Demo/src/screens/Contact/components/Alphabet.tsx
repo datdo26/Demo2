@@ -12,6 +12,7 @@ import styled from 'styled-components/native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../../../nav/RootStack';
 import SearchBar from 'react-native-search-bar';
+import {RawContact} from '../../../store/types';
 
 const char = [
   'A',
@@ -167,8 +168,9 @@ const Data_section = [
   {title: 'Q', data: ['Lillie-Mai Allen', 'Emmanuel Goldstein']},
 ];
 
-const Alphabet = () => {
+const Alphabet = ({detail}: {detail: RawContact}) => {
   const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
 
   const renderItem = ({item, index}) => {
@@ -184,6 +186,10 @@ const Alphabet = () => {
       </TouchableOpacity>
     );
   };
+
+  const onEdit = useCallback(() => {
+    navigate('AddContactScreen');
+  }, []);
 
   const renderSectionHeader = ({section}) => {
     return <Title>{section.title}</Title>;
@@ -219,8 +225,8 @@ const Alphabet = () => {
         <WrapCard>
           <Avatar source={require('../../../assets/avt.png')} />
           <WrapText>
-            <Name>a</Name>
-            <PhoneNumber>0123456789</PhoneNumber>
+            <Name>{detail?.lastName}</Name>
+            <PhoneNumber>{detail?.phone}</PhoneNumber>
           </WrapText>
         </WrapCard>
       </TouchableOpacity>

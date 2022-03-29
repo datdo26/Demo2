@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
 import {updateContactActions} from '../../store';
 import moment from 'moment';
@@ -85,7 +85,14 @@ const Address = styled(PhoneNumber)``;
 const Birthday = styled(PhoneNumber)``;
 
 const AddContactScreen = () => {
-  const {goBack} = useNavigation();
+  const navigation = useNavigation();
+  const route = useRoute();
+
+ const detail = useMemo(() => {
+    return {
+      ...({} || route.params?.detail),
+    };
+  }, [route.params?.detail]);
 
   const [params, setParams] = useState<RawContact>({
     id: moment().valueOf().toString(),
@@ -102,15 +109,32 @@ const AddContactScreen = () => {
   const onDone = useCallback(() => {
     updateContactActions({...params});
     setTimeout(() => {
-      goBack();
+      navigation.goBack();
     }, 200);
   }, [params]);
+
+  useEffect(() => {
+    if (!detail) {
+      return;
+    }
+    setParams(prev => ({
+      ...prev,
+      ...detail,
+    }));
+  }, [detail]);
+
+  const onValueChange = useCallback((key: string, text: string) => {
+    setParams(prev => ({
+      ...prev,
+      [key]: text,
+    }));
+  }, []);
 
   return (
     <Container>
       <Section1>
         <WrapButton>
-          <Button onPress={goBack}>
+          <Button onPress={() => navigation.goBack()}>
             <CancelText>Huỷ</CancelText>
           </Button>
           <Button onPress={onDone}>
