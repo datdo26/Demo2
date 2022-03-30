@@ -1,14 +1,14 @@
-import {createSlice, configureStore} from '@reduxjs/toolkit'
+import {createSlice, configureStore, PayloadAction} from '@reduxjs/toolkit'
 import {RawContact} from "./types";
 import {useSelector} from "react-redux";
 
-const initContacts = []
+const initContacts: RawContact[] = []
 
 const contactSlice = createSlice({
     name: 'contact',
     initialState: initContacts,
     reducers: {
-        update: (state, actions) => {
+        update: (state, actions: PayloadAction<RawContact>) => {
             const oldContacts = state;
             const newContact = actions.payload;
             const existIndex = oldContacts.findIndex(item => item.id === newContact.id);

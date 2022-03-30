@@ -1,18 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SectionList,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
-import React, {useCallback, useMemo, useState} from 'react';
-
+import {View, SectionList, TouchableOpacity, FlatList} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../../../nav/RootStack';
+import {useNavigation} from '@react-navigation/native';
 import SearchBar from 'react-native-search-bar';
 import {RawContact} from '../../../store/types';
+import {useContacts} from '../../../store';
 
 const char = [
   'A',
@@ -43,144 +35,19 @@ const char = [
   'Z',
 ];
 
-const Data_section = [
-  {
-    title: 'A',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'B',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'C',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'D',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'E',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'F',
-    data: [
-      'Julia Comstock',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-  {
-    title: 'G',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'H',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'J',
-    data: [
-      'Lillie-Mai Allen',
-      'Julia Comstock',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'K',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Julia Comstock',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {
-    title: 'L',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Julia Comstock',
-      'Rosemary Waterlow',
-    ],
-  },
-
-  {title: 'M', data: ['Lillie-Mai Allen']},
-  {title: 'N', data: ['Lillie-Mai Allen']},
-  {
-    title: 'O',
-    data: [
-      'Lillie-Mai Allen',
-      'Emmanuel Goldstein',
-      'Emmanuel Goldstein',
-      'Rosemary Waterlow',
-    ],
-  },
-  {title: 'P', data: ['Lillie-Mai Allen', 'Emmanuel Goldstein']},
-  {title: 'Q', data: ['Lillie-Mai Allen', 'Emmanuel Goldstein']},
-];
-
-const Alphabet = ({detail}: {detail: RawContact}) => {
-  const {navigate} = useNavigation<NavigationProp<RootStackParamList>>();
+const Alphabet = ({contact}: {contact: RawContact}) => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
+  const contactList = useContacts();
 
   const renderItem = ({item, index}) => {
     return (
-      <TouchableOpacity onPress={() => navigate('ContactDetail')}>
+      <TouchableOpacity onPress={onEdit}>
         <WrapCard>
           <Avatar source={require('../../../assets/avt.png')} />
           <WrapText>
-            <Name>{item}</Name>
-            <PhoneNumber>0123456789</PhoneNumber>
+            <Name>{item.firstName}</Name>
+            <PhoneNumber>{item.phone}</PhoneNumber>
           </WrapText>
         </WrapCard>
       </TouchableOpacity>
@@ -188,8 +55,8 @@ const Alphabet = ({detail}: {detail: RawContact}) => {
   };
 
   const onEdit = useCallback(() => {
-    navigate('AddContactScreen');
-  }, []);
+    navigation.navigate('AddContactScreen', {contact});
+  }, [contact]);
 
   const renderSectionHeader = ({section}) => {
     return <Title>{section.title}</Title>;
@@ -200,7 +67,7 @@ const Alphabet = ({detail}: {detail: RawContact}) => {
       <View style={{position: 'absolute', zIndex: 1, right: 0}}>
         <SideChar>
           {char.map((char, key) => (
-            <SideCharBtn key={key} onPress={() => {}}>
+            <SideCharBtn key={key} onPress={onEdit}>
               <SideCharText>{char}</SideCharText>
             </SideCharBtn>
           ))}
@@ -211,25 +78,20 @@ const Alphabet = ({detail}: {detail: RawContact}) => {
         text={searchText}
         onChangeText={text => setSearchText(text)}
       />
-      <SectionList
-          showsVerticalScrollIndicator={false}
-          sections={Data_section.filter(Data_section =>
-              Data_section.title.toLowerCase().includes(searchText.toLowerCase()),
-          )}
-           renderItem={renderItem}
-          renderSectionHeader={renderSectionHeader}
-          keyExtractor={(item, index) => index.toString()}
+      {/* <SectionList
+        showsVerticalScrollIndicator={false}
+        sections={contactList}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
+        keyExtractor={(item, index) => index.toString()}
+      /> */}
 
+      <FlatList
+        data={contactList}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
       />
-      <TouchableOpacity onPress={() => navigate('ContactDetail')}>
-        <WrapCard>
-          <Avatar source={require('../../../assets/avt.png')} />
-          <WrapText>
-            <Name>a</Name>
-            <PhoneNumber>0123456789</PhoneNumber>
-          </WrapText>
-        </WrapCard>
-      </TouchableOpacity>
     </View>
   );
 };

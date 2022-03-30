@@ -35,6 +35,17 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Location access is requrired to run the app.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Location access is requrired to run the app.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Location access is requrired to run the app.</string>
+		<key>NSCameraUsageDescription</key>
+	<string>Location access is requrired to run the app.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Location access is requrired to run the app.</string>
+
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>UILaunchStoryboardName</key>

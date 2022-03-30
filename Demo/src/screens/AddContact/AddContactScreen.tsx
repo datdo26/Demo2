@@ -1,10 +1,11 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {ImageBackground, StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
 import {updateContactActions} from '../../store';
 import moment from 'moment';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -18,6 +19,8 @@ const WrapButton = styled.View`
 `;
 
 const Button = styled.TouchableOpacity``;
+
+const AvatarBtn = styled(Button)``;
 const CancelText = styled.Text`
   font-weight: 400;
   font-size: 18px;
@@ -86,13 +89,7 @@ const Birthday = styled(PhoneNumber)``;
 
 const AddContactScreen = () => {
   const navigation = useNavigation();
-  const route = useRoute();
-
- const detail = useMemo(() => {
-    return {
-      ...({} || route.params?.detail),
-    };
-  }, [route.params?.detail]);
+  const [image, setImage] = useState();
 
   const [params, setParams] = useState<RawContact>({
     id: moment().valueOf().toString(),
@@ -113,22 +110,18 @@ const AddContactScreen = () => {
     }, 200);
   }, [params]);
 
-  useEffect(() => {
-    if (!detail) {
-      return;
-    }
-    setParams(prev => ({
-      ...prev,
-      ...detail,
-    }));
-  }, [detail]);
+  const chooseFromLibrary = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+    }).then(image => {
+      console.log(image);
+      setImage(image.path);
+    });
+  };
 
-  const onValueChange = useCallback((key: string, text: string) => {
-    setParams(prev => ({
-      ...prev,
-      [key]: text,
-    }));
-  }, []);
+  // https://www.youtube.com/watch?v=3_ldEVWlL18&t=6s
 
   return (
     <Container>
@@ -141,9 +134,20 @@ const AddContactScreen = () => {
             <DoneText>Xong</DoneText>
           </Button>
         </WrapButton>
-        <Button>
-          <Avatar source={require('../../assets/img_avatar.png')} />
-        </Button>
+        <AvatarBtn
+          onPress={chooseFromLibrary}
+          style={{
+            alignItems: 'center',
+          }}>
+          {/* <Avatar source={{uri: image}} /> */}
+          <ImageBackground
+            source={require('../../assets/avatar.png')}
+            style={{
+              height: 100,
+              width: 100,
+              borderRadius: 10,
+            }}></ImageBackground>
+        </AvatarBtn>
       </Section1>
 
       <Section2>
