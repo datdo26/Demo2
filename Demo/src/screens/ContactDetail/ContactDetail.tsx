@@ -1,22 +1,20 @@
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  TextInput,
-} from 'react-native';
-import React from 'react';
+import {StyleSheet, TextInput} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import Header from './Header';
 
 import styled from 'styled-components/native';
+import {removeContactActions, useContacts} from '../../store';
+import {RawContact} from '../../store/types';
+import moment from 'moment';
 
 const Container = styled.SafeAreaView``;
 
 const WrapView = styled.View``;
 const ButtonAvatar = styled.TouchableOpacity`
-  align-items: center;
-  margin-top: 48px;
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  align-self: center;
 `;
 const Avatar = styled.Image``;
 
@@ -106,17 +104,30 @@ const FieldNameDelete = styled(FieldNameMsg)`
   color: #ff4a4a;
 `;
 
-const ContactDetail = () => {
+const ContactDetail = ({contact}: {contact: RawContact}) => {
+  const [params, setParams] = useState<RawContact>({
+    id: moment().valueOf().toString(),
+    firstName: '',
+    lastName: '',
+    company: '',
+    phone: '',
+    email: '',
+    address: '',
+    birthday: '',
+    avatar: '',
+  });
+  const contactList = useContacts();
+
   return (
     <Container>
       <Header />
       <WrapView>
         <ButtonAvatar>
-          <Avatar source={require('../../assets/avatar.png')} />
+          <Avatar source={require('../../assets/img_avatar.png')} />
         </ButtonAvatar>
       </WrapView>
       <WrapView>
-        <Name>Nguyễn Tiến Nam</Name>
+        <Name>a </Name>
         <Job>UI/UX Design</Job>
       </WrapView>
       <WrapButton>
@@ -141,7 +152,7 @@ const ContactDetail = () => {
       <WrapInput>
         <FieldName>Điện thoại</FieldName>
         <ButtonPhone>
-          <PhoneNumber>0977272160</PhoneNumber>
+          <PhoneNumber>{params?.phone}</PhoneNumber>
         </ButtonPhone>
       </WrapInput>
       <WrapInput>

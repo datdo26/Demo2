@@ -1,4 +1,4 @@
-import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StatusBar} from 'react-native';
 import React from 'react';
 import Header from '../../components/Header';
 import Alphabet from './components/Alphabet';
@@ -9,9 +9,10 @@ const ContactScreen = () => {
   console.log('contacts ', contacts);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
+      <StatusBar hidden={true} />
       <Header title="Liên hệ" />
-      <Alphabet />
+      <Alphabet contact={undefined} />
     </SafeAreaView>
   );
 };

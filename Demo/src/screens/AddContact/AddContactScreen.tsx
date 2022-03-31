@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
-import {updateContactActions} from '../../store';
+import {updateContactActions, useContacts} from '../../store';
 import moment from 'moment';
 import ImagePicker from 'react-native-image-crop-picker';
 
@@ -20,7 +20,13 @@ const WrapButton = styled.View`
 
 const Button = styled.TouchableOpacity``;
 
-const AvatarBtn = styled(Button)``;
+const AvatarBtn = styled.TouchableOpacity`
+  background-color: red;
+  width: 100px;
+  height: 100px;
+  align-self: center;
+  border-radius: 100px;
+`;
 const CancelText = styled.Text`
   font-weight: 400;
   font-size: 18px;
@@ -92,7 +98,7 @@ const AddContactScreen = () => {
   const [image, setImage] = useState();
 
   const [params, setParams] = useState<RawContact>({
-    id: moment().valueOf().toString(),
+    id: ``,
     firstName: '',
     lastName: '',
     company: '',
@@ -104,24 +110,26 @@ const AddContactScreen = () => {
   });
 
   const onDone = useCallback(() => {
-    updateContactActions({...params});
+    updateContactActions(
+      params?.id ? {...params} : {...params, id: `${new Date().getTime()}`},
+    );
     setTimeout(() => {
       navigation.goBack();
     }, 200);
+    setParams(() => '');
   }, [params]);
 
   const chooseFromLibrary = () => {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
-      cropping: true,
+      cropping: false,
+      compressImageQuality: 0.7,
     }).then(image => {
       console.log(image);
       setImage(image.path);
     });
   };
-
-  // https://www.youtube.com/watch?v=3_ldEVWlL18&t=6s
 
   return (
     <Container>
@@ -134,18 +142,12 @@ const AddContactScreen = () => {
             <DoneText>Xong</DoneText>
           </Button>
         </WrapButton>
-        <AvatarBtn
-          onPress={chooseFromLibrary}
-          style={{
-            alignItems: 'center',
-          }}>
-          {/* <Avatar source={{uri: image}} /> */}
+        <AvatarBtn onPress={chooseFromLibrary}>
           <ImageBackground
-            source={require('../../assets/avatar.png')}
+            source={{uri: image}}
             style={{
               height: 100,
               width: 100,
-              borderRadius: 10,
             }}></ImageBackground>
         </AvatarBtn>
       </Section1>

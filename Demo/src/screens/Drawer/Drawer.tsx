@@ -1,4 +1,4 @@
-import {Button, StyleSheet, Image, View, Text} from 'react-native';
+import {Button, StyleSheet, Image, View, Text, StatusBar} from 'react-native';
 import React from 'react';
 import {
   createDrawerNavigator,
@@ -13,6 +13,8 @@ import styled from 'styled-components/native';
 export function All({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <StatusBar hidden={false} />
+
       <Button
         onPress={() => navigation.navigate('All')}
         title="Go to General"
@@ -24,6 +26,8 @@ export function All({navigation}) {
 export function General({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+      <StatusBar hidden={false} />
+
       <Button onPress={() => navigation.goBack()} title="Go back All" />
     </View>
   );
@@ -31,15 +35,12 @@ export function General({navigation}) {
 
 const Drawer = createDrawerNavigator();
 
-const Stack = createBottomTabNavigator();
-
 const CustomDrawer = props => {
   return (
     <DrawerContentScrollView {...props}>
       <DrawerContent
         style={{
           backgroundColor: '#F2A54A',
-          height: 88,
           flexDirection: 'row',
           alignItems: 'center',
         }}>
@@ -55,7 +56,6 @@ const CustomDrawer = props => {
 };
 
 const SideDrawer = () => {
-  const [active, setActive] = useState();
   return (
     <Drawer.Navigator
       screenOptions={{headerShown: false}}

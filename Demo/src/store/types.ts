@@ -10,14 +10,3 @@ export interface RawContact {
     avatar: string
 }
 
-export interface RawCollection {
-    id:string,
-    title: string,
-    list: []
-}
-
-export interface RawAuth {
-    userId: string,
-    userName: string,
-    career: string
-}

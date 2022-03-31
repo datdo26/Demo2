@@ -1,31 +1,37 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
+import {RootStackParamList} from '../nav/RootStack';
 
-const Wrapper = styled.View``;
+const Wrapper = styled.SafeAreaView``;
 
 const WrapView = styled.View`
   justify-content: space-between;
   flex-direction: row;
-  margin-top: 16px;
-  height: 32px;
-  margin: 0 16px;
+  height: 42px;
+  align-items: center;
+  background-color: #fff;
+  margin-bottom: 6px;
 `;
 
 const Button = styled.TouchableOpacity``;
 
 const Title = styled.Text`
   font-weight: 500;
-  font-size: 24px;
+  font-size: 28px;
   text-align: center;
   letter-spacing: -0.41px;
   color: #333333;
 `;
 
-const More = styled.Image``;
+const More = styled.Image`
+  margin-left: 16px;
+`;
 
-const Camera = styled.Image``;
+const Camera = styled.Image`
+  margin-right: 16px;
+`;
 
 const Header = ({title}) => {
   const navigation = useNavigation();

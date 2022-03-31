@@ -21,7 +21,7 @@ const contactSlice = createSlice({
                 ...oldContacts
             ]
         },
-        remove: (state, actions) => {
+        remove: (state, actions: PayloadAction<RawContact>) => {
             return state
         }
     }
