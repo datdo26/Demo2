@@ -57,7 +57,7 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
     return (
       <TouchableOpacity onPress={() => navigation.navigate('ContactDetail')}>
         <WrapCard>
-          <Avatar source={{uri: item.image}} />
+          <Avatar source={{uri: item.avatar}} />
           <WrapText>
             <Name>
               {item.firstName} {item.lastName}
