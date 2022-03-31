@@ -1,10 +1,4 @@
-import {
-  View,
-  SectionList,
-  TouchableOpacity,
-  FlatList,
-  ScrollView,
-} from 'react-native';
+import {View, SectionList, TouchableOpacity, FlatList} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
@@ -63,7 +57,7 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
     return (
       <TouchableOpacity onPress={() => navigation.navigate('ContactDetail')}>
         <WrapCard>
-          <Avatar source={require('../../../assets/img_avatar.png')} />
+          <Avatar source={{uri: item.image}} />
           <WrapText>
             <Name>
               {item.firstName} {item.lastName}

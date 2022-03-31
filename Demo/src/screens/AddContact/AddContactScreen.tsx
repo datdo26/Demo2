@@ -93,31 +93,35 @@ const Email = styled(PhoneNumber)``;
 const Address = styled(PhoneNumber)``;
 const Birthday = styled(PhoneNumber)``;
 
+const defaultValue = {
+  id: ``,
+  firstName: '',
+  lastName: '',
+  company: '',
+  phone: '',
+  email: '',
+  address: '',
+  birthday: '',
+  avatar: '',
+};
 const AddContactScreen = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState();
 
-  const [params, setParams] = useState<RawContact>({
-    id: ``,
-    firstName: '',
-    lastName: '',
-    company: '',
-    phone: '',
-    email: '',
-    address: '',
-    birthday: '',
-    avatar: '',
-  });
+  const [params, setParams] = useState<RawContact>(defaultValue);
 
   const onDone = useCallback(() => {
     updateContactActions(
-      params?.id ? {...params} : {...params, id: `${new Date().getTime()}`},
+      params?.id
+        ? {...params, avatar: image}
+        : {...params, id: `${new Date().getTime()}`, avatar: image},
     );
     setTimeout(() => {
       navigation.goBack();
     }, 200);
-    setParams(() => '');
-  }, [params]);
+
+    setParams(defaultValue);
+  }, [params, image]);
 
   const chooseFromLibrary = () => {
     ImagePicker.openPicker({
