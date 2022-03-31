@@ -4,7 +4,8 @@ import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import SearchBar from 'react-native-search-bar';
 import {RawContact} from '../../../store/types';
-import {useContacts} from '../../../store';
+import {remove, removeContactActions, useContacts} from '../../../store';
+import {useDispatch, useSelector} from 'react-redux';
 
 const char = [
   'A',
@@ -39,6 +40,10 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
   const contactList = useContacts();
+  const dispatch = useDispatch();
+  const [detail, setDetail] = useState<string>();
+  const Data = useSelector((state: any) => state.contactReducer);
+  console.log('Data', Data);
 
   const renderSeparator = () => {
     return (
@@ -53,9 +58,26 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
     );
   };
 
-  const renderItem = ({item, index}) => {
+  const onPressItem = (item: RawContact): void => {
+    setDetail(item.id);
+    console.log('detail', detail);
+  };
+
+  const removeItem = (item: RawContact) => {
+    dispatch(remove(item.id));
+  };
+
+  const renderItem = ({item}: {item: RawContact}) => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('ContactDetail')}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('ContactDetail', {
+            firstName: item.firstName,
+            phone: item.phone,
+            avatar: item.avatar,
+            id: item.id,
+          })
+        }>
         <WrapCard>
           <Avatar source={{uri: item.avatar}} />
           <WrapText>
@@ -97,11 +119,10 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
         keyExtractor={(item, index) => index.toString()}
       /> */}
       <FlatList
-        data={contactList}
+        data={Data}
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item, index) => item.id.toString()}
         showsVerticalScrollIndicator={false}
-        ItemSeparatorComponent={renderSeparator}
       />
     </View>
   );

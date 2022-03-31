@@ -1,11 +1,11 @@
-import {StyleSheet, TextInput} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import {StyleSheet, Text} from 'react-native';
+import React, {useCallback} from 'react';
 import Header from './Header';
-
 import styled from 'styled-components/native';
-import {removeContactActions, useContacts} from '../../store';
+import {remove} from '../../store';
 import {RawContact} from '../../store/types';
-import moment from 'moment';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
 
 const Container = styled.SafeAreaView``;
 
@@ -16,7 +16,12 @@ const ButtonAvatar = styled.TouchableOpacity`
   border-radius: 100px;
   align-self: center;
 `;
-const Avatar = styled.Image``;
+const Avatar = styled.Image`
+  width: 100px;
+  height: 100px;
+  border-radius: 100px;
+  align-items: center;
+`;
 
 const Name = styled.Text`
   font-weight: 500;
@@ -105,29 +110,26 @@ const FieldNameDelete = styled(FieldNameMsg)`
 `;
 
 const ContactDetail = ({contact}: {contact: RawContact}) => {
-  const [params, setParams] = useState<RawContact>({
-    id: moment().valueOf().toString(),
-    firstName: '',
-    lastName: '',
-    company: '',
-    phone: '',
-    email: '',
-    address: '',
-    birthday: '',
-    avatar: '',
-  });
-  const contactList = useContacts();
+  const route = useRoute();
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+
+  const deleteItem = useCallback(() => {
+    navigation.goBack();
+    dispatch(remove(route.params?.id));
+  }, [remove]);
 
   return (
     <Container>
       <Header />
       <WrapView>
         <ButtonAvatar>
-          <Avatar source={require('../../assets/img_avatar.png')} />
+          <Avatar source={{uri: route.params.avatar}} />
+          {/* {console.log('route.params.avatar', route.params.avatar)} */}
         </ButtonAvatar>
       </WrapView>
       <WrapView>
-        <Name>a </Name>
+        <Name>{route.params.firstName} </Name>
         <Job>UI/UX Design</Job>
       </WrapView>
       <WrapButton>
@@ -152,12 +154,12 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
       <WrapInput>
         <FieldName>Điện thoại</FieldName>
         <ButtonPhone>
-          <PhoneNumber>{params?.phone}</PhoneNumber>
+          <PhoneNumber>{route.params.phone}</PhoneNumber>
         </ButtonPhone>
       </WrapInput>
       <WrapInput>
         <FieldName>Ghi Chú</FieldName>
-        <TextInput placeholder="" style={{height: 33}} />
+        <Text>{route.params.id}</Text>
       </WrapInput>
       <WrapInput>
         <ButtonMsg>
@@ -165,7 +167,7 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
         </ButtonMsg>
       </WrapInput>
       <WrapInput>
-        <ButtonMsg>
+        <ButtonMsg onPress={deleteItem}>
           <FieldNameDelete>Xoá người gọi</FieldNameDelete>
         </ButtonMsg>
       </WrapInput>
