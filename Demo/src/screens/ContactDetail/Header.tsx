@@ -35,7 +35,7 @@ const Header = () => {
         <ButtonBack onPress={() => goBack()}>
           <Back source={require('../../assets/ic_back.png')} />
         </ButtonBack>
-        <ButtonDone>
+        <ButtonDone onPress={() => goBack()}>
           <TextButton>Xong</TextButton>
         </ButtonDone>
       </WrapView>

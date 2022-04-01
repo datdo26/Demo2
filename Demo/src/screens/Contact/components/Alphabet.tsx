@@ -1,10 +1,10 @@
 import {View, SectionList, TouchableOpacity, FlatList} from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import SearchBar from 'react-native-search-bar';
 import {RawContact} from '../../../store/types';
-import {remove, removeContactActions, useContacts} from '../../../store';
+import {remove, useContacts} from '../../../store';
 import {useDispatch, useSelector} from 'react-redux';
 
 const char = [
@@ -39,7 +39,6 @@ const char = [
 const Alphabet = ({contact}: {contact: RawContact}) => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
-  const contactList = useContacts();
   const dispatch = useDispatch();
   const [detail, setDetail] = useState<string>();
   const Data = useSelector((state: any) => state.contactReducer);
@@ -123,6 +122,7 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
         renderItem={renderItem}
         keyExtractor={(item, index) => item.id.toString()}
         showsVerticalScrollIndicator={false}
+        pagingEnabled={true}
       />
     </View>
   );

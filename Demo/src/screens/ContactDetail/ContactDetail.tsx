@@ -20,7 +20,7 @@ const Avatar = styled.Image`
   width: 100px;
   height: 100px;
   border-radius: 100px;
-  align-items: center;
+  align-self: center;
 `;
 
 const Name = styled.Text`
@@ -123,10 +123,8 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
     <Container>
       <Header />
       <WrapView>
-        <ButtonAvatar>
-          <Avatar source={{uri: route.params.avatar}} />
-          {/* {console.log('route.params.avatar', route.params.avatar)} */}
-        </ButtonAvatar>
+        <Avatar source={{uri: route.params.avatar}} />
+        {/* {console.log('route.params.avatar', route.params.avatar)} */}
       </WrapView>
       <WrapView>
         <Name>{route.params.firstName} </Name>

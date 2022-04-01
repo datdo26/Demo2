@@ -1,8 +1,6 @@
-import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
-import {RootStackParamList} from '../nav/RootStack';
 
 const Wrapper = styled.SafeAreaView``;
 
@@ -49,5 +47,3 @@ const Header = ({title}) => {
 };
 
 export default Header;
-
-const styles = StyleSheet.create({});

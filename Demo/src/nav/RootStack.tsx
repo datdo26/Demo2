@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet} from 'react-native';
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {NavigationContainer} from '@react-navigation/native';
@@ -6,7 +6,6 @@ import MainTab from './MainTab';
 import ContactDetail from '../screens/ContactDetail/ContactDetail';
 import SideDrawer from '../screens/Drawer/Drawer';
 import {LoginScreen} from '../screens/LoginScreen';
-import AddContactScreen from '../screens/AddContact/AddContactScreen';
 
 export type RootStackParamList = {
   MainTab: undefined;
@@ -36,7 +35,6 @@ const RootStack = () => {
           component={ContactDetail}
           options={{headerShown: false}}
         />
-
         <Stack.Screen
           name="SideDrawer"
           component={SideDrawer}

@@ -3,9 +3,13 @@ import React from 'react';
 import RootStack from './src/nav/RootStack';
 import {Provider} from 'react-redux';
 import {store} from './src/store';
-import ContactDetail from './src/screens/ContactDetail/ContactDetail';
+import SplashScreen from 'react-native-splash-screen';
 
 const App = () => {
+  React.useEffect(() => {
+    SplashScreen.hide();
+  });
+
   return (
     <Provider store={store}>
       <RootStack />
