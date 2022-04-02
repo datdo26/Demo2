@@ -95,7 +95,7 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
               id: item.id,
             })
           }>
-          <WrapCard style={{backgroundColor: 'red'}}>
+          <WrapCard>
             <Avatar source={{uri: item.avatar}} />
             <WrapText>
               <Name>
@@ -156,7 +156,7 @@ export default Alphabet;
 
 const SideChar = styled.View`
   right: 10px;
-  top: 40px;
+  top: 20px;
 `;
 
 const SideCharBtn = styled.TouchableOpacity``;
@@ -211,4 +211,6 @@ const WrapCard = styled.View`
   height: 80px;
   align-items: center;
   flex-direction: row;
+  border-bottom-color: gray;
+  border-bottom-witdh: 0.5;
 `;

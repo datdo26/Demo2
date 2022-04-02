@@ -19,7 +19,7 @@ const MainTab = () => {
       screenOptions={{
         tabBarShowLabel: true,
         tabBarStyle: {
-          height: 80,
+          height: 70,
           backgroundColor: '#F2A54A',
         },
       }}>
@@ -33,16 +33,7 @@ const MainTab = () => {
           ),
         }}
       />
-      <Tab.Screen
-        name=" "
-        component={AddContactScreen}
-        options={{
-          headerShown: false,
-          tabBarIcon: ({color}) => (
-            <Image source={require('../assets/ic_add_white.png')} />
-          ),
-        }}
-      />
+
       <Tab.Screen
         name="Gần đây"
         component={RecentScreen}

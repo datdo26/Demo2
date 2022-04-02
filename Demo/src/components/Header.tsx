@@ -37,7 +37,7 @@ const Header = ({title}) => {
         <More source={require('../assets/contact/more.png')} />
       </Button>
       <Title>{title}</Title>
-      <Button>
+      <Button onPress={() => navigation.navigate('AddContactScreen')}>
         <Camera source={require('../assets/ic_camera.png')} />
       </Button>
     </WrapView>

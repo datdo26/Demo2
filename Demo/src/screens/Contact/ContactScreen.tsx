@@ -5,6 +5,7 @@ import Alphabet from './components/Alphabet';
 import {useContacts} from '../../store';
 import styled from 'styled-components/native';
 import SearchBar from 'react-native-search-bar';
+import List from './List';
 
 const ContactScreen = () => {
   const contacts = useContacts();
@@ -14,6 +15,7 @@ const ContactScreen = () => {
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
       <StatusBar hidden={false} />
       <Header title="Liên hệ" />
+      <SearchBar placeholder="Tim kiem danh ba" />
       <Alphabet contact={undefined} />
     </SafeAreaView>
   );

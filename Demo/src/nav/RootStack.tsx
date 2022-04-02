@@ -6,12 +6,14 @@ import MainTab from './MainTab';
 import ContactDetail from '../screens/ContactDetail/ContactDetail';
 import SideDrawer from '../screens/Drawer/Drawer';
 import {LoginScreen} from '../screens/LoginScreen';
+import AddContactScreen from '../screens/AddContact/AddContactScreen';
 
 export type RootStackParamList = {
   MainTab: undefined;
   ContactDetail: undefined;
   LoginScreen: undefined;
   SideDrawer: undefined;
+  AddContactScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -33,6 +35,11 @@ const RootStack = () => {
         <Stack.Screen
           name="ContactDetail"
           component={ContactDetail}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="AddContactScreen"
+          component={AddContactScreen}
           options={{headerShown: false}}
         />
         <Stack.Screen
