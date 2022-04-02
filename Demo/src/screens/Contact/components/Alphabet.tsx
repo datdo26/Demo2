@@ -1,12 +1,11 @@
-import {View, SectionList, TouchableOpacity, FlatList} from 'react-native';
+import {View, TouchableOpacity, FlatList, TextInput} from 'react-native';
 import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
-import SearchBar from 'react-native-search-bar';
 import {RawContact} from '../../../store/types';
 import {remove, useContacts} from '../../../store';
 import {useDispatch, useSelector} from 'react-redux';
-
+import {nonAccentVietnamese} from '../../../store/nonAccentVietnamese';
 const char = [
   'A',
   'B',
@@ -39,10 +38,27 @@ const char = [
 const Alphabet = ({contact}: {contact: RawContact}) => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
+  const [filteredList, setFilteredList] = useState([]);
   const dispatch = useDispatch();
+  const contactList = useContacts();
   const [detail, setDetail] = useState<string>();
   const Data = useSelector((state: any) => state.contactReducer);
   console.log('Data', Data);
+
+  const searchFilter = str => {
+    const text = nonAccentVietnamese(str);
+    if (text) {
+      const newData: RawContact[] = Object.values(contactList.id);
+      const result = newData.filter(item => {
+        return item.searchField.includes(text);
+      });
+      setFilteredList(result);
+      setSearchText(str);
+    } else {
+      setFilteredList(Object.values(contactList.id));
+      setSearchText(str);
+    }
+  };
 
   const renderSeparator = () => {
     return (
@@ -68,25 +84,28 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
 
   const renderItem = ({item}: {item: RawContact}) => {
     return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('ContactDetail', {
-            firstName: item.firstName,
-            phone: item.phone,
-            avatar: item.avatar,
-            id: item.id,
-          })
-        }>
-        <WrapCard>
-          <Avatar source={{uri: item.avatar}} />
-          <WrapText>
-            <Name>
-              {item.firstName} {item.lastName}
-            </Name>
-            <PhoneNumber>{item.phone}</PhoneNumber>
-          </WrapText>
-        </WrapCard>
-      </TouchableOpacity>
+      <View>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('ContactDetail', {
+              firstName: item.firstName,
+              lastName: item.lastName,
+              phone: item.phone,
+              avatar: item.avatar,
+              id: item.id,
+            })
+          }>
+          <WrapCard style={{backgroundColor: 'red'}}>
+            <Avatar source={{uri: item.avatar}} />
+            <WrapText>
+              <Name>
+                {item.firstName} {item.lastName}
+              </Name>
+              <PhoneNumber>{item.phone}</PhoneNumber>
+            </WrapText>
+          </WrapCard>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -96,6 +115,15 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
 
   return (
     <View>
+      {/* <View>
+        <TextInput
+          placeholder="Tìm kiếm danh bạ"
+          value={searchText}
+          onChangeText={text => {
+            searchFilter(text);
+          }}
+        />
+      </View> */}
       <View style={{position: 'absolute', zIndex: 1, right: 0}}>
         <SideChar>
           {char.map((char, key) => (
@@ -105,11 +133,7 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
           ))}
         </SideChar>
       </View>
-      <SearchBar
-        placeholder="Tim kiem danh ba"
-        text={searchText}
-        onChangeText={text => setSearchText(text)}
-      />
+
       {/* <SectionList
         showsVerticalScrollIndicator={false}
         sections={contactList}
@@ -184,7 +208,7 @@ const WrapText = styled.View``;
 
 const WrapCard = styled.View`
   background-color: white;
-  height: 64px;
+  height: 80px;
   align-items: center;
   flex-direction: row;
 `;

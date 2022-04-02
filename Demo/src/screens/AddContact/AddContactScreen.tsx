@@ -5,6 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
 import {updateContactActions} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
+import {nonAccentVietnamese} from '../../store/nonAccentVietnamese';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -102,12 +103,17 @@ const defaultValue = {
   address: '',
   birthday: '',
   avatar: '',
+  searchField: '',
 };
 
 const AddContactScreen = () => {
   const navigation = useNavigation();
   const [image, setImage] = useState();
   const [params, setParams] = useState<RawContact>(defaultValue);
+
+  const SearchText = `${params.firstName}${params.id}${nonAccentVietnamese(
+    params.lastName,
+  )}${nonAccentVietnamese(params.id)}`;
 
   const onDone = useCallback(() => {
     updateContactActions(
@@ -118,7 +124,7 @@ const AddContactScreen = () => {
     setTimeout(() => {
       navigation.goBack();
     }, 200);
-
+    params.searchField = SearchText;
     setParams(defaultValue);
     setImage('');
   }, [params, image]);

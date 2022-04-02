@@ -24,7 +24,6 @@ const Avatar = styled.Image`
 `;
 
 const Name = styled.Text`
-  font-weight: 500;
   font-size: 18px;
   line-height: 22px;
   letter-spacing: -0.41px;
@@ -127,7 +126,9 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
         {/* {console.log('route.params.avatar', route.params.avatar)} */}
       </WrapView>
       <WrapView>
-        <Name>{route.params.firstName} </Name>
+        <Name>
+          {route.params.firstName} {route.params.lastName}
+        </Name>
         <Job>UI/UX Design</Job>
       </WrapView>
       <WrapButton>

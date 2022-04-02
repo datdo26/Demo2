@@ -2,8 +2,6 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
 
-const Wrapper = styled.SafeAreaView``;
-
 const WrapView = styled.View`
   justify-content: space-between;
   flex-direction: row;
