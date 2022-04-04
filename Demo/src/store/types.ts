@@ -11,3 +11,9 @@ export interface RawContact {
     searchField: string,
 }
 
+export interface RawCollection {
+    id: string;
+    title: string;
+    list: []
+}
+

@@ -41,9 +41,10 @@ const DoneText = styled.Text`
   letter-spacing: -0.41px;
   color: #828282;
 `;
-const Avatar = styled.Image`
-  align-self: center;
-  margin-top: 24px;
+const AvatarInput = styled.ImageBackground`
+  width: 90px;
+  height: 90px;
+  borderradius: 100px;
 `;
 
 const Section2 = styled.View`
@@ -108,7 +109,7 @@ const defaultValue = {
 
 const AddContactScreen = () => {
   const navigation = useNavigation();
-  const [image, setImage] = useState();
+  const [image, setImage] = useState<any>();
   const [params, setParams] = useState<RawContact>(defaultValue);
 
   const SearchText = `${params.firstName}${params.id}${nonAccentVietnamese(
@@ -126,7 +127,6 @@ const AddContactScreen = () => {
     }, 200);
     params.searchField = SearchText;
     setParams(defaultValue);
-    setImage('');
   }, [params, image]);
 
   const chooseFromLibrary = () => {
@@ -140,11 +140,15 @@ const AddContactScreen = () => {
     });
   };
 
+  const onCancel = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
   return (
     <Container>
       <Section1>
         <WrapButton>
-          <Button onPress={() => navigation.goBack()}>
+          <Button onPress={onCancel}>
             <CancelText>Huỷ</CancelText>
           </Button>
           <Button onPress={onDone}>
@@ -152,19 +156,14 @@ const AddContactScreen = () => {
           </Button>
         </WrapButton>
         <AvatarBtn onPress={chooseFromLibrary}>
-          <ImageBackground
+          <AvatarInput
             source={require('../../assets/img_avatar.png')}
-            style={{
-              width: 90,
-              height: 90,
-              borderRadius: 100,
-            }}
             resizeMode={'cover'}>
             <Image
               source={{uri: image}}
               style={{width: 100, height: 100, borderRadius: 100}}
             />
-          </ImageBackground>
+          </AvatarInput>
         </AvatarBtn>
       </Section1>
 

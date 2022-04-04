@@ -1,5 +1,5 @@
-import React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import React, {useCallback} from 'react';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
 
 const WrapView = styled.View`
@@ -29,15 +29,24 @@ const Camera = styled.Image`
   margin-right: 16px;
 `;
 
-const Header = ({title}) => {
-  const navigation = useNavigation();
+const Header = ({title}: any) => {
+  const navigation = useNavigation<any>();
+
+  const _openDrawer = useCallback(() => {
+    navigation.openDrawer();
+  }, [navigation]);
+
+  const _openAddContact = useCallback(() => {
+    navigation.navigate('AddContactScreen');
+  }, [navigation]);
+
   return (
     <WrapView>
-      <Button onPress={() => navigation.openDrawer()}>
+      <Button onPress={_openDrawer}>
         <More source={require('../assets/contact/more.png')} />
       </Button>
       <Title>{title}</Title>
-      <Button onPress={() => navigation.navigate('AddContactScreen')}>
+      <Button onPress={_openAddContact}>
         <Camera source={require('../assets/ic_camera.png')} />
       </Button>
     </WrapView>

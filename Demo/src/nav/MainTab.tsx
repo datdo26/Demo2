@@ -1,14 +1,12 @@
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Image} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import AddContactScreen from '../screens/AddContact/AddContactScreen';
 import ContactScreen from '../screens/Contact/ContactScreen';
 import RecentScreen from '../screens/Recent/RecentScreen';
 
 export type MainTabParamLists = {
   ContactScreen: undefined;
   RecentScreen: undefined;
-  AddContactScreen: undefined;
 };
 
 const Tab = createBottomTabNavigator();
@@ -28,7 +26,7 @@ const MainTab = () => {
         component={ContactScreen}
         options={{
           headerShown: false,
-          tabBarIcon: ({color}) => (
+          tabBarIcon: () => (
             <Image source={require('../assets/contact/ic_contact.png')} />
           ),
         }}
@@ -39,7 +37,7 @@ const MainTab = () => {
         component={RecentScreen}
         options={{
           headerShown: false,
-          tabBarIcon: ({color}) => (
+          tabBarIcon: () => (
             <Image source={require('../assets/recent/ic_recent.png')} />
           ),
         }}

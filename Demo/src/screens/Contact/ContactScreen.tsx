@@ -3,9 +3,6 @@ import React from 'react';
 import Header from '../../components/Header';
 import Alphabet from './components/Alphabet';
 import {useContacts} from '../../store';
-import styled from 'styled-components/native';
-import SearchBar from 'react-native-search-bar';
-import List from './List';
 
 const ContactScreen = () => {
   const contacts = useContacts();

@@ -1,10 +1,11 @@
-import {View, TouchableOpacity, FlatList} from 'react-native';
-import React, {useState} from 'react';
+import {View, TouchableOpacity, FlatList, Text, StyleSheet} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {RawContact} from '../../../store/types';
 import {useSelector} from 'react-redux';
 import SearchBar from 'react-native-search-bar';
+import {AlphabetList} from 'react-native-section-alphabet-list';
 const char = [
   'A',
   'B',
@@ -33,27 +34,40 @@ const char = [
   'Y',
   'Z',
 ];
+export const sizes = {
+  itemHeight: 40,
+  headerHeight: 30,
+  listHeaderHeight: 80,
 
+  spacing: {
+    small: 10,
+    regular: 15,
+    large: 20,
+  },
+};
 const Alphabet = ({contact}: {contact: RawContact}) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const [searchText, setSearchText] = useState('');
   const Data = useSelector((state: any) => state.contactReducer);
   console.log('Data', Data);
 
-  const fullName = `${Data.firstname}${Data.lastName}`;
+  const handleNavigation = useCallback(
+    ({item}: {item: RawContact}) => {
+      navigation.navigate('ContactDetail', {
+        firstName: item.firstName,
+        lastName: item.lastName,
+        phone: item.phone,
+        avatar: item.avatar,
+        id: item.id,
+      });
+    },
+    [Data],
+  );
+
   const renderItem = ({item}: {item: RawContact}) => {
     return (
       <View>
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate('ContactDetail', {
-              firstName: item.firstName,
-              lastName: item.lastName,
-              phone: item.phone,
-              avatar: item.avatar,
-              id: item.id,
-            })
-          }>
+        <TouchableOpacity onPress={() => handleNavigation({item})}>
           <WrapCard>
             <Avatar source={{uri: item.avatar}} />
             <WrapText>
@@ -67,9 +81,12 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
       </View>
     );
   };
+  const renderSectionHeader = section => {
+    <Text>{section.title}</Text>;
+  };
 
   return (
-    <View>
+    <View style={{flex: 1}}>
       <SearchBar
         placeholder="Tìm kiếm danh bạ"
         onChangeText={text => {
@@ -77,7 +94,7 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
         }}
       />
 
-      <View style={{position: 'absolute', zIndex: 1, right: 0}}>
+      <SideCharView>
         <SideChar>
           {char.map((char, key) => (
             <SideCharBtn key={key}>
@@ -85,9 +102,9 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
             </SideCharBtn>
           ))}
         </SideChar>
-      </View>
+      </SideCharView>
 
-      <FlatList
+      {/* <FlatList
         data={Data.filter(result =>
           result.firstName.toLowerCase().includes(searchText.toLowerCase()),
         )}
@@ -95,12 +112,30 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
         keyExtractor={(item, index) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         pagingEnabled={true}
+      /> */}
+      <AlphabetList
+        data={Data.filter(result =>
+          result.firstName.toLowerCase().includes(searchText.toLowerCase()),
+        )}
+        renderCustomItem={renderItem}
+        renderCustomSectionHeader={renderSectionHeader}
+        getItemHeight={() => sizes.itemHeight}
+        sectionHeaderHeight={sizes.headerHeight}
+        listHeaderHeight={sizes.listHeaderHeight}
       />
     </View>
   );
 };
 
+const styles = StyleSheet.create({});
+
 export default Alphabet;
+
+const SideCharView = styled.View`
+  position: absolute;
+  z-index: 1;
+  right: 0px;
+`;
 
 const SideChar = styled.View`
   right: 10px;
