@@ -1,12 +1,9 @@
-import {View, TouchableOpacity, FlatList, TextInput, Image} from 'react-native';
-import React, {useMemo, useState} from 'react';
+import {View, TouchableOpacity, FlatList} from 'react-native';
+import React, {useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {RawContact} from '../../../store/types';
-import {remove, useContacts} from '../../../store';
-import {useDispatch, useSelector} from 'react-redux';
-import {nonAccentVietnamese} from '../../../store/nonAccentVietnamese';
-import {AlphabetList} from 'react-native-section-alphabet-list';
+import {useSelector} from 'react-redux';
 import SearchBar from 'react-native-search-bar';
 const char = [
   'A',
@@ -40,14 +37,10 @@ const char = [
 const Alphabet = ({contact}: {contact: RawContact}) => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
-  const contactList = useContacts()
-  const dispatch = useDispatch();
   const Data = useSelector((state: any) => state.contactReducer);
   console.log('Data', Data);
 
-
-
-
+  const fullName = `${Data.firstname}${Data.lastName}`;
   const renderItem = ({item}: {item: RawContact}) => {
     return (
       <View>
@@ -75,23 +68,14 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
     );
   };
 
-const SearchFunction = (text) => {
-  const newData = 
-}
-  
-
   return (
     <View>
-      {/* <SearchBar placeholder="Tim kiem danh ba" /> */}
-      <View>
-        <TextInput 
-         placeholder='tim kiem danh ba'
-         value={searchText}
-         onChangeText={(text) => {
-           searchFilter(text)
-         }}
-         />
-      </View>
+      <SearchBar
+        placeholder="Tìm kiếm danh bạ"
+        onChangeText={text => {
+          setSearchText(text);
+        }}
+      />
 
       <View style={{position: 'absolute', zIndex: 1, right: 0}}>
         <SideChar>
@@ -104,7 +88,9 @@ const SearchFunction = (text) => {
       </View>
 
       <FlatList
-        data={Data}
+        data={Data.filter(result =>
+          result.firstName.toLowerCase().includes(searchText.toLowerCase()),
+        )}
         renderItem={renderItem}
         keyExtractor={(item, index) => item.id.toString()}
         showsVerticalScrollIndicator={false}
@@ -118,7 +104,7 @@ export default Alphabet;
 
 const SideChar = styled.View`
   right: 10px;
-  top: 20px;
+  top: 50px;
 `;
 
 const SideCharBtn = styled.TouchableOpacity``;
@@ -138,17 +124,6 @@ const Name = styled.Text`
   line-height: 16px;
   letter-spacing: 0.12px;
   color: #333333;
-`;
-
-const Title = styled.Text`
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 16px;
-  letter-spacing: 0.12px;
-  color: #333333;
-  background-color: #e0e0e0;
-  opacity: 0.5;
-  height: 16px;
 `;
 
 const Avatar = styled.Image`
