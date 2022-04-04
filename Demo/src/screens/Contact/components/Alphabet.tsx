@@ -1,11 +1,13 @@
-import {View, TouchableOpacity, FlatList, TextInput} from 'react-native';
-import React, {useState} from 'react';
+import {View, TouchableOpacity, FlatList, TextInput, Image} from 'react-native';
+import React, {useMemo, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {RawContact} from '../../../store/types';
 import {remove, useContacts} from '../../../store';
 import {useDispatch, useSelector} from 'react-redux';
 import {nonAccentVietnamese} from '../../../store/nonAccentVietnamese';
+import {AlphabetList} from 'react-native-section-alphabet-list';
+import SearchBar from 'react-native-search-bar';
 const char = [
   'A',
   'B',
@@ -38,49 +40,13 @@ const char = [
 const Alphabet = ({contact}: {contact: RawContact}) => {
   const navigation = useNavigation();
   const [searchText, setSearchText] = useState('');
-  const [filteredList, setFilteredList] = useState([]);
+  const contactList = useContacts()
   const dispatch = useDispatch();
-  const contactList = useContacts();
-  const [detail, setDetail] = useState<string>();
   const Data = useSelector((state: any) => state.contactReducer);
   console.log('Data', Data);
 
-  const searchFilter = str => {
-    const text = nonAccentVietnamese(str);
-    if (text) {
-      const newData: RawContact[] = Object.values(contactList.id);
-      const result = newData.filter(item => {
-        return item.searchField.includes(text);
-      });
-      setFilteredList(result);
-      setSearchText(str);
-    } else {
-      setFilteredList(Object.values(contactList.id));
-      setSearchText(str);
-    }
-  };
 
-  const renderSeparator = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: '86%',
-          backgroundColor: '#CED0CE',
-          marginLeft: '14%',
-        }}
-      />
-    );
-  };
 
-  const onPressItem = (item: RawContact): void => {
-    setDetail(item.id);
-    console.log('detail', detail);
-  };
-
-  const removeItem = (item: RawContact) => {
-    dispatch(remove(item.id));
-  };
 
   const renderItem = ({item}: {item: RawContact}) => {
     return (
@@ -109,21 +75,24 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
     );
   };
 
-  const renderSectionHeader = ({section}) => {
-    return <Title>{section.title}</Title>;
-  };
+const SearchFunction = (text) => {
+  const newData = 
+}
+  
 
   return (
     <View>
-      {/* <View>
-        <TextInput
-          placeholder="Tìm kiếm danh bạ"
-          value={searchText}
-          onChangeText={text => {
-            searchFilter(text);
-          }}
-        />
-      </View> */}
+      {/* <SearchBar placeholder="Tim kiem danh ba" /> */}
+      <View>
+        <TextInput 
+         placeholder='tim kiem danh ba'
+         value={searchText}
+         onChangeText={(text) => {
+           searchFilter(text)
+         }}
+         />
+      </View>
+
       <View style={{position: 'absolute', zIndex: 1, right: 0}}>
         <SideChar>
           {char.map((char, key) => (
@@ -134,13 +103,6 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
         </SideChar>
       </View>
 
-      {/* <SectionList
-        showsVerticalScrollIndicator={false}
-        sections={contactList}
-        renderItem={renderItem}
-        renderSectionHeader={renderSectionHeader}
-        keyExtractor={(item, index) => index.toString()}
-      /> */}
       <FlatList
         data={Data}
         renderItem={renderItem}

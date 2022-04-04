@@ -15,7 +15,6 @@ const ContactScreen = () => {
     <SafeAreaView style={{backgroundColor: '#fff', flex: 1}}>
       <StatusBar hidden={false} />
       <Header title="Liên hệ" />
-      <SearchBar placeholder="Tim kiem danh ba" />
       <Alphabet contact={undefined} />
     </SafeAreaView>
   );
