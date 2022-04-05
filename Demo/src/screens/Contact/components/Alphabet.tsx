@@ -2,9 +2,9 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  Text,
   StyleSheet,
   SectionList,
+  Text,
 } from 'react-native';
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
@@ -12,7 +12,8 @@ import {useNavigation} from '@react-navigation/native';
 import {RawContact} from '../../../store/types';
 import {useSelector} from 'react-redux';
 import SearchBar from 'react-native-search-bar';
-import {AlphabetList} from 'react-native-section-alphabet-list';
+import {useContacts} from '../../../store';
+import {iteratorSymbol} from 'immer/dist/internal';
 
 const SideCharView = styled.View`
   position: absolute;
@@ -99,14 +100,37 @@ const char = [
   'Z',
 ];
 
-const Alphabet = ({contact}: {contact: RawContact}) => {
+const Alphabet = () => {
   const navigation = useNavigation<any>();
+  const contactList = useContacts();
   const [searchText, setSearchText] = useState('');
   const DATA = useSelector((state: any) => state.contactReducer);
   console.log('DATA', DATA);
 
+  // const contactData = [];
+
+  // {
+  //   DATA.forEach(element => {
+  //     contactData.push(element);
+  //   });
+  //   console.log('contactData', contactData);
+  // }
+
+  const result = DATA.groupBy(item => {
+    return item.firstName;
+  });
+
+  console.log('result', result);
+
+  {
+    DATA.map(item => {
+      const fullName = item.firstName + ' ' + item.lastName;
+      const words = fullName.split(' ').filter(Boolean);
+      return words[words.length - 1][0];
+    });
+  }
   const handleNavigation = useCallback(
-    ({item}: {item: RawContact}) => {
+    ({item}) => {
       navigation.navigate('ContactDetail', {
         firstName: item.firstName,
         lastName: item.lastName,
@@ -118,9 +142,7 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
     [DATA],
   );
 
-  const renderItem = ({item}: {item: RawContact}) => {
-    console.log('item', item);
-
+  const renderItem = ({item}) => {
     return (
       <View>
         <TouchableOpacity onPress={() => handleNavigation({item})}>
@@ -136,9 +158,6 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
         </TouchableOpacity>
       </View>
     );
-  };
-  const renderSectionHeader = section => {
-    <Text>{section.title}</Text>;
   };
 
   return (
@@ -160,7 +179,7 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
         </SideChar>
       </SideCharView>
 
-      <FlatList
+      {/* <FlatList
         data={DATA.filter(result =>
           result.firstName.toLowerCase().includes(searchText.toLowerCase()),
         )}
@@ -168,17 +187,13 @@ const Alphabet = ({contact}: {contact: RawContact}) => {
         keyExtractor={(item, index) => item.id.toString()}
         showsVerticalScrollIndicator={false}
         pagingEnabled={true}
-      />
-      {/* <SectionList
-        sections={DATA.filter(result =>
-          result.firstName.toLowerCase().includes(searchText.toLowerCase()),
-        )}
+      /> */}
+
+      <SectionList
+        sections={DATA}
         keyExtractor={(item, index) => item.id.toString()}
         renderItem={renderItem}
-        // renderSectionHeader={({section: {title}}) => {
-        //   <Text>{title}</Text>;
-        // }}
-      /> */}
+      />
     </View>
   );
 };
