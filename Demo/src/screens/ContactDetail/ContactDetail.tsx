@@ -1,4 +1,4 @@
-import {StyleSheet, Text} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React, {useCallback} from 'react';
 import Header from './Header';
 import styled from 'styled-components/native';
@@ -85,9 +85,10 @@ const PhoneNumber = styled.Text`
 
 const WrapInput = styled.View`
   margin: 0 16px;
-  margin-top: 17px;
+  margin-top: 24px;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
+  
 `;
 
 const FieldName = styled.Text`
@@ -144,10 +145,10 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
           <IconButton source={require('../../assets/ic_vidcall.png')} />
           <TextButton>Facetime</TextButton>
         </Button>
-        <Button>
+        <View>
           <IconButton source={require('../../assets/ic_email.png')} />
           <TextButtonMail>Gửi mail</TextButtonMail>
-        </Button>
+        </View>
       </WrapButton>
 
       <WrapInput>

@@ -2,8 +2,10 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
-
-const Wrapper = styled.View``;
+import statusBarHeight from "../../components/statusBarHeight";
+const Wrapper = styled.View`
+  margin-top: 16px ;
+`;
 
 const WrapView = styled.View`
   justify-content: space-between;

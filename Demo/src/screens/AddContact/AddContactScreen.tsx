@@ -1,4 +1,4 @@
-import {ImageBackground, StyleSheet, Image} from 'react-native';
+import {ImageBackground, StyleSheet, Image, ScrollView} from 'react-native';
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
@@ -10,7 +10,8 @@ import {nonAccentVietnamese} from '../../store/nonAccentVietnamese';
 const Container = styled.SafeAreaView`
   flex: 1;
 `;
-const Section1 = styled.View``;
+const Section1 = styled.View`
+  margin-top: 16px`;
 
 const WrapButton = styled.View`
   flex-direction: row;
@@ -95,177 +96,181 @@ const Address = styled(PhoneNumber)``;
 const Birthday = styled(PhoneNumber)``;
 
 const defaultValue = {
-  id: ``,
-  firstName: '',
-  lastName: '',
-  company: '',
-  phone: '',
-  email: '',
-  address: '',
-  birthday: '',
-  avatar: '',
-  searchField: '',
+    id: ``,
+    firstName: '',
+    lastName: '',
+    company: '',
+    phone: '',
+    email: '',
+    address: '',
+    birthday: '',
+    avatar: '',
+    searchField: '',
 };
 
 const AddContactScreen = () => {
-  const navigation = useNavigation();
-  const [image, setImage] = useState<any>();
-  const [params, setParams] = useState<RawContact>(defaultValue);
+    const navigation = useNavigation();
+    const [image, setImage] = useState<any>();
+    const [params, setParams] = useState<RawContact>(defaultValue);
 
-  const SearchText = `${params.firstName}${params.id}${nonAccentVietnamese(
-    params.lastName,
-  )}${nonAccentVietnamese(params.id)}`;
+    const SearchText = `${params.firstName}${params.id}${nonAccentVietnamese(
+        params.lastName,
+    )}${nonAccentVietnamese(params.id)}`;
 
-  const onDone = useCallback(() => {
-    updateContactActions(
-      params?.id
-        ? {...params, avatar: image}
-        : {...params, id: `${new Date().getTime()}`, avatar: image},
+    const onDone = useCallback(() => {
+        updateContactActions(
+            params?.id
+                ? {...params, avatar: image}
+                : {...params, id: `${new Date().getTime()}`, avatar: image},
+        );
+        setTimeout(() => {
+            navigation.goBack();
+        }, 200);
+        params.searchField = SearchText;
+        setParams(defaultValue);
+    }, [params, image]);
+
+    const chooseFromLibrary = () => {
+        ImagePicker.openPicker({
+            width: 300,
+            height: 400,
+            cropping: false,
+            compressImageQuality: 0.7,
+        }).then(image => {
+            setImage(image.path);
+        });
+    };
+
+    const onCancel = useCallback(() => {
+        navigation.goBack();
+    }, [navigation]);
+
+    return (
+        <Container>
+
+                <Section1>
+                    <WrapButton>
+                        <Button onPress={onCancel}>
+                            <CancelText>Huỷ</CancelText>
+                        </Button>
+                        <Button onPress={onDone}>
+                            <DoneText>Xong</DoneText>
+                        </Button>
+                    </WrapButton>
+                </Section1>
+            <ScrollView>
+
+                    <AvatarBtn onPress={chooseFromLibrary}>
+                        <AvatarInput
+                            source={require('../../assets/img_avatar.png')}
+                            resizeMode={'cover'}>
+                            <Image
+                                source={{uri: image}}
+                                style={{width: 100, height: 100, borderRadius: 100}}
+                            />
+                        </AvatarInput>
+                    </AvatarBtn>
+
+                <Section2>
+                    <WrapInputText>
+                        <LastName
+                            placeholder={'Họ'}
+                            value={params.firstName.toUpperCase()}
+                            onChangeText={value => {
+                                setParams({
+                                    ...params,
+                                    firstName: value.toUpperCase(),
+                                });
+                            }}
+                        />
+                        <FirstName
+                            placeholder={'Tên'}
+                            value={params.lastName}
+                            onChangeText={value => {
+                                setParams({
+                                    ...params,
+                                    lastName: value,
+                                });
+                            }}
+                        />
+                        <CompanyName
+                            placeholder={'Công ty'}
+                            value={params.company}
+                            onChangeText={value => {
+                                setParams({
+                                    ...params,
+                                    company: value,
+                                });
+                            }}
+                        />
+                    </WrapInputText>
+                </Section2>
+
+                <Section3>
+                    <WrapInputDetail>
+                        <Button>
+                            <AddButton source={require('../../assets/ic_add.png')}/>
+                        </Button>
+                        <PhoneNumber
+                            placeholder={'Thêm số điện thoại'}
+                            value={params.phone}
+                            onChangeText={value => {
+                                setParams({
+                                    ...params,
+                                    phone: value,
+                                });
+                            }}
+                        />
+                    </WrapInputDetail>
+                    <WrapInputDetail>
+                        <Button>
+                            <AddButton source={require('../../assets/ic_add.png')}/>
+                        </Button>
+                        <Email
+                            placeholder={'Thêm email'}
+                            value={params.email}
+                            onChangeText={value => {
+                                setParams({
+                                    ...params,
+                                    email: value,
+                                });
+                            }}
+                        />
+                    </WrapInputDetail>
+                    <WrapInputDetail>
+                        <Button>
+                            <AddButton source={require('../../assets/ic_add.png')}/>
+                        </Button>
+                        <Address
+                            placeholder={'Thêm địa chỉ'}
+                            value={params.address}
+                            onChangeText={value => {
+                                setParams({
+                                    ...params,
+                                    address: value,
+                                });
+                            }}
+                        />
+                    </WrapInputDetail>
+                    <WrapInputDetail>
+                        <Button>
+                            <AddButton source={require('../../assets/ic_add.png')}/>
+                        </Button>
+                        <Birthday
+                            placeholder={'Thêm ngày sinh'}
+                            value={params.birthday}
+                            onChangeText={value => {
+                                setParams({
+                                    ...params,
+                                    birthday: value,
+                                });
+                            }}
+                        />
+                    </WrapInputDetail>
+                </Section3>
+            </ScrollView>
+        </Container>
     );
-    setTimeout(() => {
-      navigation.goBack();
-    }, 200);
-    params.searchField = SearchText;
-    setParams(defaultValue);
-  }, [params, image]);
-
-  const chooseFromLibrary = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: false,
-      compressImageQuality: 0.7,
-    }).then(image => {
-      setImage(image.path);
-    });
-  };
-
-  const onCancel = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
-
-  return (
-    <Container>
-      <Section1>
-        <WrapButton>
-          <Button onPress={onCancel}>
-            <CancelText>Huỷ</CancelText>
-          </Button>
-          <Button onPress={onDone}>
-            <DoneText>Xong</DoneText>
-          </Button>
-        </WrapButton>
-        <AvatarBtn onPress={chooseFromLibrary}>
-          <AvatarInput
-            source={require('../../assets/img_avatar.png')}
-            resizeMode={'cover'}>
-            <Image
-              source={{uri: image}}
-              style={{width: 100, height: 100, borderRadius: 100}}
-            />
-          </AvatarInput>
-        </AvatarBtn>
-      </Section1>
-
-      <Section2>
-        <WrapInputText>
-          <LastName
-            placeholder={'Họ'}
-            value={params.firstName}
-            onChangeText={value => {
-              setParams({
-                ...params,
-                firstName: value,
-              });
-            }}
-          />
-          <FirstName
-            placeholder={'Tên'}
-            value={params.lastName}
-            onChangeText={value => {
-              setParams({
-                ...params,
-                lastName: value,
-              });
-            }}
-          />
-          <CompanyName
-            placeholder={'Công ty'}
-            value={params.company}
-            onChangeText={value => {
-              setParams({
-                ...params,
-                company: value,
-              });
-            }}
-          />
-        </WrapInputText>
-      </Section2>
-
-      <Section3>
-        <WrapInputDetail>
-          <Button>
-            <AddButton source={require('../../assets/ic_add.png')} />
-          </Button>
-          <PhoneNumber
-            placeholder={'Thêm số điện thoại'}
-            value={params.phone}
-            onChangeText={value => {
-              setParams({
-                ...params,
-                phone: value,
-              });
-            }}
-          />
-        </WrapInputDetail>
-        <WrapInputDetail>
-          <Button>
-            <AddButton source={require('../../assets/ic_add.png')} />
-          </Button>
-          <Email
-            placeholder={'Thêm email'}
-            value={params.email}
-            onChangeText={value => {
-              setParams({
-                ...params,
-                email: value,
-              });
-            }}
-          />
-        </WrapInputDetail>
-        <WrapInputDetail>
-          <Button>
-            <AddButton source={require('../../assets/ic_add.png')} />
-          </Button>
-          <Address
-            placeholder={'Thêm địa chỉ'}
-            value={params.address}
-            onChangeText={value => {
-              setParams({
-                ...params,
-                address: value,
-              });
-            }}
-          />
-        </WrapInputDetail>
-        <WrapInputDetail>
-          <Button>
-            <AddButton source={require('../../assets/ic_add.png')} />
-          </Button>
-          <Birthday
-            placeholder={'Thêm ngày sinh'}
-            value={params.birthday}
-            onChangeText={value => {
-              setParams({
-                ...params,
-                birthday: value,
-              });
-            }}
-          />
-        </WrapInputDetail>
-      </Section3>
-    </Container>
-  );
 };
 
 export default AddContactScreen;

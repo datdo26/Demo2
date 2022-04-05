@@ -1,6 +1,7 @@
 import React, {useCallback} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
+import statusBarHeight from "./statusBarHeight";
 
 const WrapView = styled.View`
   justify-content: space-between;
@@ -9,6 +10,7 @@ const WrapView = styled.View`
   align-items: center;
   background-color: #fff;
   margin-bottom: 6px;
+  margin-top: 16px;
 `;
 
 const Button = styled.TouchableOpacity``;

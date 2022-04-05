@@ -1,20 +1,19 @@
 import {
-  View,
-  TouchableOpacity,
-  FlatList,
-  StyleSheet,
-  SectionList,
-  Text,
+    View,
+    TouchableOpacity,
+    StyleSheet,
+    SectionList, Dimensions, ScrollView,
 } from 'react-native';
+// @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
-import {RawContact} from '../../../store/types';
 import {useSelector} from 'react-redux';
 import SearchBar from 'react-native-search-bar';
 import {useContacts} from '../../../store';
-import {iteratorSymbol} from 'immer/dist/internal';
+import _ from 'lodash';
 
+const width = Dimensions.get('window').width
 const SideCharView = styled.View`
   position: absolute;
   z-index: 1;
@@ -38,7 +37,7 @@ const SideCharText = styled.Text`
 `;
 
 const Name = styled.Text`
-  font-weight: 500;
+  font-weight: 600;
   font-size: 16px;
   line-height: 16px;
   letter-spacing: 0.12px;
@@ -58,128 +57,134 @@ const PhoneNumber = styled.Text`
   line-height: 16px;
   letter-spacing: 0.12px;
   color: #828282;
+  margin-top: 5px;
 `;
 
-const WrapText = styled.View``;
+const WrapText = styled.View`
 
+
+`
 const WrapCard = styled.View`
   background-color: white;
   height: 80px;
   align-items: center;
   flex-direction: row;
-  border-bottom-color: gray;
-  border-bottom-witdh: 0.5px;
+  border-bottom-width: 0.5px;
+  border-bottom-color: #0000001A;
+
+`;
+
+const SectionHeader = styled.View`
+  opacity: 0.5;
+  background-color: #e0e0e0;
+  height: 36px;
+  justify-content: center;
+`;
+
+const SectionHeaderText = styled.Text`
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 16px;
+  text-align: left;
+  letter-spacing: 0.12px;
+  color: black;
+  margin: 0 16px;
 `;
 
 const char = [
-  'A',
-  'B',
-  'C',
-  'D',
-  'E',
-  'F',
-  'G',
-  'H',
-  'I',
-  'J',
-  'K',
-  'L',
-  'M',
-  'N',
-  'O',
-  'P',
-  'Q',
-  'R',
-  'S',
-  'T',
-  'U',
-  'V',
-  'W',
-  'X',
-  'Y',
-  'Z',
+    'A',
+    'B',
+    'C',
+    'D',
+    'E',
+    'F',
+    'G',
+    'H',
+    'I',
+    'J',
+    'K',
+    'L',
+    'M',
+    'N',
+    'O',
+    'P',
+    'Q',
+    'R',
+    'S',
+    'T',
+    'U',
+    'V',
+    'W',
+    'X',
+    'Y',
+    'Z',
 ];
+const groupBy = items => {
+    const _obj = _.groupBy(items, item => item.firstName[0]);
+    return Object.keys(_obj).map(item => {
+        return {
+            keyName: item,
+            data: _obj[item],
+        };
+    });
+};
 
 const Alphabet = () => {
-  const navigation = useNavigation<any>();
-  const contactList = useContacts();
-  const [searchText, setSearchText] = useState('');
-  const DATA = useSelector((state: any) => state.contactReducer);
-  console.log('DATA', DATA);
+    const navigation = useNavigation<any>();
+    const contactList = useContacts();
+    const [searchText, setSearchText] = useState('');
+    const contacts = useSelector((state: any) => state.contactReducer);
 
-  // const contactData = [];
-
-  // {
-  //   DATA.forEach(element => {
-  //     contactData.push(element);
-  //   });
-  //   console.log('contactData', contactData);
-  // }
-
-  const result = DATA.groupBy(item => {
-    return item.firstName;
-  });
-
-  console.log('result', result);
-
-  {
-    DATA.map(item => {
-      const fullName = item.firstName + ' ' + item.lastName;
-      const words = fullName.split(' ').filter(Boolean);
-      return words[words.length - 1][0];
-    });
-  }
-  const handleNavigation = useCallback(
-    ({item}) => {
-      navigation.navigate('ContactDetail', {
-        firstName: item.firstName,
-        lastName: item.lastName,
-        phone: item.phone,
-        avatar: item.avatar,
-        id: item.id,
-      });
-    },
-    [DATA],
-  );
-
-  const renderItem = ({item}) => {
-    return (
-      <View>
-        <TouchableOpacity onPress={() => handleNavigation({item})}>
-          <WrapCard>
-            <Avatar source={{uri: item.avatar}} />
-            <WrapText>
-              <Name>
-                {item.firstName} {item.lastName}
-              </Name>
-              <PhoneNumber>{item.phone}</PhoneNumber>
-            </WrapText>
-          </WrapCard>
-        </TouchableOpacity>
-      </View>
+    const handleNavigation = useCallback(
+        ({item}) => {
+            navigation.navigate('ContactDetail', {
+                firstName: item.firstName,
+                lastName: item.lastName,
+                phone: item.phone,
+                avatar: item.avatar,
+                id: item.id,
+            });
+        },
+        [contacts],
     );
-  };
 
-  return (
-    <View style={{flex: 1}}>
-      <SearchBar
-        placeholder="Tìm kiếm danh bạ"
-        onChangeText={text => {
-          setSearchText(text);
-        }}
-      />
+    const renderItem = ({item}) => {
+        return (
+            <ScrollView>
+                <TouchableOpacity onPress={() => handleNavigation({item})}>
+                    <WrapCard>
+                        <Avatar source={{uri: item.avatar}}/>
+                        <WrapText>
+                            <Name>
+                                {item.firstName} {item.lastName}
+                            </Name>
+                            <PhoneNumber>{item.phone}</PhoneNumber>
+                        </WrapText>
+                    </WrapCard>
+                </TouchableOpacity>
+            </ScrollView>
+        );
+    };
+    return (
+        <View style={{flex: 1}}>
+            <SearchBar
+                placeholder="Tìm kiếm danh bạ"
+                onChangeText={text => {
+                    setSearchText(text);
+                }}
+            />
 
-      <SideCharView>
-        <SideChar>
-          {char.map((char, key) => (
-            <SideCharBtn key={key}>
-              <SideCharText>{char}</SideCharText>
-            </SideCharBtn>
-          ))}
-        </SideChar>
-      </SideCharView>
+            <SideCharView>
+                <SideChar>
+                    {char.map((char, key) => (
+                        <SideCharBtn key={key}>
+                            <SideCharText>{char}</SideCharText>
+                        </SideCharBtn>
+                    ))}
+                </SideChar>
+            </SideCharView>
 
-      {/* <FlatList
+            {/* <FlatList
         data={DATA.filter(result =>
           result.firstName.toLowerCase().includes(searchText.toLowerCase()),
         )}
@@ -189,13 +194,20 @@ const Alphabet = () => {
         pagingEnabled={true}
       /> */}
 
-      <SectionList
-        sections={DATA}
-        keyExtractor={(item, index) => item.id.toString()}
-        renderItem={renderItem}
-      />
-    </View>
-  );
+            <SectionList
+                sections={groupBy(contacts).filter(result =>
+                    result.keyName.toLowerCase().includes(searchText.toLowerCase()),
+                )}
+                keyExtractor={(item, index) => item + index}
+                renderItem={renderItem}
+                renderSectionHeader={({section: {keyName}}) => (
+                    <SectionHeader>
+                        <SectionHeaderText>{keyName.toUpperCase()} </SectionHeaderText>
+                    </SectionHeader>
+                )}
+            />
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({});
