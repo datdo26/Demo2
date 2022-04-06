@@ -1,7 +1,11 @@
 import React, {useCallback} from 'react';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {
+  DrawerActions,
+  NavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
 import styled from 'styled-components/native';
-import statusBarHeight from "./statusBarHeight";
+import statusBarHeight from './statusBarHeight';
 
 const WrapView = styled.View`
   justify-content: space-between;
@@ -33,10 +37,9 @@ const Camera = styled.Image`
 
 const Header = ({title}: any) => {
   const navigation = useNavigation<any>();
-
   const _openDrawer = useCallback(() => {
-    navigation.openDrawer();
-  }, [navigation]);
+    navigation.dispatch(DrawerActions.openDrawer());
+  }, []);
 
   const _openAddContact = useCallback(() => {
     navigation.navigate('AddContactScreen');

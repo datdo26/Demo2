@@ -1,32 +1,9 @@
-import {Button, StyleSheet, View, StatusBar} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, Image, Text} from 'react-native';
 import React from 'react';
 import {createDrawerNavigator, DrawerItemList} from '@react-navigation/drawer';
 import MainTab from '../../nav/MainTab';
 import styled from 'styled-components/native';
 import statusBarHeight from '../../components/statusBarHeight';
-
-export function All({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <StatusBar hidden={false} />
-
-      <Button
-        onPress={() => navigation.navigate('All')}
-        title="Go to General"
-      />
-    </View>
-  );
-}
-
-export function General({navigation}) {
-  return (
-    <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-      <StatusBar hidden={false} />
-
-      <Button onPress={() => navigation.goBack()} title="Go back All" />
-    </View>
-  );
-}
 
 const Drawer = createDrawerNavigator();
 
@@ -42,13 +19,21 @@ const CustomDrawer = props => {
           </View>
         </DrawerContent>
       </DrawerSection>
+      <View>
+        <DrawerItemList {...props} />
+      </View>
+
       <AddCollectionSection>
         <AddBtn>
-          <AddImgBtn source={require('../../assets/ic_add_collection.png')} />
+          <TouchableOpacity>
+            <Text>▼</Text>
+          </TouchableOpacity>
+          <Collections>COLLECTIONS</Collections>
         </AddBtn>
-        <AddTitle>New collection</AddTitle>
+        <TouchableOpacity>
+          <Edit>Edit</Edit>
+        </TouchableOpacity>
       </AddCollectionSection>
-      <DrawerItemList {...props} />
     </Container>
   );
 };
@@ -58,9 +43,24 @@ const SideDrawer = () => {
     <Drawer.Navigator
       screenOptions={{headerShown: false}}
       drawerContent={props => <CustomDrawer {...props} />}>
-      <Drawer.Screen name="Home" component={MainTab} />
-      <Drawer.Screen name="All" component={All} />
-      <Drawer.Screen name="Notifications" component={General} />
+      <Drawer.Screen
+        name="New Collection"
+        component={MainTab}
+        options={{
+          drawerIcon: () => (
+            <Image
+              source={require('../../assets/ic_add_collection.png')}
+              style={{marginLeft: 22, width: 20, height: 20}}
+            />
+          ),
+          drawerLabelStyle: {
+            fontSize: 15,
+            letterSpacing: 0.12,
+            color: '#333333',
+          },
+          drawerActiveTintColor: '#fff',
+        }}
+      />
     </Drawer.Navigator>
   );
 };
@@ -79,6 +79,7 @@ const Name = styled.Text`
   text-align: center;
   letter-spacing: 0.12px;
   color: #ffffff;
+  font-weight: 500;
 `;
 
 const Phone = styled.Text`
@@ -93,12 +94,13 @@ const Avatar = styled.Image`
   width: 40px;
   height: 40px;
   border-radius: 100px;
+  margin-left: 20px;
 `;
 
 const DrawerSection = styled.View`
   display: flex;
   flex-direction: row;
-  padding: ${statusBarHeight}px 20px 12px 20px;
+  padding: ${statusBarHeight}px 20px 20px 20px;
   background-color: #f2a54a;
   align-items: center;
 `;
@@ -108,23 +110,34 @@ const DrawerContent = styled.View`
   align-items: center;
 `;
 
-const AddCollectionSection = styled.View`
-  display: flex;
-  flex-direction: row;
-  padding: 12.5px 10px;
-  align-items: center;
-`;
-const AddBtn = styled.TouchableOpacity`
-  padding: 10px;
-  margin-right: 15px;
-`;
-const AddImgBtn = styled.Image`
-  height: 20px;
-  width: 20px;
-`;
-const AddTitle = styled.Text`
-  font-weight: 400;
-  font-size: 15px;
+const Edit = styled.Text`
+  font-weight: 500;
+  font-size: 13px;
   line-height: 16px;
+  letter-spacing: 0.12px;
+  color: #f2a54a;
+  margin-right: 16px;
+`;
+
+const Collections = styled.Text`
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 16px;
+  letter-spacing: 0.12px;
+  text-transform: uppercase;
   color: #333333;
+  margin-left: 16px;
+`;
+
+const AddBtn = styled.View`
+  flex-direction: row;
+  margin: 0 14px;
+`;
+
+const AddCollectionSection = styled.View`
+  background-color: rgba(242, 165, 74, 0.1);
+  height: 44px;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
 `;

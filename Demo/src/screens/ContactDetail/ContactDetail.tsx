@@ -1,14 +1,42 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useCallback} from 'react';
-import Header from './Header';
 import styled from 'styled-components/native';
 import {remove} from '../../store';
 import {RawContact} from '../../store/types';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
-const Container = styled.SafeAreaView``;
+const Container = styled.SafeAreaView`
+  background-color: #fff;
+  flex: 1;
+`;
 
+const Wrapper = styled.View`
+  background-color: #fff;
+  margin-top: 16px;
+`;
+
+const WrapViewHeader = styled.View`
+  justify-content: space-between;
+  flex-direction: row;
+`;
+
+const ButtonBack = styled.TouchableOpacity``;
+
+const ButtonDone = styled.TouchableOpacity``;
+const Back = styled.Image`
+  margin-left: 16px;
+`;
+
+const TextHeader = styled.Text`
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  letter-spacing: -0.41px;
+  color: #f2a54a;
+  margin-right: 16px;
+`;
 const WrapView = styled.View``;
 const ButtonAvatar = styled.TouchableOpacity`
   width: 100px;
@@ -17,8 +45,8 @@ const ButtonAvatar = styled.TouchableOpacity`
   align-self: center;
 `;
 const Avatar = styled.Image`
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   border-radius: 100px;
   align-self: center;
 `;
@@ -72,13 +100,13 @@ const TextButtonMail = styled.Text`
 `;
 
 const ButtonPhone = styled(Button)`
+  margin-top: 3px;
   align-items: flex-start;
 `;
 
 const PhoneNumber = styled.Text`
   font-weight: 400;
-  font-size: 17px;
-  line-height: 22px;
+  font-size: 19px;
   letter-spacing: -0.41px;
   color: #2f80ed;
 `;
@@ -88,20 +116,17 @@ const WrapInput = styled.View`
   margin-top: 24px;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
-  
 `;
 
 const FieldName = styled.Text`
   font-style: normal;
-  font-weight: 400;
-  font-size: 13px;
-  line-height: 22px;
+  font-size: 15px;
   letter-spacing: -0.41px;
   color: #333333;
 `;
 
 const FieldNameMsg = styled(FieldName)`
-  font-size: 15px;
+  font-size: 17px;
 `;
 const ButtonMsg = styled.TouchableOpacity``;
 
@@ -109,11 +134,29 @@ const FieldNameDelete = styled(FieldNameMsg)`
   color: #ff4a4a;
 `;
 
+const WrapInputPhone = styled(WrapInput)``;
+
 const ContactDetail = ({contact}: {contact: RawContact}) => {
   const route = useRoute();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
+  const contacts = useSelector((state: any) => state.contactReducer);
 
+  const handleNavigation = useCallback(
+    ({item}) => {
+      navigation.navigate('AddContactScreen', {
+        firstName: item.firstName,
+        lastName: item.lastName,
+        phone: item.phone,
+        avatar: item.avatar,
+        id: item.id,
+        email: item.email,
+        address: item.address,
+        birthday: item.birthday,
+      });
+    },
+    [contacts],
+  );
   const deleteItem = useCallback(() => {
     navigation.goBack();
     dispatch(remove(route.params?.id));
@@ -121,10 +164,20 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
 
   return (
     <Container>
-      <Header />
+      <Wrapper>
+        <WrapViewHeader>
+          <ButtonBack onPress={() => navigation.goBack()}>
+            <Back source={require('../../assets/ic_back.png')} />
+          </ButtonBack>
+          <ButtonDone onPress={() => handleNavigation({item})}>
+            <TextHeader>Sửa</TextHeader>
+          </ButtonDone>
+        </WrapViewHeader>
+      </Wrapper>
       <WrapView>
-        <Avatar source={{uri: route.params.avatar}} />
-        {/* {console.log('route.params.avatar', route.params.avatar)} */}
+        <Avatar
+          source={{uri: route.params.avatar ? route.params.avatar : null}}
+        />
       </WrapView>
       <WrapView>
         <Name>
@@ -151,12 +204,12 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
         </View>
       </WrapButton>
 
-      <WrapInput>
+      <WrapInputPhone>
         <FieldName>Điện thoại</FieldName>
         <ButtonPhone>
           <PhoneNumber>{route.params.phone}</PhoneNumber>
         </ButtonPhone>
-      </WrapInput>
+      </WrapInputPhone>
       <WrapInput>
         <FieldName>Ghi Chú</FieldName>
         <Text>{route.params.id}</Text>
