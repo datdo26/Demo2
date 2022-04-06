@@ -164,7 +164,11 @@ const AddContactScreen = () => {
       compressImageQuality: 0.7,
     }).then(image => {
       setImage(image.path);
-    });
+    }).catch(error => {
+      if(error.code === 'E_PICKER_CANCELLED'){
+        return false
+      }
+    })
   };
 
   const onCancel = useCallback(() => {
@@ -317,7 +321,7 @@ const AddContactScreen = () => {
                     setDate(date);
                     setParams({
                       ...params,
-                      birthday: date,
+                      birthday: date.toDateString(),
                     });
                   }}
                   onCancel={() => {
