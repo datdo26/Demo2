@@ -1,6 +1,6 @@
 import {createSlice, configureStore, PayloadAction} from '@reduxjs/toolkit';
 import {RawContact} from './types';
-import {useSelector} from 'react-redux';
+import {RootStateOrAny, useSelector} from 'react-redux';
 
 const initContacts: RawContact[] = [];
 
@@ -43,5 +43,5 @@ export const removeContactActions = (_contact: RawContact) => {
 };
 
 export const useContacts = () => {
-  return useSelector(state => state.contactReducer);
+  return useSelector((state: RootStateOrAny) => state.contactReducer);
 };

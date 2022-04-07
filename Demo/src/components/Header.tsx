@@ -1,11 +1,6 @@
 import React, {useCallback} from 'react';
-import {
-  DrawerActions,
-  NavigationProp,
-  useNavigation,
-} from '@react-navigation/native';
+import {DrawerActions, useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
-import statusBarHeight from './statusBarHeight';
 
 const WrapView = styled.View`
   justify-content: space-between;

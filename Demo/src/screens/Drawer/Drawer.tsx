@@ -48,9 +48,8 @@ const SideDrawer = () => {
         component={MainTab}
         options={{
           drawerIcon: () => (
-            <Image
+            <DrawerIcon
               source={require('../../assets/ic_add_collection.png')}
-              style={{marginLeft: 22, width: 20, height: 20}}
             />
           ),
           drawerLabelStyle: {
@@ -108,6 +107,11 @@ const DrawerSection = styled.View`
 const DrawerContent = styled.View`
   flex-direction: row;
   align-items: center;
+`;
+
+const DrawerIcon = styled.Image`
+  width: 20px;
+  height: 20px;
 `;
 
 const Edit = styled.Text`

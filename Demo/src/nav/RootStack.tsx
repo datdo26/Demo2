@@ -31,15 +31,16 @@ const RootStack = () => {
           name="MainTab"
           component={MainTab}
           options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="ContactDetail"
-          component={ContactDetail}
-          options={{headerShown: false}}
+          key={'key-123'}
         />
         <Stack.Screen
           name="AddContactScreen"
           component={AddContactScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ContactDetail"
+          component={ContactDetail}
           options={{headerShown: false}}
         />
         <Stack.Screen

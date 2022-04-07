@@ -1,4 +1,4 @@
-import {StyleSheet, Image, KeyboardAvoidingView, Platform} from 'react-native';
+import {StyleSheet, Image} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ContactScreen from '../screens/Contact/ContactScreen';
@@ -15,9 +15,9 @@ const MainTab = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarShowLabel: true,
+        tabBarShowLabel: false,
         tabBarStyle: {
-          height: 70,
+          height: 60,
           backgroundColor: '#F2A54A',
         },
         tabBarHideOnKeyboard: true,

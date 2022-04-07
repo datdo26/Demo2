@@ -1,10 +1,10 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {remove} from '../../store';
 import {RawContact} from '../../store/types';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 
 const Container = styled.SafeAreaView`
   background-color: #fff;
@@ -140,28 +140,22 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
   const route = useRoute();
   const dispatch = useDispatch();
   const navigation = useNavigation<any>();
-  const contacts = useSelector((state: any) => state.contactReducer);
-
-  const handleNavigation = useCallback(
-    ({item}) => {
-      navigation.navigate('AddContactScreen', {
-        firstName: item.firstName,
-        lastName: item.lastName,
-        phone: item.phone,
-        avatar: item.avatar,
-        id: item.id,
-        email: item.email,
-        address: item.address,
-        birthday: item.birthday,
-      });
-    },
-    [contacts],
-  );
+  const [title, setTitle] = useState(false);
   const deleteItem = useCallback(() => {
     navigation.goBack();
     dispatch(remove(route.params?.id));
   }, [remove]);
 
+  const onEdit = useCallback(() => {
+    navigation.push('AddContactScreen', {
+      firstName: route.params.firstName,
+      lastName: route.params.lastName,
+      phone: route.params.phone,
+      address: route.params.address,
+      birthday: route.params.birthday,
+    });
+    setTitle(true);
+  }, []);
   return (
     <Container>
       <Wrapper>
@@ -169,20 +163,20 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
           <ButtonBack onPress={() => navigation.goBack()}>
             <Back source={require('../../assets/ic_back.png')} />
           </ButtonBack>
-          <ButtonDone onPress={() => handleNavigation({item})}>
+          <ButtonDone onPress={() => onEdit()}>
             <TextHeader>Sửa</TextHeader>
           </ButtonDone>
         </WrapViewHeader>
       </Wrapper>
       <WrapView>
-        <Avatar
-          source={{uri: route.params.avatar ? route.params.avatar : null}}
-        />
+        <Avatar source={{uri: route.params.avatar}} />
       </WrapView>
+
       <WrapView>
         <Name>
           {route.params.firstName} {route.params.lastName}
         </Name>
+
         <Job>UI/UX Design</Job>
       </WrapView>
       <WrapButton>
@@ -203,7 +197,6 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
           <TextButtonMail>Gửi mail</TextButtonMail>
         </View>
       </WrapButton>
-
       <WrapInputPhone>
         <FieldName>Điện thoại</FieldName>
         <ButtonPhone>

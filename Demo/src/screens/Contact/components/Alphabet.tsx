@@ -5,20 +5,15 @@ import {
   SectionList,
   Dimensions,
   ScrollView,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
-// @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import SearchBar from 'react-native-search-bar';
-import {useContacts} from '../../../store';
 import _ from 'lodash';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
-const width = Dimensions.get('window').width;
 const SideCharView = styled.View`
   position: absolute;
   z-index: 1;
