@@ -19,6 +19,7 @@ const Wrapper = styled.View`
 const WrapViewHeader = styled.View`
   justify-content: space-between;
   flex-direction: row;
+  margin-top: 10px;
 `;
 
 const ButtonBack = styled.TouchableOpacity``;
@@ -141,6 +142,7 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation<any>();
   const [title, setTitle] = useState(false);
+  const [image, setImage] = useState<any>(true);
   const deleteItem = useCallback(() => {
     navigation.goBack();
     dispatch(remove(route.params?.id));
@@ -153,6 +155,10 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
       phone: route.params.phone,
       address: route.params.address,
       birthday: route.params.birthday,
+      email: route.params.email,
+      company: route.params.company,
+      avatar: route.params.avatar,
+      id: route.params.id,
     });
     setTitle(true);
   }, []);
@@ -169,7 +175,13 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
         </WrapViewHeader>
       </Wrapper>
       <WrapView>
-        <Avatar source={{uri: route.params.avatar}} />
+        <Avatar
+          source={
+            image
+              ? {uri: route.params.avatar}
+              : require('../../assets/ic_profile.png')
+          }
+        />
       </WrapView>
 
       <WrapView>

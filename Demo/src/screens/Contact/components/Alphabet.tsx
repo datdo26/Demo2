@@ -13,6 +13,7 @@ import {useSelector} from 'react-redux';
 import SearchBar from 'react-native-search-bar';
 import _ from 'lodash';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import {useContacts} from '../../../store';
 
 const SideCharView = styled.View`
   position: absolute;
@@ -45,8 +46,8 @@ const Name = styled.Text`
 `;
 
 const Avatar = styled.Image`
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   margin-horizontal: 16px;
   border-radius: 100px;
 `;
@@ -128,6 +129,7 @@ const groupBy = items => {
 const Alphabet = () => {
   const navigation = useNavigation<any>();
   const [searchText, setSearchText] = useState('');
+  const [image, setImage] = useState<any>(Boolean);
   const contacts = useSelector((state: any) => state.contactReducer);
 
   const handleNavigation = useCallback(
@@ -141,6 +143,7 @@ const Alphabet = () => {
         email: item.email,
         address: item.address,
         birthday: item.birthday,
+        company: item.company,
       });
     },
     [contacts],
@@ -151,7 +154,13 @@ const Alphabet = () => {
       <ScrollView>
         <TouchableOpacity onPress={() => handleNavigation({item})}>
           <WrapCard>
-            <Avatar source={{uri: item.avatar}} />
+            <Avatar
+              source={
+                image
+                  ? require('../../../assets/ic_profile.png')
+                  : {uri: item.avatar}
+              }
+            />
             <WrapText>
               <Name>
                 {item.firstName} {item.lastName}

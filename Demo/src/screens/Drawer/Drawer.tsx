@@ -1,13 +1,29 @@
 import {StyleSheet, View, TouchableOpacity, Image, Text} from 'react-native';
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {createDrawerNavigator, DrawerItemList} from '@react-navigation/drawer';
 import MainTab from '../../nav/MainTab';
 import styled from 'styled-components/native';
 import statusBarHeight from '../../components/statusBarHeight';
+import ItemDropDown from './ItemDropDown';
 
 const Drawer = createDrawerNavigator();
 
 const CustomDrawer = props => {
+  const [isActive, setIsActive] = useState(false);
+  const BtnCollections = useCallback(() => {
+    setIsActive(!isActive);
+  }, [isActive]);
+
+  const OpenItem = () => {
+    return (
+      <View>
+        <ItemDropDown title={'All'} />
+        <ItemDropDown title={'General'} />
+        <ItemDropDown title={'Investors'} />
+        <ItemDropDown title={'Lead'} />
+      </View>
+    );
+  };
   return (
     <Container>
       <DrawerSection>
@@ -25,8 +41,8 @@ const CustomDrawer = props => {
 
       <AddCollectionSection>
         <AddBtn>
-          <TouchableOpacity>
-            <Text>▼</Text>
+          <TouchableOpacity onPress={BtnCollections}>
+            {isActive ? <Text>▼</Text> : <Text>▶︎</Text>}
           </TouchableOpacity>
           <Collections>COLLECTIONS</Collections>
         </AddBtn>
@@ -34,6 +50,7 @@ const CustomDrawer = props => {
           <Edit>Edit</Edit>
         </TouchableOpacity>
       </AddCollectionSection>
+      {isActive ? <OpenItem /> : null}
     </Container>
   );
 };
@@ -134,8 +151,8 @@ const Collections = styled.Text`
 `;
 
 const AddBtn = styled.View`
+  margin: 0 16px;
   flex-direction: row;
-  margin: 0 14px;
 `;
 
 const AddCollectionSection = styled.View`

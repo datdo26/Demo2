@@ -10,7 +10,7 @@ import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
-import {updateContactActions, useContacts} from '../../store';
+import {updateContactActions} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-date-picker';
 import {isValidEmail} from '../../utilies/Validations';
@@ -34,13 +34,18 @@ const AddContactScreen = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [errorEmail, setErrorEmail] = useState('');
+  const [value, setvalue] = useState(() => defaultValue);
   const route = useRoute();
-  const [value, setValue] = useState('');
+
+  const setParamCustom = useCallback((key: string, value: any) => {
+    setvalue(params => ({...params, [key]: value}));
+  }, []);
+
   const onDone = useCallback(() => {
     updateContactActions(
-      params?.id
-        ? {...params, avatar: image}
-        : {...params, id: `${new Date().getTime()}`, avatar: image},
+      value?.id
+        ? {...value, avatar: image}
+        : {...value, id: `${new Date().getTime()}`, avatar: image},
     );
     setTimeout(() => {
       navigation.goBack();
@@ -66,21 +71,22 @@ const AddContactScreen = () => {
       });
   };
   useEffect(() => {
-    if (!route.params) {
+    if (!value) {
       return;
     }
     setParams({
-      id: `${route.params.id}`,
-      firstName: `${route.params.firstName}`,
-      lastName: `${route.params.lastName}`,
-      phone: `${route.params.phone}`,
-      address: `${route.params.address}`,
-      birthday: `${route.params.birthday}`,
-      avatar: `${route.params.avatar}`,
-      company: `${route.params.company}`,
-      email: `${route.params.email}`,
+      id: `${value.id}`,
+      firstName: `${value.firstName}`,
+      lastName: `${value.lastName}`,
+      phone: `${value.phone}`,
+      address: `${value.address}`,
+      birthday: `${value.birthday}`,
+      avatar: `${value.avatar}`,
+      company: `${value.company}`,
+      email: `${value.email}`,
     });
   }, [route.params]);
+
   const onCancel = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
@@ -101,7 +107,7 @@ const AddContactScreen = () => {
         <AvatarInput
           source={require('../../assets/img_avatar.png')}
           resizeMode={'cover'}>
-          <Avatar source={{uri: image ? image : null}} />
+          <Avatar source={image ? {uri: image} : null} />
         </AvatarInput>
       </AvatarBtn>
       <KeyboardAvoidingView
@@ -110,37 +116,28 @@ const AddContactScreen = () => {
         <ScrollView>
           <Section2>
             <WrapInputText>
-              <LastName
+              <FirstName
                 placeholder="Họ"
-                value={params?.firstName}
+                value={value?.firstName}
                 onChangeText={value => {
-                  setParams({
-                    ...params,
-                    firstName: value,
-                  });
+                  setParamCustom('firstName', value);
                 }}
                 returnKeyType="done"
               />
-              <FirstName
+              <LastName
                 placeholder="Tên"
-                value={params?.lastName}
+                value={value?.lastName}
                 onChangeText={value => {
-                  setParams({
-                    ...params,
-                    lastName: value,
-                  });
+                  setParamCustom('lastName', value);
                 }}
                 returnKeyType="done"
               />
 
               <CompanyName
                 placeholder="Công ty"
-                value={params?.company}
+                value={value?.company}
                 onChangeText={value => {
-                  setParams({
-                    ...params,
-                    company: value,
-                  });
+                  setParamCustom('company', value);
                 }}
                 returnKeyType="done"
               />
@@ -154,12 +151,9 @@ const AddContactScreen = () => {
               </Button>
               <PhoneNumber
                 placeholder="Thêm số điện thoại"
-                value={params?.phone}
+                value={value?.phone}
                 onChangeText={value => {
-                  setParams({
-                    ...params,
-                    phone: value,
-                  });
+                  setParamCustom('phone', value);
                 }}
                 returnKeyType="done"
                 keyboardType="phone-pad"
@@ -173,17 +167,14 @@ const AddContactScreen = () => {
               </Button>
               <Email
                 placeholder="Thêm email"
-                value={params?.email}
+                value={value?.email}
                 onChangeText={value => {
                   setErrorEmail(
                     isValidEmail(value) == true
                       ? ''
                       : 'Email not in correct format',
                   );
-                  setParams({
-                    ...params,
-                    email: value,
-                  });
+                  setParamCustom('email', value);
                 }}
                 returnKeyType="done"
                 keyboardType="email-address"
@@ -201,12 +192,9 @@ const AddContactScreen = () => {
               </Button>
               <Address
                 placeholder={'Thêm địa chỉ'}
-                value={params.address}
+                value={value?.address}
                 onChangeText={value => {
-                  setParams({
-                    ...params,
-                    address: value,
-                  });
+                  setParamCustom('address', value);
                 }}
                 returnKeyType="done"
                 placeholderTextColor={'black'}
@@ -228,10 +216,7 @@ const AddContactScreen = () => {
                   onConfirm={date => {
                     setOpen(false);
                     setDate(date);
-                    setParams({
-                      ...params,
-                      birthday: date.toDateString(),
-                    });
+                    setParamCustom('birthday', date.toDateString());
                   }}
                   onCancel={() => {
                     setOpen(false);
@@ -265,7 +250,7 @@ const KeyboardAvoidingView = styled.KeyboardAvoidingView`
 const WrapButton = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin: 0 16px;
+  margin: 16px;
 `;
 
 const Button = styled.TouchableOpacity`
