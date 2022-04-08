@@ -5,16 +5,12 @@ import styled from 'styled-components/native';
 const ItemDropDown = ({title}) => {
   return (
     <TouchableOpacity>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
+      <WrapView>
         <Icon source={require('../../assets/ic_item.png')} />
         <View>
           <Title>{title}</Title>
         </View>
-      </View>
+      </WrapView>
     </TouchableOpacity>
   );
 };
@@ -35,4 +31,9 @@ const Title = styled.Text`
   line-height: 16px;
   letter-spacing: 0.12px;
   color: #333333;
+`;
+
+const WrapView = styled.View`
+  flex-direction: row;
+  align-items: center;
 `;

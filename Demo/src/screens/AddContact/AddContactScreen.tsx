@@ -8,7 +8,12 @@ import {
 } from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  ParamListBase,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
 import {updateContactActions} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -35,11 +40,12 @@ const AddContactScreen = () => {
   const [open, setOpen] = useState(false);
   const [errorEmail, setErrorEmail] = useState('');
   const [value, setvalue] = useState(() => defaultValue);
-  const route = useRoute();
+  const route = useRoute<any>();
 
   const setParamCustom = useCallback((key: string, value: any) => {
     setvalue(params => ({...params, [key]: value}));
   }, []);
+  console.log(value);
 
   const onDone = useCallback(() => {
     updateContactActions(
@@ -53,6 +59,20 @@ const AddContactScreen = () => {
     setParams(defaultValue);
     setImage('');
   }, [params, image]);
+
+  useEffect(() => {
+    setParams({
+      id: value.id,
+      firstName: value.firstName,
+      lastName: value.lastName,
+      phone: value.phone,
+      company: value.company,
+      email: value.email,
+      address: value.address,
+      birthday: value.birthday,
+      avatar: value.avatar,
+    });
+  }, [route.params]);
 
   const chooseFromLibrary = () => {
     ImagePicker.openPicker({
@@ -85,7 +105,7 @@ const AddContactScreen = () => {
       company: `${value.company}`,
       email: `${value.email}`,
     });
-  }, [route.params]);
+  }, [value]);
 
   const onCancel = useCallback(() => {
     navigation.goBack();
