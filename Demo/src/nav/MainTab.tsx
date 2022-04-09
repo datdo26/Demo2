@@ -1,8 +1,11 @@
 import {StyleSheet, Image} from 'react-native';
+// @ts-ignore
+
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import ContactScreen from '../screens/Contact/ContactScreen';
 import RecentScreen from '../screens/Recent/RecentScreen';
+import {IC_CONTACT, IC_RECENT} from "../assets";
 
 export type MainTabParamLists = {
   ContactScreen: undefined;
@@ -28,7 +31,7 @@ const MainTab = () => {
         options={{
           headerShown: false,
           tabBarIcon: () => (
-            <Image source={require('../assets/contact/ic_contact.png')} />
+            <Image source={IC_CONTACT} />
           ),
           tabBarInactiveTintColor: '#DADADA',
           tabBarActiveTintColor: '#fff',
@@ -41,7 +44,7 @@ const MainTab = () => {
         options={{
           headerShown: false,
           tabBarIcon: () => (
-            <Image source={require('../assets/recent/ic_recent.png')} />
+            <Image source={IC_RECENT} />
           ),
           tabBarInactiveTintColor: '#DADADA',
           tabBarActiveTintColor: '#fff',

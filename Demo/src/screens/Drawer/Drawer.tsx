@@ -1,10 +1,12 @@
 import {StyleSheet, View, TouchableOpacity, Image, Text} from 'react-native';
+// @ts-ignore
 import React, {useCallback, useState} from 'react';
 import {createDrawerNavigator, DrawerItemList} from '@react-navigation/drawer';
 import MainTab from '../../nav/MainTab';
 import styled from 'styled-components/native';
 import statusBarHeight from '../../components/statusBarHeight';
 import ItemDropDown from './ItemDropDown';
+import {AVATAR, IC_ADD_COLLECTION} from "../../assets";
 
 const Drawer = createDrawerNavigator();
 
@@ -28,7 +30,7 @@ const CustomDrawer = props => {
     <Container>
       <DrawerSection>
         <DrawerContent>
-          <Avatar source={require('../../assets/avatar.png')} />
+          <Avatar source={AVATAR} />
           <View>
             <Name>Nguyến Tiến Nam</Name>
             <Phone>0123456789</Phone>
@@ -66,7 +68,7 @@ const SideDrawer = () => {
         options={{
           drawerIcon: () => (
             <DrawerIcon
-              source={require('../../assets/ic_add_collection.png')}
+              source={IC_ADD_COLLECTION}
             />
           ),
           drawerLabelStyle: {

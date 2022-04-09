@@ -1,10 +1,14 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React, {useCallback, useState} from 'react';
+// @ts-ignore
+
+
 import styled from 'styled-components/native';
 import {remove} from '../../store';
 import {RawContact} from '../../store/types';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
+import {IC_BACK, IC_CALL, IC_EMAIL, IC_MSG, IC_PROFILE, IC_VID_CALL} from "../../assets";
 
 const ContactDetail = ({contact}: {contact: RawContact}) => {
   const route = useRoute();
@@ -37,7 +41,7 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
         <Wrapper>
           <WrapViewHeader>
             <ButtonBack onPress={() => navigation.goBack()}>
-              <Back source={require('../../assets/ic_back.png')} />
+              <Back source={IC_BACK} />
             </ButtonBack>
             <ButtonDone onPress={() => onEdit()}>
               <TextHeader>Sửa</TextHeader>
@@ -49,7 +53,7 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
             source={
               image
                 ? {uri: route.params.avatar}
-                : require('../../assets/ic_profile.png')
+                : IC_PROFILE
             }
           />
         </WrapView>
@@ -63,19 +67,19 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
 
         <WrapButton>
           <Button>
-            <IconButton source={require('../../assets/ic_call.png')} />
+            <IconButton source={IC_CALL} />
             <TextButton>Nhấn gọi điện</TextButton>
           </Button>
           <Button>
-            <IconButton source={require('../../assets/ic_msg.png')} />
+            <IconButton source={IC_MSG} />
             <TextButton>Nhắn tin</TextButton>
           </Button>
           <Button>
-            <IconButton source={require('../../assets/ic_vidcall.png')} />
+            <IconButton source={IC_VID_CALL} />
             <TextButton>Facetime</TextButton>
           </Button>
           <View>
-            <IconButton source={require('../../assets/ic_email.png')} />
+            <IconButton source={IC_EMAIL} />
             <TextButtonMail>Gửi mail</TextButtonMail>
           </View>
         </WrapButton>

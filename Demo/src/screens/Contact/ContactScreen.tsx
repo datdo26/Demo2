@@ -1,4 +1,5 @@
 import {StatusBar} from 'react-native';
+// @ts-ignore
 import React from 'react';
 import Header from '../../components/Header';
 import Alphabet from './components/Alphabet';

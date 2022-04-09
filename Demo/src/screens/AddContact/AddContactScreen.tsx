@@ -6,6 +6,7 @@ import {
     View,
     Platform,
 } from 'react-native';
+// @ts-ignore
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -14,6 +15,7 @@ import {updateContactActions} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-date-picker';
 import {isValidEmail} from '../../utilies/Validations';
+import {IC_ADD, IMG_AVTAR} from "../../assets";
 
 export const defaultValue = {
     id: '',
@@ -106,7 +108,7 @@ const AddContactScreen = () => {
             </Section1>
             <AvatarBtn onPress={chooseFromLibrary}>
                 <AvatarInput
-                    source={require('../../assets/img_avatar.png')}
+                    source={IMG_AVTAR}
                     resizeMode={'cover'}>
                     <Avatar source={{uri: image ? image : null}}/>
                 </AvatarInput>
@@ -148,7 +150,7 @@ const AddContactScreen = () => {
                     <Section3>
                         <WrapInputDetail>
                             <Button>
-                                <AddButton source={require('../../assets/ic_add.png')}/>
+                                <AddButton source={IC_ADD}/>
                             </Button>
                             <PhoneNumber
                                 placeholder="Thêm số điện thoại"
@@ -164,7 +166,7 @@ const AddContactScreen = () => {
 
                         <WrapInputDetail>
                             <Button>
-                                <AddButton source={require('../../assets/ic_add.png')}/>
+                                <AddButton source={IC_ADD}/>
                             </Button>
                             <Email
                                 placeholder="Thêm email"
@@ -189,7 +191,7 @@ const AddContactScreen = () => {
                         </View>
                         <WrapInputDetail>
                             <Button>
-                                <AddButton source={require('../../assets/ic_add.png')}/>
+                                <AddButton source={IC_ADD}/>
                             </Button>
                             <Address
                                 placeholder={'Thêm địa chỉ'}
@@ -204,7 +206,7 @@ const AddContactScreen = () => {
                         <TouchableOpacity onPress={() => setOpen(true)}>
                             <WrapInputDetail>
                                 <Button onPress={() => setOpen(true)}>
-                                    <AddButton source={require('../../assets/ic_add.png')}/>
+                                    <AddButton source={IC_ADD}/>
                                 </Button>
 
                                 <Birthday> Ngày sinh: {date.toDateString()}</Birthday>

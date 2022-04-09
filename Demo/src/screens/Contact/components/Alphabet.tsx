@@ -3,17 +3,19 @@ import {
   TouchableOpacity,
   StyleSheet,
   SectionList,
-  Dimensions,
   ScrollView,
 } from 'react-native';
+// @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import SearchBar from 'react-native-search-bar';
+// @ts-ignore
 import _ from 'lodash';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {useContacts} from '../../../store';
+import {IC_PROFILE} from "../../../assets";
 
 const SideCharView = styled.View`
   position: absolute;
@@ -157,7 +159,7 @@ const Alphabet = () => {
             <Avatar
               source={
                 image
-                  ? require('../../../assets/ic_profile.png')
+                  ? IC_PROFILE
                   : {uri: item.avatar}
               }
             />

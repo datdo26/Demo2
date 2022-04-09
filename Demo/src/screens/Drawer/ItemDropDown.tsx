@@ -1,12 +1,14 @@
 import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
+// @ts-ignore
 import React from 'react';
 import styled from 'styled-components/native';
+import {IC_ITEM} from "../../assets";
 
 const ItemDropDown = ({title}) => {
   return (
     <TouchableOpacity>
       <WrapView>
-        <Icon source={require('../../assets/ic_item.png')} />
+        <Icon source={IC_ITEM} />
         <View>
           <Title>{title}</Title>
         </View>

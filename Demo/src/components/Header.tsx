@@ -1,6 +1,9 @@
+
+// @ts-ignore
 import React, {useCallback} from 'react';
 import {DrawerActions, useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
+import {IC_CAMERA, IC_MORE} from "../assets";
 
 const WrapView = styled.View`
   justify-content: space-between;
@@ -43,11 +46,11 @@ const Header = ({title}: any) => {
   return (
     <WrapView>
       <Button onPress={_openDrawer}>
-        <More source={require('../assets/contact/more.png')} />
+        <More source={IC_MORE} />
       </Button>
       <Title>{title}</Title>
       <Button onPress={_openAddContact}>
-        <Camera source={require('../assets/ic_camera.png')} />
+        <Camera source={IC_CAMERA} />
       </Button>
     </WrapView>
   );

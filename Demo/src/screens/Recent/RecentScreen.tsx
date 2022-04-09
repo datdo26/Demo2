@@ -1,7 +1,9 @@
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
+// @ts-ignore
 import React from 'react';
 import Header from '../../components/Header';
 import styled from 'styled-components/native';
+import {IC_INFO_OUTLINE, IC_PHONE} from "../../assets";
 
 const SafeAreaView = styled.SafeAreaView`
   flex: 1;
@@ -59,7 +61,7 @@ const RecentScreen = () => {
         <View>
           <TouchableOpacity>
             <WrapCard>
-              <IconLeft source={require('../../assets/ic_phone.png')} />
+              <IconLeft source={IC_PHONE} />
               <WrapInfo>
                 <Name>Nguyễn Tiến Nam</Name>
                 <Phone>0977272123</Phone>
@@ -70,7 +72,7 @@ const RecentScreen = () => {
               </WrapDate>
               <WrapIconRight>
                 <IconRight
-                  source={require('../../assets/ic_info_outline.png')}
+                  source={IC_INFO_OUTLINE}
                 />
               </WrapIconRight>
             </WrapCard>
