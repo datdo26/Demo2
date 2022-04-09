@@ -16,7 +16,6 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
     navigation.goBack();
     dispatch(remove(route.params?.id));
   }, [remove]);
-
   const onEdit = useCallback(() => {
     navigation.push('AddContactScreen', {
       firstName: route.params.firstName,
@@ -33,51 +32,55 @@ const ContactDetail = ({contact}: {contact: RawContact}) => {
 
   return (
     <Container>
-      <Wrapper>
-        <WrapViewHeader>
-          <ButtonBack onPress={() => navigation.goBack()}>
-            <Back source={require('../../assets/ic_back.png')} />
-          </ButtonBack>
-          <ButtonDone onPress={() => onEdit()}>
-            <TextHeader>Sửa</TextHeader>
-          </ButtonDone>
-        </WrapViewHeader>
-      </Wrapper>
-      <WrapView>
-        <Avatar
-          source={
-            image
-              ? {uri: route.params.avatar}
-              : require('../../assets/ic_profile.png')
-          }
-        />
-      </WrapView>
+      <View>
+        <Background />
+        <Wrapper>
+          <WrapViewHeader>
+            <ButtonBack onPress={() => navigation.goBack()}>
+              <Back source={require('../../assets/ic_back.png')} />
+            </ButtonBack>
+            <ButtonDone onPress={() => onEdit()}>
+              <TextHeader>Sửa</TextHeader>
+            </ButtonDone>
+          </WrapViewHeader>
+        </Wrapper>
+        <WrapView>
+          <Avatar
+            source={
+              image
+                ? {uri: route.params.avatar}
+                : require('../../assets/ic_profile.png')
+            }
+          />
+        </WrapView>
 
-      <WrapView>
-        <Name>
-          {route.params.firstName} {route.params.lastName}
-        </Name>
-        <Job>UI/UX Design</Job>
-      </WrapView>
+        <WrapView>
+          <Name>
+             {route.params.firstName} {route.params.lastName}
+          </Name>
+          <Job>UI/UX Design</Job>
+        </WrapView>
 
-      <WrapButton>
-        <Button>
-          <IconButton source={require('../../assets/ic_call.png')} />
-          <TextButton>Nhấn gọi điện</TextButton>
-        </Button>
-        <Button>
-          <IconButton source={require('../../assets/ic_msg.png')} />
-          <TextButton>Nhắn tin</TextButton>
-        </Button>
-        <Button>
-          <IconButton source={require('../../assets/ic_vidcall.png')} />
-          <TextButton>Facetime</TextButton>
-        </Button>
-        <View>
-          <IconButton source={require('../../assets/ic_email.png')} />
-          <TextButtonMail>Gửi mail</TextButtonMail>
-        </View>
-      </WrapButton>
+        <WrapButton>
+          <Button>
+            <IconButton source={require('../../assets/ic_call.png')} />
+            <TextButton>Nhấn gọi điện</TextButton>
+          </Button>
+          <Button>
+            <IconButton source={require('../../assets/ic_msg.png')} />
+            <TextButton>Nhắn tin</TextButton>
+          </Button>
+          <Button>
+            <IconButton source={require('../../assets/ic_vidcall.png')} />
+            <TextButton>Facetime</TextButton>
+          </Button>
+          <View>
+            <IconButton source={require('../../assets/ic_email.png')} />
+            <TextButtonMail>Gửi mail</TextButtonMail>
+          </View>
+        </WrapButton>
+      </View>
+
       <WrapInputPhone>
         <FieldName>Điện thoại</FieldName>
         <ButtonPhone>
@@ -114,8 +117,17 @@ const Container = styled.SafeAreaView`
   flex: 1;
 `;
 
+const Background = styled.View`
+  background: #f2a54a;
+  opacity: 0.05;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+`;
+
 const Wrapper = styled.View`
-  background-color: #fff;
   margin-top: 16px;
 `;
 
@@ -142,12 +154,7 @@ const TextHeader = styled.Text`
   margin-right: 16px;
 `;
 const WrapView = styled.View``;
-const ButtonAvatar = styled.TouchableOpacity`
-  width: 100px;
-  height: 100px;
-  border-radius: 100px;
-  align-self: center;
-`;
+
 const Avatar = styled.Image`
   width: 110px;
   height: 110px;
@@ -232,7 +239,9 @@ const FieldName = styled.Text`
 const FieldNameMsg = styled(FieldName)`
   font-size: 17px;
 `;
-const ButtonMsg = styled.TouchableOpacity``;
+const ButtonMsg = styled.TouchableOpacity`
+  margin-bottom: 10px;
+`;
 
 const FieldNameDelete = styled(FieldNameMsg)`
   color: #ff4a4a;
