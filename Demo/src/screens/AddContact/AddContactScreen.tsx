@@ -1,10 +1,10 @@
 import {
-    StyleSheet,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
-    Platform,
+  StyleSheet,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+  Platform,
 } from 'react-native';
 // @ts-ignore
 import React, {useCallback, useEffect, useState} from 'react';
@@ -15,248 +15,261 @@ import {updateContactActions} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-date-picker';
 import {isValidEmail} from '../../utilies/Validations';
-import {IC_ADD, IMG_AVTAR} from "../../assets";
+import {IC_ADD, IMG_AVTAR} from '../../assets';
+import statusBarHeight from '../../components/statusBarHeight';
+import InputInfo from '../../components/InputInfo';
+import InputInfoArray from '../../components/InputInfoArray';
 
 export const defaultValue = {
-    id: '',
-    firstName: '',
-    lastName: '',
-    company: '',
-    phone: '',
-    email: '',
-    address: '',
-    birthday: '',
-    avatar: '',
+  id: '',
+  firstName: '',
+  lastName: '',
+  company: '',
+  phone: [],
+  email: [],
+  address: [],
+  birthday: '',
+  avatar: '',
 };
 
 const AddContactScreen = () => {
-    const navigation = useNavigation();
-    const [image, setImage] = useState<string>();
-    const [params, setParams] = useState<RawContact>(defaultValue);
-    const [date, setDate] = useState(new Date());
-    const [open, setOpen] = useState(false);
-    const [errorEmail, setErrorEmail] = useState('');
-    const route = useRoute();
-    const [value, setValue] = useState('');
-    const onDone = useCallback(() => {
-        updateContactActions(
-            params?.id
-                ? {...params, avatar: image}
-                : {...params, id: `${new Date().getTime()}`, avatar: image},
-        );
-        setTimeout(() => {
-            navigation.goBack();
-        }, 200);
-        setParams(defaultValue);
-        setImage('');
-    }, [params, image]);
+  const navigation = useNavigation();
+  const [image, setImage] = useState<string>();
+  const [params, setParams] = useState<RawContact>(defaultValue);
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const route = useRoute();
 
-    const chooseFromLibrary = () => {
-        ImagePicker.openPicker({
-            width: 300,
-            height: 400,
-            cropping: false,
-            compressImageQuality: 0.7,
-        })
-            .then(image => {
-                setImage(image.path);
-            })
-            .catch(error => {
-                if (error.code === 'E_PICKER_CANCELLED') {
-                    return false;
-                }
-            });
-    };
-    useEffect(() => {
-        if (!route.params) {
-            return;
-        }
-        setParams({
-            id: `${route.params.id}`,
-            firstName: `${route.params.firstName}`,
-            lastName: `${route.params.lastName}`,
-            phone: `${route.params.phone}`,
-            address: `${route.params.address}`,
-            birthday: `${route.params.birthday}`,
-            avatar: `${route.params.avatar}`,
-            company: `${route.params.company}`,
-            email: `${route.params.email}`,
-        });
-    }, [route.params]);
-    const onCancel = useCallback(() => {
-        navigation.goBack();
-    }, [navigation]);
-
-    const onChangeText = useCallback((keyName: string, value: string) => {
-        setParams({
-            ...params,
-            [keyName]: value,
-        });
-    }, [params]);
-
-    return (
-        <Container>
-            <Section1>
-                <WrapButton>
-                    <Button onPress={onCancel}>
-                        <CancelText>Huỷ</CancelText>
-                    </Button>
-                    <Button onPress={onDone}>
-                        <DoneText>Xong</DoneText>
-                    </Button>
-                </WrapButton>
-            </Section1>
-            <AvatarBtn onPress={chooseFromLibrary}>
-                <AvatarInput
-                    source={IMG_AVTAR}
-                    resizeMode={'cover'}>
-                    <Avatar source={{uri: image ? image : null}}/>
-                </AvatarInput>
-            </AvatarBtn>
-            <KeyboardAvoidingView
-                behavior={'padding'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-                <ScrollView>
-                    <Section2>
-                        <WrapInputText>
-                            <FirstName
-                                placeholder="Họ"
-                                value={params?.firstName}
-                                onChangeText={(value: string) => {
-                                    onChangeText('firstName', value)
-                                }}
-                                returnKeyType="done"
-                            />
-                            <LastName
-                                placeholder="Tên"
-                                value={params?.lastName}
-                                onChangeText={(value: string) => {
-                                    onChangeText('lastName', value)
-                                }}
-                                returnKeyType="done"
-                            />
-
-                            <CompanyName
-                                placeholder="Công ty"
-                                value={params?.company}
-                                onChangeText={(value: string) => {
-                                    onChangeText('company', value)
-                                }}
-                                returnKeyType="done"
-                            />
-                        </WrapInputText>
-                    </Section2>
-
-                    <Section3>
-                        <WrapInputDetail>
-                            <Button>
-                                <AddButton source={IC_ADD}/>
-                            </Button>
-                            <PhoneNumber
-                                placeholder="Thêm số điện thoại"
-                                value={params?.phone}
-                                returnKeyType="done"
-                                keyboardType="phone-pad"
-                                placeholderTextColor={'black'}
-                                onChangeText={(value: string) => {
-                                    onChangeText('phone', value)
-                                }}
-                            />
-                        </WrapInputDetail>
-
-                        <WrapInputDetail>
-                            <Button>
-                                <AddButton source={IC_ADD}/>
-                            </Button>
-                            <Email
-                                placeholder="Thêm email"
-                                value={params?.email}
-                                returnKeyType="done"
-                                keyboardType="email-address"
-                                placeholderTextColor={'black'}
-                                onChangeText={value => {
-                                    setErrorEmail(
-                                        isValidEmail(value) == true
-                                            ? ''
-                                            : 'Email not in correct format',
-                                    );
-                                    onChangeText('email', value)
-                                }}
-                            />
-                        </WrapInputDetail>
-                        <View style={{marginHorizontal: 16}}>
-                            <Text style={{textAlign: 'left', fontSize: 15, color: 'red'}}>
-                                {errorEmail}
-                            </Text>
-                        </View>
-                        <WrapInputDetail>
-                            <Button>
-                                <AddButton source={IC_ADD}/>
-                            </Button>
-                            <Address
-                                placeholder={'Thêm địa chỉ'}
-                                value={params.address}
-                                returnKeyType="done"
-                                placeholderTextColor={'black'}
-                                onChangeText={(value: string) => {
-                                    onChangeText('address', value)
-                                }}
-                            />
-                        </WrapInputDetail>
-                        <TouchableOpacity onPress={() => setOpen(true)}>
-                            <WrapInputDetail>
-                                <Button onPress={() => setOpen(true)}>
-                                    <AddButton source={IC_ADD}/>
-                                </Button>
-
-                                <Birthday> Ngày sinh: {date.toDateString()}</Birthday>
-
-                                <DatePicker
-                                    modal
-                                    open={open}
-                                    date={date}
-                                    mode={'date'}
-                                    onConfirm={date => {
-                                        setOpen(false);
-                                        setDate(date);
-                                        onChangeText('birthday', date.toDateString())
-                                    }}
-                                    onCancel={() => {
-                                        setOpen(false);
-                                    }}
-                                />
-                            </WrapInputDetail>
-                        </TouchableOpacity>
-                    </Section3>
-                </ScrollView>
-            </KeyboardAvoidingView>
-        </Container>
+  const onDone = useCallback(() => {
+    updateContactActions(
+      params?.id
+        ? {...params, avatar: image}
+        : {...params, id: `${new Date().getTime()}`, avatar: image},
     );
+    setTimeout(() => {
+      navigation.goBack();
+    }, 200);
+    setParams(defaultValue);
+    setImage('');
+  }, [params, image]);
+
+  const chooseFromLibrary = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: false,
+      compressImageQuality: 0.7,
+    })
+      .then(image => {
+        setImage(image.path);
+      })
+      .catch(error => {
+        if (error.code === 'E_PICKER_CANCELLED') {
+          return false;
+        }
+      });
+  };
+  useEffect(() => {
+    if (!route.params) {
+      return;
+    }
+    setParams({
+      id: `${route.params.id}`,
+      firstName: `${route.params.firstName}`,
+      lastName: `${route.params.lastName}`,
+      phone: `${route.params.phone}`,
+      address: `${route.params.address}`,
+      birthday: `${route.params.birthday}`,
+      avatar: `${route.params.avatar}`,
+      company: `${route.params.company}`,
+      email: `${route.params.email}`,
+    });
+  }, [route.params]);
+  const onCancel = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  const onChangeText = useCallback(
+    (keyName: string, value: string) => {
+      setParams({
+        ...params,
+        [keyName]: value,
+      });
+    },
+    [params],
+  );
+
+  return (
+    <Container>
+      <Section1>
+        <HeaderSection>
+          <Button onPress={onCancel}>
+            <CancelText>Huỷ</CancelText>
+          </Button>
+          <Button onPress={onDone}>
+            <DoneText>Xong</DoneText>
+          </Button>
+        </HeaderSection>
+      </Section1>
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+        <ScrollView>
+          <AvatarBtn onPress={chooseFromLibrary}>
+            <AvatarInput source={IMG_AVTAR} resizeMode={'cover'}>
+              <Avatar source={{uri: image ? image : null}} />
+            </AvatarInput>
+          </AvatarBtn>
+
+          <Section2>
+            <WrapInputText>
+              <InputInfo
+                title={'Họ'}
+                keyName={'firstName'}
+                value={params.firstName}
+                onChangeValue={onChangeText}
+              />
+              <InputInfo
+                title={'Tên'}
+                keyName={'lastName'}
+                value={params.lastName}
+                onChangeValue={onChangeText}
+              />
+              <InputInfo
+                title={'Công ty'}
+                keyName={'company'}
+                value={params.company}
+                onChangeValue={onChangeText}
+              />
+            </WrapInputText>
+          </Section2>
+
+          <Section3>
+            {/*<WrapInputDetail>*/}
+            {/*    <Button>*/}
+            {/*        <AddButton source={IC_ADD}/>*/}
+            {/*    </Button>*/}
+            {/*    <PhoneNumber*/}
+            {/*        placeholder="Thêm số điện thoại"*/}
+            {/*        value={params?.phone}*/}
+            {/*        returnKeyType="done"*/}
+            {/*        keyboardType="phone-pad"*/}
+            {/*        placeholderTextColor={'black'}*/}
+            {/*        onChangeText={(value: string) => {*/}
+            {/*            onChangeText('phone', value)*/}
+            {/*        }}*/}
+            {/*    />*/}
+            {/*</WrapInputDetail>*/}
+
+            <InputInfoArray
+              keyName={'phone'}
+              data={params?.phone}
+              title={'Them so dien thoai'}
+              setParams={setParams}
+            />
+
+            <InputInfoArray
+              keyName={'email'}
+              data={params?.email}
+              title={'Them email'}
+              setParams={setParams}
+            />
+
+            <InputInfoArray
+              keyName={'address'}
+              data={params?.address}
+              title={'Them dia chi'}
+              setParams={setParams}
+            />
+
+            {/* <WrapInputDetail>
+              <Button>
+                <AddButton source={IC_ADD} />
+              </Button>
+               <Email
+                placeholder="Thêm email"
+                value={params?.email}
+                returnKeyType="done"
+                keyboardType="email-address"
+                placeholderTextColor={'black'}
+                onChangeText={value => {
+                  setErrorEmail(
+                    isValidEmail(value) == true
+                      ? ''
+                      : 'Email not in correct format',
+                  );
+                  onChangeText('email', value);
+                }}
+              />
+            </WrapInputDetail>
+            {/*<View style={{marginHorizontal: 16}}>*/}
+            {/*    <Text style={{textAlign: 'left', fontSize: 15, color: 'red'}}>*/}
+            {/*        {errorEmail}*/}
+            {/*    </Text>*/}
+            {/*</View>*/}
+
+            {/* <WrapInputDetail>
+              <Button>
+                <AddButton source={IC_ADD} />
+              </Button>
+              <Address
+                placeholder={'Thêm địa chỉ'}
+                value={params?.address}
+                returnKeyType="done"
+                placeholderTextColor={'black'}
+                onChangeText={(value: string) => {
+                  onChangeText('address', value);
+                }}
+              />
+            </WrapInputDetail>  */}
+
+            <TouchableOpacity onPress={() => setOpen(true)}>
+              <WrapInputDetail>
+                <Button onPress={() => setOpen(true)}>
+                  <AddButton source={IC_ADD} />
+                </Button>
+                <Birthday> Ngày sinh: {date.toDateString()}</Birthday>
+                <DatePicker
+                  modal
+                  open={open}
+                  date={date}
+                  mode={'date'}
+                  onConfirm={date => {
+                    setOpen(false);
+                    setDate(date);
+                    onChangeText('birthday', date.toDateString());
+                  }}
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                />
+              </WrapInputDetail>
+            </TouchableOpacity>
+          </Section3>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Container>
+  );
 };
 
 export default AddContactScreen;
 
 const Container = styled.SafeAreaView`
-  display: flex;
   flex: 1;
   background-color: #fff;
 `;
-const Section1 = styled.View`
-  margin-top: 16px;
-`;
+const Section1 = styled.View``;
 
 const KeyboardAvoidingView = styled.KeyboardAvoidingView`
   flex: 1;
 `;
-const WrapButton = styled.View`
+const HeaderSection = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin: 0 16px;
 `;
 
-const Button = styled.TouchableOpacity`
-  height: 44px;
-`;
+const Button = styled.TouchableOpacity``;
 
 const AvatarBtn = styled.TouchableOpacity`
   width: 90px;
@@ -264,6 +277,7 @@ const AvatarBtn = styled.TouchableOpacity`
   align-self: center;
   background-color: #f2f2f2;
   border-radius: 100px;
+  margin-top: 24px;
 `;
 
 const Avatar = styled.Image`
@@ -276,16 +290,14 @@ const Avatar = styled.Image`
 const CancelText = styled.Text`
   font-weight: 400;
   font-size: 18px;
-  line-height: 22px;
   letter-spacing: -0.41px;
   color: #f2a54a;
 `;
 const DoneText = styled.Text`
   font-weight: 400;
   font-size: 18px;
-  line-height: 22px;
   letter-spacing: -0.41px;
-  color: #828282;
+  color: #f2a54a;
 `;
 const AvatarInput = styled.ImageBackground`
   width: 100px;
@@ -301,17 +313,6 @@ const Section2 = styled.View`
 const WrapInputText = styled.View`
   margin-top: 20px;
 `;
-
-const LastName = styled.TextInput`
-  border-bottom-width: 1px;
-  border-bottom-color: #0000001a;
-  height: 44px;
-  margin: 0 16px;
-`;
-
-const FirstName = styled(LastName)``;
-
-const CompanyName = styled(LastName)``;
 
 const Section3 = styled.View`
   margin-top: 24px;
@@ -346,5 +347,5 @@ const Birthday = styled.Text`
   letter-spacing: -0.41px;
   color: #333333;
   margin-left: 14px;
-  margin-top: 10px;;
+  margin-top: 10px; ;
 `;

@@ -1,4 +1,5 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StatusBar, StyleSheet, Text, View} from 'react-native';
+// @ts-ignore
 import React from 'react';
 import RootStack from './src/nav/RootStack';
 import {Provider} from 'react-redux';
@@ -12,6 +13,11 @@ const App = () => {
 
   return (
     <Provider store={store}>
+      <StatusBar
+      translucent={false}
+      backgroundColor={'transparent'}
+      barStyle={'dark-content'}
+      />
       <RootStack />
     </Provider>
   );
