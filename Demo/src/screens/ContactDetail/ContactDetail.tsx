@@ -15,16 +15,15 @@ const ContactDetail = () => {
     const [image, setImage] = useState<any>(true);
 
     const contact = useContacts(route.params?.id)
+
     const deleteItem = useCallback(async () => {
         await dispatch(removeContactActions(route.params?.id));
         navigation.goBack();
     }, [contact]);
 
     const goBack = useCallback(() => {
-        navigation.goBack({
-            id: contact?.id || ''
-        })
-    }, [navigation, contact?.id])
+        navigation.goBack()
+    }, [navigation])
 
 
     const onEdit = useCallback(() => {
@@ -289,4 +288,3 @@ const DeleteTitle = styled.Text`
   letter-spacing: -0.41px;
   color: #FF4A4A;
 `;
-

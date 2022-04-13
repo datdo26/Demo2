@@ -17,10 +17,12 @@ const contactSlice = createSlice({
                 const oldContacts = state;
                 const newContact = actions.payload;
                 let data = {};
+
+                // console.log('all',new Set( [...state?.query['all']|| [] , ...[newContact.id]]) )
                 if (!data[newContact.id]) {
                     data[newContact.id] = newContact
                 } else {
-                    // data[newContact.id] = {}
+                    data[newContact.id] = {}
                     data[newContact.id] = newContact;
                 }
                 return {
@@ -31,20 +33,23 @@ const contactSlice = createSlice({
                     },
                     query: {
                         ...state.query,
-                        all: [...state?.query['all'] || [], ...[newContact.id]]
+                        all: [...new Set([...state?.query['all'] || [], newContact.id])]
+                        // all: [...state?.query['all'] || [], ...[newContact.id]]
                     }
                 }
+
             },
             remove: (state, actions: PayloadAction<{ key: string }>) => {
                 let query = {...state.query}
                 let all = [...query['all']]
-                const _delete =  all.filter(x => x != actions.payload.key)
-                return{
+                const _delete = all.filter(x => x != actions.payload.key)
+                return {
                     ...state,
-                query:{
+                    query: {
                         ...state.query,
-                    all: _delete
-                }
+                        all: _delete
+                    }
+
                 }
             },
         },
@@ -73,6 +78,5 @@ export const useContacts = (id: string) => {
 
 export const useContactIds = (query: string) => {
     return useSelector((state: RootStateOrAny) => state.contactReducer.query[query]);
-};
-
+}
 

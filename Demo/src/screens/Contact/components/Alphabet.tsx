@@ -1,23 +1,19 @@
 import {
-    View,
     TouchableOpacity,
     StyleSheet,
     SectionList,
     ScrollView,
-    TextInput,
-    Image,
 } from 'react-native';
 // @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import SearchBar from 'react-native-search-bar';
 // @ts-ignore
 import _ from 'lodash';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {IC_PROFILE, IC_SEARCH} from '../../../assets';
-import {store, useContactIds, useContacts} from "../../../store";
+import {store, useContactIds} from "../../../store";
 
 const char = [
     'A',
@@ -66,19 +62,19 @@ const getObject = ids => {
     return a
 };
 
+
 const Alphabet = () => {
     const navigation = useNavigation<any>();
     const [searchText, setSearchText] = useState('');
     const [image, setImage] = useState<any>(Boolean);
     const contacts = useSelector((state: any) => state.contactReducer);
     const ids = useContactIds('all');
-    const abc = getObject(ids);
+    const abc = getObject(ids) ;
 
-    console.log('ids', Object.values(abc))
+    console.log('abc', abc)
 
     const handleNavigation = useCallback(
         ({item}) => {
-            // console.log('item', item)
             navigation.navigate('ContactDetail', {
                 id: item.id
             });
@@ -131,7 +127,7 @@ const Alphabet = () => {
             <SectionList
                 sections={groupBy(abc).filter(result =>
                     result.keyName.toLowerCase().includes(searchText.toLowerCase()),
-                )||[]}
+                ) || []}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderItem}
                 renderSectionHeader={({section: {keyName}}) => (
