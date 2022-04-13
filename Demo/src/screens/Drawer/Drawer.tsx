@@ -1,18 +1,36 @@
 import {StyleSheet, View, TouchableOpacity, Image, Text} from 'react-native';
-import React from 'react';
+// @ts-ignore
+import React, {useCallback, useState} from 'react';
 import {createDrawerNavigator, DrawerItemList} from '@react-navigation/drawer';
 import MainTab from '../../nav/MainTab';
 import styled from 'styled-components/native';
 import statusBarHeight from '../../components/statusBarHeight';
+import ItemDropDown from './ItemDropDown';
+import {AVATAR, IC_ADD_COLLECTION} from "../../assets";
 
 const Drawer = createDrawerNavigator();
 
 const CustomDrawer = props => {
+  const [isActive, setIsActive] = useState(false);
+  const BtnCollections = useCallback(() => {
+    setIsActive(!isActive);
+  }, [isActive]);
+
+  const OpenItem = () => {
+    return (
+      <View>
+        <ItemDropDown title={'All'} />
+        <ItemDropDown title={'General'} />
+        <ItemDropDown title={'Investors'} />
+        <ItemDropDown title={'Lead'} />
+      </View>
+    );
+  };
   return (
     <Container>
       <DrawerSection>
         <DrawerContent>
-          <Avatar source={require('../../assets/avatar.png')} />
+          <Avatar source={AVATAR} />
           <View>
             <Name>Nguyến Tiến Nam</Name>
             <Phone>0123456789</Phone>
@@ -25,8 +43,8 @@ const CustomDrawer = props => {
 
       <AddCollectionSection>
         <AddBtn>
-          <TouchableOpacity>
-            <Text>▼</Text>
+          <TouchableOpacity onPress={BtnCollections}>
+            {isActive ? <Text>▼</Text> : <Text>▶︎</Text>}
           </TouchableOpacity>
           <Collections>COLLECTIONS</Collections>
         </AddBtn>
@@ -34,6 +52,7 @@ const CustomDrawer = props => {
           <Edit>Edit</Edit>
         </TouchableOpacity>
       </AddCollectionSection>
+      {isActive ? <OpenItem /> : null}
     </Container>
   );
 };
@@ -49,7 +68,7 @@ const SideDrawer = () => {
         options={{
           drawerIcon: () => (
             <DrawerIcon
-              source={require('../../assets/ic_add_collection.png')}
+              source={IC_ADD_COLLECTION}
             />
           ),
           drawerLabelStyle: {
@@ -134,8 +153,8 @@ const Collections = styled.Text`
 `;
 
 const AddBtn = styled.View`
+  margin: 0 16px;
   flex-direction: row;
-  margin: 0 14px;
 `;
 
 const AddCollectionSection = styled.View`

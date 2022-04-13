@@ -4,8 +4,9 @@ export interface RawContact {
   lastName: string;
   avatar: string;
   company: string;
-  phone: string;
-  email: string;
-  address: string;
+  phone: string[];
+  email: string[];
+  address: string[];
   birthday: string;
 }
+

@@ -1,7 +1,45 @@
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
+// @ts-ignore
 import React from 'react';
 import Header from '../../components/Header';
 import styled from 'styled-components/native';
+import {IC_INFO_OUTLINE, IC_PHONE} from "../../assets";
+
+
+
+const RecentScreen = () => {
+  return (
+    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+      <Header title="Lịch sử" />
+      <View style={{marginTop: 18}}>
+        <View>
+          <TouchableOpacity>
+            <WrapCard>
+              <IconLeft source={IC_PHONE} />
+              <WrapInfo>
+                <Name>Nguyễn Tiến Nam</Name>
+                <Phone>0977272123</Phone>
+              </WrapInfo>
+              <View />
+              <WrapDate>
+                <Date>Hôm Nay</Date>
+              </WrapDate>
+              <WrapIconRight>
+                <IconRight
+                  source={IC_INFO_OUTLINE}
+                />
+              </WrapIconRight>
+            </WrapCard>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+};
+
+export default RecentScreen;
+
+const styles = StyleSheet.create({});
 
 const SafeAreaView = styled.SafeAreaView`
   flex: 1;
@@ -51,36 +89,3 @@ const Date = styled.Text`
   text-align: right; ;
 `;
 
-const RecentScreen = () => {
-  return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
-      <Header title="Lịch sử" />
-      <View style={{marginTop: 18}}>
-        <View>
-          <TouchableOpacity>
-            <WrapCard>
-              <IconLeft source={require('../../assets/ic_phone.png')} />
-              <WrapInfo>
-                <Name>Nguyễn Tiến Nam</Name>
-                <Phone>0977272123</Phone>
-              </WrapInfo>
-              <View />
-              <WrapDate>
-                <Date>Hôm Nay</Date>
-              </WrapDate>
-              <WrapIconRight>
-                <IconRight
-                  source={require('../../assets/ic_info_outline.png')}
-                />
-              </WrapIconRight>
-            </WrapCard>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
-};
-
-export default RecentScreen;
-
-const styles = StyleSheet.create({});

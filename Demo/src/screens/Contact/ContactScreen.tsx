@@ -1,17 +1,12 @@
 import {StatusBar} from 'react-native';
+// @ts-ignore
 import React from 'react';
 import Header from '../../components/Header';
 import Alphabet from './components/Alphabet';
-import {useContacts} from '../../store';
 import styled from 'styled-components/native';
 
-const SafeAreaView = styled.SafeAreaView`
-  flex: 1;
-  background-color: #fff;
-`;
+
 const ContactScreen = () => {
-  const contacts = useContacts();
-  console.log('contacts ', contacts);
 
   return (
     <SafeAreaView>
@@ -23,3 +18,8 @@ const ContactScreen = () => {
 };
 
 export default ContactScreen;
+
+const SafeAreaView = styled.SafeAreaView`
+  flex: 1;
+  background-color: #fff;
+`;

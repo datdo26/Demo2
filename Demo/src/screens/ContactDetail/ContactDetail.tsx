@@ -1,19 +1,141 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
+// @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
-import {remove} from '../../store';
-import {RawContact} from '../../store/types';
+import {removeContactActions, useContacts} from '../../store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
+import {
+  IC_BACK,
+  IC_CALL,
+  IC_EMAIL,
+  IC_MSG,
+  IC_PROFILE,
+  IC_VID_CALL,
+} from '../../assets';
+import statusBarHeight from '../../components/statusBarHeight';
 
-const Container = styled.SafeAreaView`
+const ContactDetail = () => {
+  const route = useRoute();
+  const dispatch = useDispatch();
+  const navigation = useNavigation<any>();
+  const [image, setImage] = useState<any>(true);
+
+  const contact = useContacts(route.params?.id);
+
+  const deleteItem = useCallback(async () => {
+    await dispatch(removeContactActions(route.params?.id));
+    navigation.goBack();
+  }, [contact]);
+
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  const onEdit = useCallback(() => {
+    navigation.navigate('AddContactScreen', {
+      id: contact?.id || '',
+    });
+  }, [navigation, contact?.id]);
+
+  return (
+    <Container>
+      <View>
+        <Background />
+        <HeaderSection platform={Platform.OS}>
+          <WrapViewHeader>
+            <ButtonBack onPress={goBack}>
+              <Back source={IC_BACK} />
+            </ButtonBack>
+            <ButtonDone onPress={onEdit}>
+              <TextHeader>Sửa</TextHeader>
+            </ButtonDone>
+          </WrapViewHeader>
+          <Avatar source={image ? {uri: contact?.avatar} : IC_PROFILE} />
+        </HeaderSection>
+
+        <WrapView>
+          <Name>
+            {contact?.firstName} {contact?.lastName}
+          </Name>
+          <Job>UI/UX Design</Job>
+        </WrapView>
+
+        <WrapButton>
+          <Button>
+            <IconButton source={IC_CALL} />
+            <TextButton>Nhấn gọi điện</TextButton>
+          </Button>
+          <Button>
+            <IconButton source={IC_MSG} />
+            <TextButton>Nhắn tin</TextButton>
+          </Button>
+          <Button>
+            <IconButton source={IC_VID_CALL} />
+            <TextButton>Facetime</TextButton>
+          </Button>
+          <View>
+            <IconButton source={IC_EMAIL} />
+            <TextButtonMail>Gửi mail</TextButtonMail>
+          </View>
+        </WrapButton>
+      </View>
+
+      <PhoneSection>
+        <PhoneTitle>Điện thoại</PhoneTitle>
+        <ButtonPhone>
+          <PhoneNumber>{contact?.phone[0]}</PhoneNumber>
+        </ButtonPhone>
+      </PhoneSection>
+
+      <NoteSection>
+        <NoteTitle>Ghi Chú</NoteTitle>
+        <Note />
+      </NoteSection>
+
+      <MsgSection>
+        <ButtonMsg>
+          <MsgTitle>Gửi tin nhắn</MsgTitle>
+        </ButtonMsg>
+      </MsgSection>
+
+      <DeleteSection>
+        <ButtonMsg onPress={deleteItem}>
+          <DeleteTitle>Xoá người gọi</DeleteTitle>
+        </ButtonMsg>
+      </DeleteSection>
+    </Container>
+  );
+};
+
+export default ContactDetail;
+
+const styles = StyleSheet.create({});
+
+const Container = styled.View`
   background-color: #fff;
   flex: 1;
 `;
 
-const Wrapper = styled.View`
-  background-color: #fff;
-  margin-top: 16px;
+const Background = styled.View`
+  background: #f2a54a;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  opacity: 0.2;
+`;
+
+const HeaderSection = styled.View<{platform?: string}>`
+  margin-top: ${statusBarHeight + 10}px;
 `;
 
 const WrapViewHeader = styled.View`
@@ -38,15 +160,10 @@ const TextHeader = styled.Text`
   margin-right: 16px;
 `;
 const WrapView = styled.View``;
-const ButtonAvatar = styled.TouchableOpacity`
+
+const Avatar = styled.Image`
   width: 100px;
   height: 100px;
-  border-radius: 100px;
-  align-self: center;
-`;
-const Avatar = styled.Image`
-  width: 110px;
-  height: 110px;
   border-radius: 100px;
   align-self: center;
 `;
@@ -106,121 +223,74 @@ const ButtonPhone = styled(Button)`
 
 const PhoneNumber = styled.Text`
   font-weight: 400;
-  font-size: 19px;
+  font-size: 17px;
   letter-spacing: -0.41px;
   color: #2f80ed;
+  margin-bottom: 8px;
 `;
 
-const WrapInput = styled.View`
+const PhoneSection = styled.View`
   margin: 0 16px;
-  margin-top: 24px;
+  margin-top: 9px;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
 `;
 
-const FieldName = styled.Text`
-  font-style: normal;
-  font-size: 15px;
+const PhoneTitle = styled.Text`
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 22px;
   letter-spacing: -0.41px;
   color: #333333;
 `;
 
-const FieldNameMsg = styled(FieldName)`
-  font-size: 17px;
+const NoteTitle = styled(PhoneTitle)`
+  margin-top: 9px;
 `;
-const ButtonMsg = styled.TouchableOpacity``;
 
-const FieldNameDelete = styled(FieldNameMsg)`
+const NoteSection = styled.View`
+  margin: 0 16px;
+  margin-top: 8px;
+  border-bottom-width: 0.5px;
+  border-bottom-color: #0000001a;
+`;
+
+const Note = styled.TextInput`
+  margin-top: 10px;
+`;
+
+const ButtonMsg = styled.TouchableOpacity`
+  margin-bottom: 10px;
+  margin-top: 14px;
+`;
+
+const MsgSection = styled.View`
+  margin: 0 16px;
+  border-bottom-width: 0.5px;
+  border-bottom-color: #0000001a;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const MsgTitle = styled.Text`
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: -0.41px;
+  color: #333333;
+`;
+
+const DeleteSection = styled.View`
+  margin: 0 16px;
+  border-bottom-width: 0.5px;
+  border-bottom-color: #0000001a;
+  align-items: center;
+  flex-direction: row;
+`;
+const DeleteTitle = styled.Text`
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: -0.41px;
   color: #ff4a4a;
 `;
-
-const WrapInputPhone = styled(WrapInput)``;
-
-const ContactDetail = ({contact}: {contact: RawContact}) => {
-  const route = useRoute();
-  const dispatch = useDispatch();
-  const navigation = useNavigation<any>();
-  const [title, setTitle] = useState(false);
-  const deleteItem = useCallback(() => {
-    navigation.goBack();
-    dispatch(remove(route.params?.id));
-  }, [remove]);
-
-  const onEdit = useCallback(() => {
-    navigation.push('AddContactScreen', {
-      firstName: route.params.firstName,
-      lastName: route.params.lastName,
-      phone: route.params.phone,
-      address: route.params.address,
-      birthday: route.params.birthday,
-    });
-    setTitle(true);
-  }, []);
-  return (
-    <Container>
-      <Wrapper>
-        <WrapViewHeader>
-          <ButtonBack onPress={() => navigation.goBack()}>
-            <Back source={require('../../assets/ic_back.png')} />
-          </ButtonBack>
-          <ButtonDone onPress={() => onEdit()}>
-            <TextHeader>Sửa</TextHeader>
-          </ButtonDone>
-        </WrapViewHeader>
-      </Wrapper>
-      <WrapView>
-        <Avatar source={{uri: route.params.avatar}} />
-      </WrapView>
-
-      <WrapView>
-        <Name>
-          {route.params.firstName} {route.params.lastName}
-        </Name>
-
-        <Job>UI/UX Design</Job>
-      </WrapView>
-      <WrapButton>
-        <Button>
-          <IconButton source={require('../../assets/ic_call.png')} />
-          <TextButton>Nhấn gọi điện</TextButton>
-        </Button>
-        <Button>
-          <IconButton source={require('../../assets/ic_msg.png')} />
-          <TextButton>Nhắn tin</TextButton>
-        </Button>
-        <Button>
-          <IconButton source={require('../../assets/ic_vidcall.png')} />
-          <TextButton>Facetime</TextButton>
-        </Button>
-        <View>
-          <IconButton source={require('../../assets/ic_email.png')} />
-          <TextButtonMail>Gửi mail</TextButtonMail>
-        </View>
-      </WrapButton>
-      <WrapInputPhone>
-        <FieldName>Điện thoại</FieldName>
-        <ButtonPhone>
-          <PhoneNumber>{route.params.phone}</PhoneNumber>
-        </ButtonPhone>
-      </WrapInputPhone>
-      <WrapInput>
-        <FieldName>Ghi Chú</FieldName>
-        <Text>{route.params.id}</Text>
-      </WrapInput>
-      <WrapInput>
-        <ButtonMsg>
-          <FieldNameMsg>Gửi tin nhắn</FieldNameMsg>
-        </ButtonMsg>
-      </WrapInput>
-      <WrapInput>
-        <ButtonMsg onPress={deleteItem}>
-          <FieldNameDelete>Xoá người gọi</FieldNameDelete>
-        </ButtonMsg>
-      </WrapInput>
-    </Container>
-  );
-};
-
-export default ContactDetail;
-
-const styles = StyleSheet.create({});
