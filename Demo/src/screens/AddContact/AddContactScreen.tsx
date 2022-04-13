@@ -1,7 +1,7 @@
 import {
-  ScrollView,
-  TouchableOpacity,
-  Platform,
+    ScrollView,
+    TouchableOpacity,
+    Platform,
 } from 'react-native';
 // @ts-ignore
 import React, {useCallback, useEffect, useState} from 'react';
@@ -16,187 +16,186 @@ import InputInfo from '../../components/InputInfo';
 import InputInfoArray from '../../components/InputInfoArray';
 
 export const defaultValue = {
-  id: '',
-  firstName: '',
-  lastName: '',
-  company: '',
-  phone: [],
-  email: [],
-  address: [],
-  birthday: '',
-  avatar: '',
+    id: '',
+    firstName: '',
+    lastName: '',
+    company: '',
+    phone: [],
+    email: [],
+    address: [],
+    birthday: '',
+    avatar: '',
 };
 
 const AddContactScreen = () => {
-  const navigation = useNavigation();
-  const [image, setImage] = useState<string>();
-  const [params, setParams] = useState<RawContact>(defaultValue);
-  const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-  const route = useRoute();
-  const newContact = useContacts(route.params?.id)
+    const navigation = useNavigation();
+    const [image, setImage] = useState<string>();
+    const [params, setParams] = useState<RawContact>(defaultValue);
+    const [date, setDate] = useState(new Date());
+    const [open, setOpen] = useState(false);
+    const route = useRoute();
+    const newContact = useContacts(route.params?.id);
 
-  const onDone = useCallback(() => {
-    updateContactActions(
-        params?.id
-            ? {...params, avatar: image}
-            : {...params, id: `${new Date().getTime()}`, avatar: image},
-    );
-    setTimeout(() => {
-      navigation.goBack();
-    }, 200);
-    setParams(defaultValue);
-    setImage('');
-  }, [params, image]);
+    const onDone = useCallback(() => {
+        updateContactActions(
+            params?.id
+                ? {...params, avatar: image}
+                : {...params, id: `${new Date().getTime()}`, avatar: image},
+        );
+        setTimeout(() => {
+            navigation.goBack();
+        }, 200);
+        setParams(defaultValue);
+        setImage('');
+    }, [params, image]);
 
-  const chooseFromLibrary = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: false,
-      compressImageQuality: 0.7,
-    })
-        .then(image => {
-          setImage(image.path);
+    const chooseFromLibrary = () => {
+        ImagePicker.openPicker({
+            width: 300,
+            height: 400,
+            cropping: false,
+            compressImageQuality: 0.7,
         })
-        .catch(error => {
-          if (error.code === 'E_PICKER_CANCELLED') {
-            return false;
-          }
-        });
-  };
-  useEffect(() => {
-    if (!route.params) {
-      return;
-    }
-    setParams(newContact);
-  }, [route.params]);
-  const onCancel = useCallback(() => {
-    navigation.goBack();
-  }, [newContact]);
+            .then(image => {
+                setImage(image.path);
+            })
+            .catch(error => {
+                if (error.code === 'E_PICKER_CANCELLED') {
+                    return false;
+                }
+            });
+    };
+    useEffect(() => {
+        if (!route.params) {
+            return;
+        }
+        setParams(newContact);
+    }, [route.params]);
+    const onCancel = useCallback(() => {
+        navigation.goBack();
+    }, [newContact]);
 
-  const onChangeText = useCallback(
-      (keyName: string, value: string) => {
-        setParams({
-          ...params,
-          [keyName]: value,
-        });
-      },
-      [params],
-  );
+    const onChangeText = useCallback(
+        (keyName: string, value: string) => {
+            setParams({
+                ...params,
+                [keyName]: value,
+            });
+        },
+        [params],
+    );
 
-  return (
-      <Container>
-        <Section1>
-          <HeaderSection>
-            <Button onPress={onCancel}>
-              <CancelText>Huỷ</CancelText>
-            </Button>
-            <Button onPress={onDone}>
-              <DoneText>Xong</DoneText>
-            </Button>
-          </HeaderSection>
-        </Section1>
-        <KeyboardAvoidingView
-            behavior={'padding'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-          <ScrollView>
-            <AvatarBtn onPress={chooseFromLibrary}>
-              <AvatarInput source={IMG_AVTAR} resizeMode={'cover'}>
-                <Avatar source={{uri: image ? image : null}} />
-              </AvatarInput>
-            </AvatarBtn>
+    return (
+        <Container>
+            <Section1>
+                <HeaderSection>
+                    <Button onPress={onCancel}>
+                        <CancelText>Huỷ</CancelText>
+                    </Button>
+                    <Button onPress={onDone}>
+                        <DoneText>Xong</DoneText>
+                    </Button>
+                </HeaderSection>
+            </Section1>
+            <KeyboardAvoidingView
+                behavior={'padding'}
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+                <ScrollView>
+                    <AvatarBtn onPress={chooseFromLibrary}>
+                        <AvatarInput source={IMG_AVTAR} resizeMode={'cover'}>
+                            <Avatar source={{uri: image ? image : null}}/>
+                        </AvatarInput>
+                    </AvatarBtn>
 
-            <Section2>
-              <WrapInputText>
-                <InputInfo
-                    title={'Họ'}
-                    keyName={'firstName'}
-                    value={params?.firstName}
-                    onChangeValue={onChangeText}
-                />
-                <InputInfo
-                    title={'Tên'}
-                    keyName={'lastName'}
-                    value={params?.lastName}
-                    onChangeValue={onChangeText}
-                />
-                <InputInfo
-                    title={'Công ty'}
-                    keyName={'company'}
-                    value={params?.company}
-                    onChangeValue={onChangeText}
-                />
-              </WrapInputText>
-            </Section2>
+                    <Section2>
+                        <WrapInputText>
+                            <InputInfo
+                                title={'Họ'}
+                                keyName={'firstName'}
+                                value={params?.firstName}
+                                onChangeValue={onChangeText}
+                            />
+                            <InputInfo
+                                title={'Tên'}
+                                keyName={'lastName'}
+                                value={params?.lastName}
+                                onChangeValue={onChangeText}
+                            />
+                            <InputInfo
+                                title={'Công ty'}
+                                keyName={'company'}
+                                value={params?.company}
+                                onChangeValue={onChangeText}
+                            />
+                        </WrapInputText>
+                    </Section2>
 
-            <Section3>
-              {/*<WrapInputDetail>*/}
-              {/*    <Button>*/}
-              {/*        <AddButton source={IC_ADD}/>*/}
-              {/*    </Button>*/}
-              {/*    <PhoneNumber*/}
-              {/*        placeholder="Thêm số điện thoại"*/}
-              {/*        value={params?.phone}*/}
-              {/*        returnKeyType="done"*/}
-              {/*        keyboardType="phone-pad"*/}
-              {/*        placeholderTextColor={'black'}*/}
-              {/*        onChangeText={(value: string) => {*/}
-              {/*            onChangeText('phone', value)*/}
-              {/*        }}*/}
-              {/*    />*/}
-              {/*</WrapInputDetail>*/}
+                    <Section3>
+                        {/*<WrapInputDetail>*/}
+                        {/*    <Button>*/}
+                        {/*        <AddButton source={IC_ADD}/>*/}
+                        {/*    </Button>*/}
+                        {/*    <PhoneNumber*/}
+                        {/*        placeholder="Thêm số điện thoại"*/}
+                        {/*        value={params?.phone}*/}
+                        {/*        returnKeyType="done"*/}
+                        {/*        keyboardType="phone-pad"*/}
+                        {/*        placeholderTextColor={'black'}*/}
+                        {/*        onChangeText={(value: string) => {*/}
+                        {/*            onChangeText('phone', value)*/}
+                        {/*        }}*/}
+                        {/*    />*/}
+                        {/*</WrapInputDetail>*/}
 
-              <InputInfoArray
-                  keyName={'phone'}
-                  data={params?.phone}
-                  title={'Them so dien thoai'}
-                  setParams={setParams}
-              />
+                        <InputInfoArray
+                            keyName={'phone'}
+                            data={params?.phone}
+                            title={'Them so dien thoai'}
+                            setParams={setParams}
+                        />
 
-              <InputInfoArray
-                  keyName={'email'}
-                  data={params?.email}
-                  title={'Them email'}
-                  setParams={setParams}
-              />
+                        <InputInfoArray
+                            keyName={'email'}
+                            data={params?.email}
+                            title={'Them email'}
+                            setParams={setParams}
+                        />
 
-              <InputInfoArray
-                  keyName={'address'}
-                  data={params?.address}
-                  title={'Them dia chi'}
-                  setParams={setParams}
-              />
+                        <InputInfoArray
+                            keyName={'address'}
+                            data={params?.address}
+                            title={'Them dia chi'}
+                            setParams={setParams}
+                        />
 
 
-
-              <TouchableOpacity onPress={() => setOpen(true)}>
-                <WrapInputDetail>
-                  <Button onPress={() => setOpen(true)}>
-                    <AddButton source={IC_ADD} />
-                  </Button>
-                  <Birthday> Ngày sinh: {date.toDateString()}</Birthday>
-                  <DatePicker
-                      modal
-                      open={open}
-                      date={date}
-                      mode={'date'}
-                      onConfirm={date => {
-                        setOpen(false);
-                        setDate(date);
-                        onChangeText('birthday', date.toDateString());
-                      }}
-                      onCancel={() => {
-                        setOpen(false);
-                      }}
-                  />
-                </WrapInputDetail>
-              </TouchableOpacity>
-            </Section3>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </Container>
-  );
+                        <TouchableOpacity onPress={() => setOpen(true)}>
+                            <WrapInputDetail>
+                                <Button onPress={() => setOpen(true)}>
+                                    <AddButton source={IC_ADD}/>
+                                </Button>
+                                <Birthday> Ngày sinh: {date.toDateString()}</Birthday>
+                                <DatePicker
+                                    modal
+                                    open={open}
+                                    date={date}
+                                    mode={'date'}
+                                    onConfirm={date => {
+                                        setOpen(false);
+                                        setDate(date);
+                                        onChangeText('birthday', date.toDateString());
+                                    }}
+                                    onCancel={() => {
+                                        setOpen(false);
+                                    }}
+                                />
+                            </WrapInputDetail>
+                        </TouchableOpacity>
+                    </Section3>
+                </ScrollView>
+            </KeyboardAvoidingView>
+        </Container>
+    );
 };
 
 export default AddContactScreen;
@@ -294,5 +293,5 @@ const Birthday = styled.Text`
   letter-spacing: -0.41px;
   color: #333333;
   margin-left: 14px;
-  margin-top: 10px; ;
+  margin-top: 10px;;
 `;

@@ -107,10 +107,10 @@ const Alphabet = () => {
                 />
                 <SearchInput
                     placeholder={'Tìm kiếm danh bạ'}
+                    placeholderTextColor='black'
                     onChangeText={text => {
                         setSearchText(text);
                     }}
-                    placeholderTextColor='black'
                 />
             </SearchSection>
 
@@ -203,6 +203,7 @@ const SearchSection = styled.View`
   margin: 0 10px;
   margin-bottom: 9px;
   opacity: 0.5;
+  margin-top: 4px;
 `;
 
 const SearchIcon = styled.Image`

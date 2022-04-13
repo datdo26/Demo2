@@ -18,9 +18,9 @@ const MainTab = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
         tabBarStyle: {
-          height: 60,
+          height: 70,
           backgroundColor: '#F2A54A',
         },
         tabBarHideOnKeyboard: true,
@@ -30,8 +30,8 @@ const MainTab = () => {
         component={ContactScreen}
         options={{
           headerShown: false,
-          tabBarIcon: () => (
-            <Image source={IC_CONTACT} />
+          tabBarIcon: ({color}) => (
+            <Image source={IC_CONTACT} style={{tintColor: '#fff' }} />
           ),
           tabBarInactiveTintColor: '#DADADA',
           tabBarActiveTintColor: '#fff',
