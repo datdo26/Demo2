@@ -1,9 +1,6 @@
 import {
-  StyleSheet,
   ScrollView,
-  Text,
   TouchableOpacity,
-  View,
   Platform,
 } from 'react-native';
 // @ts-ignore
@@ -11,12 +8,10 @@ import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
-import {updateContactActions} from '../../store';
+import {updateContactActions, useContactIds, useContacts} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-date-picker';
-import {isValidEmail} from '../../utilies/Validations';
 import {IC_ADD, IMG_AVTAR} from '../../assets';
-import statusBarHeight from '../../components/statusBarHeight';
 import InputInfo from '../../components/InputInfo';
 import InputInfoArray from '../../components/InputInfoArray';
 
@@ -39,6 +34,7 @@ const AddContactScreen = () => {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
   const route = useRoute();
+  const newContact = useContacts(route.params?.id)
 
   const onDone = useCallback(() => {
     updateContactActions(
@@ -73,21 +69,11 @@ const AddContactScreen = () => {
     if (!route.params) {
       return;
     }
-    setParams({
-      id: `${route.params.id}`,
-      firstName: `${route.params.firstName}`,
-      lastName: `${route.params.lastName}`,
-      phone: `${route.params.phone}`,
-      address: `${route.params.address}`,
-      birthday: `${route.params.birthday}`,
-      avatar: `${route.params.avatar}`,
-      company: `${route.params.company}`,
-      email: `${route.params.email}`,
-    });
+    setParams(newContact);
   }, [route.params]);
   const onCancel = useCallback(() => {
     navigation.goBack();
-  }, [navigation]);
+  }, [newContact]);
 
   const onChangeText = useCallback(
     (keyName: string, value: string) => {
@@ -126,19 +112,19 @@ const AddContactScreen = () => {
               <InputInfo
                 title={'Họ'}
                 keyName={'firstName'}
-                value={params.firstName}
+                value={params?.firstName}
                 onChangeValue={onChangeText}
               />
               <InputInfo
                 title={'Tên'}
                 keyName={'lastName'}
-                value={params.lastName}
+                value={params?.lastName}
                 onChangeValue={onChangeText}
               />
               <InputInfo
                 title={'Công ty'}
                 keyName={'company'}
-                value={params.company}
+                value={params?.company}
                 onChangeValue={onChangeText}
               />
             </WrapInputText>
@@ -182,46 +168,7 @@ const AddContactScreen = () => {
               setParams={setParams}
             />
 
-            {/* <WrapInputDetail>
-              <Button>
-                <AddButton source={IC_ADD} />
-              </Button>
-               <Email
-                placeholder="Thêm email"
-                value={params?.email}
-                returnKeyType="done"
-                keyboardType="email-address"
-                placeholderTextColor={'black'}
-                onChangeText={value => {
-                  setErrorEmail(
-                    isValidEmail(value) == true
-                      ? ''
-                      : 'Email not in correct format',
-                  );
-                  onChangeText('email', value);
-                }}
-              />
-            </WrapInputDetail>
-            {/*<View style={{marginHorizontal: 16}}>*/}
-            {/*    <Text style={{textAlign: 'left', fontSize: 15, color: 'red'}}>*/}
-            {/*        {errorEmail}*/}
-            {/*    </Text>*/}
-            {/*</View>*/}
 
-            {/* <WrapInputDetail>
-              <Button>
-                <AddButton source={IC_ADD} />
-              </Button>
-              <Address
-                placeholder={'Thêm địa chỉ'}
-                value={params?.address}
-                returnKeyType="done"
-                placeholderTextColor={'black'}
-                onChangeText={(value: string) => {
-                  onChangeText('address', value);
-                }}
-              />
-            </WrapInputDetail>  */}
 
             <TouchableOpacity onPress={() => setOpen(true)}>
               <WrapInputDetail>

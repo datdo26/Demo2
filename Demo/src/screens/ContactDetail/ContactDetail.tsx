@@ -1,11 +1,8 @@
 import {Platform, StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
-import React, {useCallback, useState} from 'react';
 // @ts-ignore
-
-
+import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
-import {remove, useContacts} from '../../store';
-import {RawContact} from '../../store/types';
+import { removeContactActions, useContacts} from '../../store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {IC_BACK, IC_CALL, IC_EMAIL, IC_MSG, IC_PROFILE, IC_VID_CALL} from "../../assets";
@@ -13,25 +10,28 @@ import statusBarHeight from "../../components/statusBarHeight";
 
 const ContactDetail = () => {
     const route = useRoute();
-    console.log('route', route)
     const dispatch = useDispatch();
     const navigation = useNavigation<any>();
     const [image, setImage] = useState<any>(true);
 
-    const deleteItem = useCallback(() => {
-        navigation.goBack();
-        dispatch(remove(route.params?.id));
-    }, [remove]);
-
     const contact = useContacts(route.params?.id)
-    console.log('contact', contact)
+    const deleteItem = useCallback(async () => {
+        await dispatch(removeContactActions(route.params?.id));
+        navigation.goBack();
+    }, [contact]);
+
+    const goBack = useCallback(() => {
+        navigation.goBack({
+            id: contact?.id || ''
+        })
+    }, [navigation, contact?.id])
 
 
     const onEdit = useCallback(() => {
         navigation.navigate('AddContactScreen', {
-            id: contact.id
+            id: contact?.id || ''
         });
-    }, []);
+    }, [navigation, contact?.id]);
 
     return (
         <Container>
@@ -39,10 +39,10 @@ const ContactDetail = () => {
                 <Background/>
                 <HeaderSection platform={Platform.OS}>
                     <WrapViewHeader>
-                        <ButtonBack onPress={() => navigation.goBack()}>
+                        <ButtonBack onPress={goBack}>
                             <Back source={IC_BACK}/>
                         </ButtonBack>
-                        <ButtonDone onPress={() => onEdit()}>
+                        <ButtonDone onPress={onEdit}>
                             <TextHeader>Sửa</TextHeader>
                         </ButtonDone>
                     </WrapViewHeader>
@@ -85,7 +85,7 @@ const ContactDetail = () => {
             <PhoneSection>
                 <PhoneTitle>Điện thoại</PhoneTitle>
                 <ButtonPhone>
-                    <PhoneNumber>{contact?.phone}</PhoneNumber>
+                    <PhoneNumber>{contact?.phone[0]}</PhoneNumber>
                 </ButtonPhone>
             </PhoneSection>
 

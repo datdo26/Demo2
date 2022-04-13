@@ -129,16 +129,16 @@ const Alphabet = () => {
             </SideCharView>
 
             <SectionList
-              sections={groupBy(abc).filter(result =>
-                result.keyName.toLowerCase().includes(searchText.toLowerCase()),
-              )||[]}
-              keyExtractor={(item, index) => item + index}
-              renderItem={renderItem}
-              renderSectionHeader={({section: {keyName}}) => (
-                <SectionHeader>
-                  <SectionHeaderText>{keyName.toUpperCase()} </SectionHeaderText>
-                </SectionHeader>
-              )}
+                sections={groupBy(abc).filter(result =>
+                    result.keyName.toLowerCase().includes(searchText.toLowerCase()),
+                )||[]}
+                keyExtractor={(item, index) => item + index}
+                renderItem={renderItem}
+                renderSectionHeader={({section: {keyName}}) => (
+                    <SectionHeader>
+                        <SectionHeaderText>{keyName.toUpperCase()} </SectionHeaderText>
+                    </SectionHeader>
+                )}
             />
             <KeyboardSpacer/>
         </Container>

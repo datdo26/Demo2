@@ -35,6 +35,8 @@ const Item = (props: Props) => {
                 placeholder={title}
                 value={data[index]}
                 onChangeText={onChangeInfo}
+                autoFocus={true}
+
             />
         </WrapItem>
     );
@@ -85,7 +87,7 @@ const InputInfoArray = (props: CustomInputProps) => {
 
     return (
         <WrapView>
-            {data.map((item, index) => {
+            {data?.map((item, index) => {
                 return (
                     <View key={index}>
                         <Item
