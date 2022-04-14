@@ -11,9 +11,10 @@ import {RawContact} from '../../store/types';
 import {updateContactActions, useContactIds, useContacts} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-date-picker';
-import {IC_ADD, IMG_AVTAR} from '../../assets';
+import {IC_ADD, IMG_AVTAR, IC_PROFILE} from '../../assets';
 import InputInfo from '../../components/InputInfo';
 import InputInfoArray from '../../components/InputInfoArray';
+import FastImage from "react-native-fast-image";
 
 export const defaultValue = {
     id: '',
@@ -29,11 +30,12 @@ export const defaultValue = {
 
 const AddContactScreen = () => {
     const navigation = useNavigation();
-    const [image, setImage] = useState<string>();
+    const [image, setImage] = useState('');
     const [params, setParams] = useState<RawContact>(defaultValue);
     const [date, setDate] = useState(new Date());
     const [open, setOpen] = useState(false);
     const route = useRoute();
+    // @ts-ignore
     const newContact = useContacts(route.params?.id);
 
     const onDone = useCallback(() => {
@@ -102,9 +104,7 @@ const AddContactScreen = () => {
                 keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
                 <ScrollView>
                     <AvatarBtn onPress={chooseFromLibrary}>
-                        <AvatarInput source={IMG_AVTAR} resizeMode={'cover'}>
-                            <Avatar source={{uri: image ? image : null}}/>
-                        </AvatarInput>
+                        <Avatar source={params.avatar ? {uri: params.avatar} : (image ? {uri: image} : IC_PROFILE)}/>
                     </AvatarBtn>
 
                     <Section2>
@@ -131,50 +131,36 @@ const AddContactScreen = () => {
                     </Section2>
 
                     <Section3>
-                        {/*<WrapInputDetail>*/}
-                        {/*    <Button>*/}
-                        {/*        <AddButton source={IC_ADD}/>*/}
-                        {/*    </Button>*/}
-                        {/*    <PhoneNumber*/}
-                        {/*        placeholder="Thêm số điện thoại"*/}
-                        {/*        value={params?.phone}*/}
-                        {/*        returnKeyType="done"*/}
-                        {/*        keyboardType="phone-pad"*/}
-                        {/*        placeholderTextColor={'black'}*/}
-                        {/*        onChangeText={(value: string) => {*/}
-                        {/*            onChangeText('phone', value)*/}
-                        {/*        }}*/}
-                        {/*    />*/}
-                        {/*</WrapInputDetail>*/}
-
                         <InputInfoArray
                             keyName={'phone'}
                             data={params?.phone}
-                            title={'Them so dien thoai'}
+                            title={'Thêm số điện thoại'}
                             setParams={setParams}
+                            typeKeyboard={"number-pad"}
                         />
 
                         <InputInfoArray
                             keyName={'email'}
                             data={params?.email}
-                            title={'Them email'}
+                            title={'Thêm email'}
                             setParams={setParams}
+                            typeKeyboard={'email-address'}
                         />
 
                         <InputInfoArray
                             keyName={'address'}
                             data={params?.address}
-                            title={'Them dia chi'}
+                            title={'Thêm địa chỉ'}
                             setParams={setParams}
+                            typeKeyboard={'default'}
                         />
 
-
-                        <TouchableOpacity onPress={() => setOpen(true)}>
-                            <WrapInputDetail>
+                        <TouchableOpacity onPress={() => setOpen(true)}  >
+                            <WrapInputDetail >
                                 <Button onPress={() => setOpen(true)}>
                                     <AddButton source={IC_ADD}/>
                                 </Button>
-                                <Birthday> Ngày sinh: {date.toDateString()}</Birthday>
+                                <Birthday> Ngày sinh: {params?.birthday}</Birthday>
                                 <DatePicker
                                     modal
                                     open={open}
@@ -189,8 +175,10 @@ const AddContactScreen = () => {
                                         setOpen(false);
                                     }}
                                 />
+
                             </WrapInputDetail>
                         </TouchableOpacity>
+
                     </Section3>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -212,7 +200,7 @@ const KeyboardAvoidingView = styled.KeyboardAvoidingView`
 const HeaderSection = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin: 0 16px;
+  margin: 12px 16px 0px;
 `;
 
 const Button = styled.TouchableOpacity``;
@@ -226,7 +214,7 @@ const AvatarBtn = styled.TouchableOpacity`
   margin-top: 24px;
 `;
 
-const Avatar = styled.Image`
+const Avatar = styled(FastImage)`
   width: 110px;
   height: 110px;
   border-radius: 100px;
@@ -245,11 +233,12 @@ const DoneText = styled.Text`
   letter-spacing: -0.41px;
   color: #f2a54a;
 `;
-const AvatarInput = styled.ImageBackground`
+const AvatarInput = styled.Image`
   width: 100px;
   height: 100px;
   align-self: center;
   border-radius: 100px;
+  position: absolute;
 `;
 
 const Section2 = styled.View`
@@ -257,7 +246,6 @@ const Section2 = styled.View`
 `;
 
 const WrapInputText = styled.View`
-  margin-top: 20px;
 `;
 
 const Section3 = styled.View`
@@ -269,23 +257,14 @@ const WrapInputDetail = styled.View`
   margin: 0 16px;
   border-bottom-width: 1px;
   border-bottom-color: #0000001a;
-  margin-top: 24px;
+  align-items: center;
+  height: 44px;
+  margin-top: 10px
 `;
 const AddButton = styled.Image`
   margin-top: 10px;
 `;
 
-const PhoneNumber = styled.TextInput`
-  height: 44px;
-  margin: 0 16px;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 22px;
-  letter-spacing: -0.41px;
-  text-transform: lowercase;
-`;
-const Email = styled(PhoneNumber)``;
-const Address = styled(PhoneNumber)``;
 
 const Birthday = styled.Text`
   font-weight: 500;

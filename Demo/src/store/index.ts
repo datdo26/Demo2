@@ -2,10 +2,10 @@ import {createSlice, configureStore, PayloadAction} from '@reduxjs/toolkit';
 import {RawContact} from './types';
 import {RootStateOrAny, useSelector} from 'react-redux';
 
-
 const initContacts: any = {
     byId: {},
-    query: {}
+    query: {},
+    byName:{}
 };
 const _ = require("lodash");
 
@@ -17,10 +17,9 @@ const contactSlice = createSlice({
                 const oldContacts = state;
                 const newContact = actions.payload;
                 let data = {};
-
-                // console.log('all',new Set( [...state?.query['all']|| [] , ...[newContact.id]]) )
+                console.log('newContact', newContact )
                 if (!data[newContact.id]) {
-                    data[newContact.id] = newContact
+                    data[newContact.id] = newContact;
                 } else {
                     data[newContact.id] = {}
                     data[newContact.id] = newContact;
@@ -33,6 +32,7 @@ const contactSlice = createSlice({
                     },
                     query: {
                         ...state.query,
+                        // @ts-ignore
                         all: [...new Set([...state?.query['all'] || [], newContact.id])]
                         // all: [...state?.query['all'] || [], ...[newContact.id]]
                     }
@@ -52,6 +52,7 @@ const contactSlice = createSlice({
 
                 }
             },
+
         },
     }
 );
@@ -66,6 +67,11 @@ export const store = configureStore({
 
 export const updateContactActions = (_contact: RawContact) => {
     return store.dispatch(update(_contact));
+};
+
+
+export const useContactsName = (name: string) => {
+    return useSelector((state: RootStateOrAny) => state.contactReducer.byId[name]);
 };
 
 export const removeContactActions = (key: string) => {

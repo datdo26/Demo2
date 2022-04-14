@@ -4,8 +4,6 @@ import React, {useCallback} from 'react';
 import {DrawerActions, useNavigation} from '@react-navigation/native';
 import styled from 'styled-components/native';
 import {IC_CAMERA, IC_MORE} from "../assets";
-import {Platform} from "react-native";
-import statusBarHeight from "./statusBarHeight";
 
 
 
@@ -13,14 +11,14 @@ const Header = ({title}: any) => {
   const navigation = useNavigation<any>();
   const _openDrawer = useCallback(() => {
     navigation.dispatch(DrawerActions.openDrawer());
-  }, []);
+  }, [navigation]);
 
   const _openAddContact = useCallback(() => {
     navigation.navigate('AddContactScreen');
   }, [navigation]);
 
   return (
-    <WrapView  >
+    <WrapView>
       <Button onPress={_openDrawer}>
         <More source={IC_MORE} />
       </Button>
@@ -40,6 +38,7 @@ const WrapView = styled.View`
   align-items: center;
   background-color: #fff;
   margin-bottom: 6px;
+  margin-top: 12px;
 `;
 
 const Button = styled.TouchableOpacity``;

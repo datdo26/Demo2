@@ -2,29 +2,28 @@ import {Platform, StatusBar, StyleSheet, Text, TextInput, View} from 'react-nati
 // @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
-import { removeContactActions, useContacts} from '../../store';
+import {removeContactActions, useContacts} from '../../store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import {IC_BACK, IC_CALL, IC_EMAIL, IC_MSG, IC_PROFILE, IC_VID_CALL} from "../../assets";
 import statusBarHeight from "../../components/statusBarHeight";
+import FastImage from "react-native-fast-image";
 
 const ContactDetail = () => {
     const route = useRoute();
     const dispatch = useDispatch();
     const navigation = useNavigation<any>();
-    const [image, setImage] = useState<any>(true);
-
+    // @ts-ignore
     const contact = useContacts(route.params?.id)
-
-    const deleteItem = useCallback(async () => {
-        await dispatch(removeContactActions(route.params?.id));
+    const deleteItem = useCallback(() => {
+        // @ts-ignore
+        dispatch(removeContactActions(route.params?.id));
         navigation.goBack();
     }, [contact]);
 
     const goBack = useCallback(() => {
         navigation.goBack()
     }, [navigation])
-
 
     const onEdit = useCallback(() => {
         navigation.navigate('AddContactScreen', {
@@ -47,7 +46,7 @@ const ContactDetail = () => {
                     </WrapViewHeader>
                     <Avatar
                         source={
-                            image
+                            contact.avatar
                                 ? {uri: contact?.avatar}
                                 : IC_PROFILE
                         }
@@ -83,14 +82,22 @@ const ContactDetail = () => {
 
             <PhoneSection>
                 <PhoneTitle>Điện thoại</PhoneTitle>
-                <ButtonPhone>
-                    <PhoneNumber>{contact?.phone[0]}</PhoneNumber>
-                </ButtonPhone>
+                {
+                    contact?.phone.map((item, index) => {
+                        return (
+                            <ButtonPhone>
+                                <PhoneNumber key={index}>{item}</PhoneNumber>
+                            </ButtonPhone>
+
+                        )
+                    })
+                }
             </PhoneSection>
 
             <NoteSection>
                 <NoteTitle>Ghi Chú</NoteTitle>
-                <Note/>
+                <Note
+                    multiline={true}/>
             </NoteSection>
 
             <MsgSection>
@@ -124,10 +131,8 @@ const Background = styled.View`
   left: 0;
   right: 0;
   bottom: -5px;
-  opacity: 0.5;
-
+  opacity: 0.05;
 `;
-
 
 const HeaderSection = styled.View<{ platform?: string }>`
   margin-top: ${statusBarHeight}px;
@@ -156,7 +161,7 @@ const TextHeader = styled.Text`
 `;
 const WrapView = styled.View``;
 
-const Avatar = styled.Image`
+const Avatar = styled(FastImage)`
   width: 110px;
   height: 110px;
   border-radius: 100px;
@@ -221,14 +226,14 @@ const PhoneNumber = styled.Text`
   font-size: 17px;
   letter-spacing: -0.41px;
   color: #2f80ed;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 `;
 
 const PhoneSection = styled.View`
-  margin: 0 16px;
-  margin-top: 9px;
+  margin: 9px 16px 0px;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
+  height: 44px;
 `;
 
 const PhoneTitle = styled.Text`
@@ -251,7 +256,8 @@ const NoteSection = styled.View`
 `
 
 const Note = styled.TextInput`
-  margin-top: 10px`
+  margin-bottom: 5px;
+`
 
 const ButtonMsg = styled.TouchableOpacity`
   margin-bottom: 10px;

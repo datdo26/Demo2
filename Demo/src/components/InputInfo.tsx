@@ -20,6 +20,7 @@ const InputInfo = (props: Props) => {
     );
 
     return (
+        // @ts-ignore
         <InputValue
             {...restProps}
             placeholder={title}

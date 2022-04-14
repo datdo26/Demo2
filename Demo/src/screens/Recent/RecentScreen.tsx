@@ -6,7 +6,6 @@ import styled from 'styled-components/native';
 import {IC_INFO_OUTLINE, IC_PHONE} from "../../assets";
 
 
-
 const RecentScreen = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>

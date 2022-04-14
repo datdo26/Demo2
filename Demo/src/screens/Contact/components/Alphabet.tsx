@@ -1,8 +1,7 @@
 import {
     TouchableOpacity,
-    StyleSheet,
     SectionList,
-    ScrollView,
+    ScrollView, PixelRatio,
 } from 'react-native';
 // @ts-ignore
 import React, {useCallback, useState} from 'react';
@@ -10,11 +9,12 @@ import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 // @ts-ignore
-import _ from 'lodash';
+import _, {first, result} from 'lodash';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {IC_PROFILE, IC_SEARCH} from '../../../assets';
-import {store, useContactIds} from "../../../store";
-
+import {store, useContactIds, useContactsName} from "../../../store";
+import FastImage from "react-native-fast-image";
+import {RawContact} from "../../../store/types";
 const char = [
     'A',
     'B',
@@ -45,6 +45,7 @@ const char = [
 ];
 const groupBy = items => {
     const _obj = _.groupBy(items, item => item.firstName[0]);
+    console.log('_obj', _obj)
     return Object.keys(_obj).map(item => {
         return {
             keyName: item,
@@ -63,20 +64,33 @@ const getObject = ids => {
 };
 
 
+
 const Alphabet = () => {
     const navigation = useNavigation<any>();
     const [searchText, setSearchText] = useState('');
-    const [image, setImage] = useState<any>(Boolean);
+    const [filterData, setFilterData] = useState([])
     const contacts = useSelector((state: any) => state.contactReducer);
-    const ids = useContactIds('all');
-    const abc = getObject(ids) ;
+    const contact_ids = useContactIds('all');
+    const contactData = getObject(contact_ids);
 
-    console.log('abc', abc)
+    const searchFilter = useCallback((text: string) => {
+        if(text){
+            const newData: RawContact[] = Object.values(contact_ids)
+            const Data = newData.filter(item => {
+                return item.firstName.includes(text)
+            })
+            setFilterData(Data)
+            setSearchText(text)
+        } else {
+            setFilterData(Object.values(contact_ids))
+            setSearchText(text)
+        }
+    }, [])
 
     const handleNavigation = useCallback(
         ({item}) => {
             navigation.navigate('ContactDetail', {
-                id: item.id
+                id: item.id,
             });
         },
         [contacts],
@@ -87,18 +101,19 @@ const Alphabet = () => {
             <ScrollView>
                 <TouchableOpacity onPress={() => handleNavigation({item})}>
                     <WrapCard>
-                        <Avatar source={image ? IC_PROFILE : {uri: item.avatar}}/>
+                        <Avatar source={item?.avatar ? {uri: item.avatar} : IC_PROFILE}/>
                         <WrapText>
                             <Name>
                                 {item.firstName} {item.lastName}
                             </Name>
-                            <PhoneNumber>{item.phone}</PhoneNumber>
+                            <PhoneNumber>{item.phone[item.phone.length - 1]}</PhoneNumber>
                         </WrapText>
                     </WrapCard>
                 </TouchableOpacity>
             </ScrollView>
         );
     };
+
     return (
         <Container>
             <SearchSection>
@@ -124,24 +139,28 @@ const Alphabet = () => {
                 </SideChar>
             </SideCharView>
 
+
             <SectionList
-                sections={groupBy(abc).filter(result =>
+                sections={groupBy(contactData).filter(result =>
                     result.keyName.toLowerCase().includes(searchText.toLowerCase()),
                 ) || []}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderItem}
+
                 renderSectionHeader={({section: {keyName}}) => (
                     <SectionHeader>
                         <SectionHeaderText>{keyName.toUpperCase()} </SectionHeaderText>
                     </SectionHeader>
                 )}
             />
+            {
+
+            }
             <KeyboardSpacer/>
         </Container>
     );
 };
 
-const styles = StyleSheet.create({});
 
 export default Alphabet;
 
@@ -151,7 +170,7 @@ const Container = styled.View`
 const SideCharView = styled.View`
   position: absolute;
   z-index: 1;
-  right: 0px;
+  right: 0;
 `;
 
 const SideChar = styled.View`
@@ -171,27 +190,31 @@ const SideCharText = styled.Text`
 `;
 
 const Name = styled.Text`
-  font-weight: 600;
   font-size: 16px;
   line-height: 16px;
   letter-spacing: 0.12px;
   color: #333333;
+  font-weight: 500;
+  margin-top: 12px;
 `;
 
-const Avatar = styled.Image`
-  width: 50px;
-  height: 50px;
-  margin-horizontal: 16px;
+const Avatar = styled(FastImage)`
+  width: 40px;
+  height: 40px;
+  margin: 0 16px;
   border-radius: 100px;
 `;
 
 const PhoneNumber = styled.Text`
-  font-weight: 400;
   font-size: 14px;
   line-height: 16px;
+  text-align: center;
   letter-spacing: 0.12px;
   color: #828282;
-  margin-top: 5px;
+  text-align: left;
+  margin-top: 8px;
+  font-weight: 400;
+  margin-bottom: 10px;
 `;
 
 const SearchSection = styled.View`
@@ -200,13 +223,11 @@ const SearchSection = styled.View`
   flex-direction: row;
   height: 36px;
   align-items: center;
-  margin: 0 10px;
-  margin-bottom: 9px;
+  margin: 4px 10px 9px;
   opacity: 0.5;
-  margin-top: 4px;
 `;
 
-const SearchIcon = styled.Image`
+const SearchIcon = styled(FastImage)`
   width: 16px;
   height: 16px;
   margin-left: 9px;
@@ -220,21 +241,23 @@ const SearchInput = styled.TextInput`
   letter-spacing: 0.12px;
 `
 
-const WrapText = styled.View``;
+const WrapText = styled.View`
+  border-bottom-width: 0.5px;
+  border-bottom-color: rgba(0, 0, 0, 0.1);
+  width: 273px;
+`;
 const WrapCard = styled.View`
   background-color: white;
-  height: 80px;
+  height: 64px;
   align-items: center;
   flex-direction: row;
-  border-bottom-width: 0.5px;
-  border-bottom-color: #0000001a;
+
 `;
 
 const SectionHeader = styled.View`
-  background-color: #E0E0E0;
+  background-color: #f2f2f2;
   height: 36px;
   justify-content: center;
-  opacity: 0.5;
 `;
 
 const SectionHeaderText = styled.Text`
