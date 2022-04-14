@@ -233,7 +233,6 @@ const PhoneSection = styled.View`
   margin: 9px 16px 0px;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
-  height: 44px;
 `;
 
 const PhoneTitle = styled.Text`

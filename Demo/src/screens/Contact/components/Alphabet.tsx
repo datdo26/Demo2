@@ -96,6 +96,7 @@ const Alphabet = () => {
         [contacts],
     );
 
+
     const renderItem = ({item}) => {
         return (
             <ScrollView>
@@ -146,7 +147,6 @@ const Alphabet = () => {
                 ) || []}
                 keyExtractor={(item, index) => item + index}
                 renderItem={renderItem}
-
                 renderSectionHeader={({section: {keyName}}) => (
                     <SectionHeader>
                         <SectionHeaderText>{keyName.toUpperCase()} </SectionHeaderText>
