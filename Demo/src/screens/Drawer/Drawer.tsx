@@ -13,6 +13,7 @@ const Drawer = createDrawerNavigator();
 
 const CustomDrawer = props => {
     const [isActive, setIsActive] = useState(true);
+
     const BtnCollections = useCallback(() => {
         setIsActive(!isActive);
     }, [isActive]);

@@ -1,189 +1,200 @@
 import {
-    ScrollView,
-    TouchableOpacity,
-    Platform,
+  ScrollView,
+  TouchableOpacity,
+  Platform,
+  TextInput,
+  View,
 } from 'react-native';
 // @ts-ignore
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {RawContact} from '../../store/types';
-import {updateContactActions, useContactIds, useContacts} from '../../store';
+import {updateContactActions, useContacts} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-date-picker';
-import {IC_ADD,  IC_PROFILE} from '../../assets';
+import {IC_ADD, IC_PROFILE} from '../../assets';
 import InputInfo from '../../components/InputInfo';
 import InputInfoArray from '../../components/InputInfoArray';
-import FastImage from "react-native-fast-image";
-
+import FastImage from 'react-native-fast-image';
 export const defaultValue = {
-    id: '',
-    firstName: '',
-    lastName: '',
-    company: '',
-    phone: [],
-    email: [],
-    address: [],
-    birthday: '',
-    avatar: '',
+  id: '',
+  firstName: '',
+  lastName: '',
+  company: '',
+  phone: [],
+  email: [],
+  address: [],
+  birthday: '',
+  avatar: '',
 };
 
 const AddContactScreen = () => {
-    const navigation = useNavigation();
-    const [image, setImage] = useState('');
-    const [params, setParams] = useState<RawContact>(defaultValue);
-    const [date, setDate] = useState(new Date());
-    const [open, setOpen] = useState(false);
-    const route = useRoute();
-    // @ts-ignore
-    const newContact = useContacts(route.params?.id);
+  const navigation = useNavigation();
+  const [image, setImage] = useState('');
+  const [params, setParams] = useState<RawContact>(defaultValue);
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const route = useRoute();
+  const [values, setValues] = useState({firstName: ''});
+  const [isActive, setIsActive] = useState(false);
 
-    const onDone = useCallback(() => {
-        updateContactActions(
-            params?.id
-                ? {...params, avatar: image}
-                : {...params, id: `${new Date().getTime()}`, avatar: image},
-        );
-        setTimeout(() => {
-            navigation.goBack();
-        }, 200);
-        setParams(defaultValue);
-        setImage('');
-    }, [params, image]);
+  // @ts-ignore
+  const newContact = useContacts(route.params?.id);
 
-    const chooseFromLibrary = () => {
-        ImagePicker.openPicker({
-            width: 300,
-            height: 400,
-            cropping: false,
-            compressImageQuality: 0.7,
-        })
-            .then(image => {
-                setImage(image.path);
-            })
-            .catch(error => {
-                if (error.code === 'E_PICKER_CANCELLED') {
-                    return false;
-                }
-            });
-    };
-    useEffect(() => {
-        if (!route.params) {
-            return;
+  const onDone = useCallback(() => {
+    updateContactActions(
+      params?.id
+        ? {...params, avatar: image}
+        : {...params, id: `${new Date().getTime()}`, avatar: image},
+    );
+    setTimeout(() => {
+      navigation.goBack();
+    }, 200);
+    setParams(defaultValue);
+    setImage('');
+  }, [params, image]);
+
+  const chooseFromLibrary = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: false,
+      compressImageQuality: 0.7,
+    })
+      .then(image => {
+        setImage(image.path);
+      })
+      .catch(error => {
+        if (error.code === 'E_PICKER_CANCELLED') {
+          return false;
         }
-        setParams(newContact);
-    }, [route.params]);
-    const onCancel = useCallback(() => {
-        navigation.goBack();
-    }, [newContact]);
+      });
+  };
+  useEffect(() => {
+    if (!route.params) {
+      return;
+    }
+    setParams(newContact);
+  }, [route.params]);
+  const onCancel = useCallback(() => {
+    navigation.goBack();
+  }, [newContact]);
 
-    const onChangeText = useCallback(
-        (keyName: string, value: string) => {
-            setParams({
-                ...params,
-                [keyName]: value,
-            });
-        },
-        [params],
-    );
+  const onChangeText = useCallback(
+    (keyName: string, value: string) => {
+      setParams({
+        ...params,
+        [keyName]: value,
+      });
+    },
+    [params],
+  );
 
-    return (
-        <Container>
-            <Section1>
-                <HeaderSection>
-                    <Button onPress={onCancel}>
-                        <CancelText>Huỷ</CancelText>
-                    </Button>
-                    <Button onPress={onDone}>
-                        <DoneText>Xong</DoneText>
-                    </Button>
-                </HeaderSection>
-            </Section1>
-            <KeyboardAvoidingView
-                behavior={'padding'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-                <ScrollView>
-                    <AvatarBtn onPress={chooseFromLibrary}>
-                        <Avatar source={params.avatar ? {uri: params.avatar} : (image ? {uri: image} : IC_PROFILE)}/>
-                    </AvatarBtn>
+  return (
+    <Container>
+      <Section1>
+        <HeaderSection>
+          <Button onPress={onCancel}>
+            <CancelText>Huỷ</CancelText>
+          </Button>
+          <Button onPress={onDone}>
+            <DoneText>Xong</DoneText>
+          </Button>
+        </HeaderSection>
+      </Section1>
+      <KeyboardAvoidingView
+        behavior={'padding'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
+        <ScrollView>
+          <AvatarBtn onPress={chooseFromLibrary}>
+            <Avatar
+              source={
+                params.avatar
+                  ? {uri: params.avatar}
+                  : image
+                  ? {uri: image}
+                  : IC_PROFILE
+              }
+            />
+          </AvatarBtn>
 
-                    <Section2>
-                        <WrapInputText>
-                            <InputInfo
-                                title={'Họ'}
-                                keyName={'firstName'}
-                                value={params?.firstName}
-                                onChangeValue={onChangeText}
-                            />
-                            <InputInfo
-                                title={'Tên'}
-                                keyName={'lastName'}
-                                value={params?.lastName}
-                                onChangeValue={onChangeText}
-                            />
-                            <InputInfo
-                                title={'Công ty'}
-                                keyName={'company'}
-                                value={params?.company}
-                                onChangeValue={onChangeText}
-                            />
-                        </WrapInputText>
-                    </Section2>
+          <Section2>
+            <WrapInputText>
+              <InputInfo
+                title={'Họ'}
+                keyName={'firstName'}
+                value={params?.firstName}
+                onChangeValue={onChangeText}
+              />
 
-                    <Section3>
-                        <InputInfoArray
-                            keyName={'phone'}
-                            data={params?.phone}
-                            title={'Thêm số điện thoại'}
-                            setParams={setParams}
-                            typeKeyboard={"number-pad"}
-                        />
+              <InputInfo
+                title={'Tên'}
+                keyName={'lastName'}
+                value={params?.lastName}
+                onChangeValue={onChangeText}
+              />
+              <InputInfo
+                title={'Công ty'}
+                keyName={'company'}
+                value={params?.company}
+                onChangeValue={onChangeText}
+              />
+            </WrapInputText>
+          </Section2>
 
-                        <InputInfoArray
-                            keyName={'email'}
-                            data={params?.email}
-                            title={'Thêm email'}
-                            setParams={setParams}
-                            typeKeyboard={'email-address'}
-                        />
+          <Section3>
+            <InputInfoArray
+              keyName={'phone'}
+              data={params?.phone}
+              title={'Thêm số điện thoại'}
+              setParams={setParams}
+              typeKeyboard={'number-pad'}
+            />
 
-                        <InputInfoArray
-                            keyName={'address'}
-                            data={params?.address}
-                            title={'Thêm địa chỉ'}
-                            setParams={setParams}
-                            typeKeyboard={'default'}
-                        />
+            <InputInfoArray
+              keyName={'email'}
+              data={params?.email}
+              title={'Thêm email'}
+              setParams={setParams}
+              typeKeyboard={'email-address'}
+            />
 
-                        <TouchableOpacity onPress={() => setOpen(true)}  >
-                            <WrapInputDetail >
-                                <Button onPress={() => setOpen(true)}>
-                                    <AddButton source={IC_ADD}/>
-                                </Button>
-                                <Birthday> Ngày sinh: {params?.birthday}</Birthday>
-                                <DatePicker
-                                    modal
-                                    open={open}
-                                    date={date}
-                                    mode={'date'}
-                                    onConfirm={date => {
-                                        setOpen(false);
-                                        setDate(date);
-                                        onChangeText('birthday', date.toDateString());
-                                    }}
-                                    onCancel={() => {
-                                        setOpen(false);
-                                    }}
-                                />
+            <InputInfoArray
+              keyName={'address'}
+              data={params?.address}
+              title={'Thêm địa chỉ'}
+              setParams={setParams}
+              typeKeyboard={'default'}
+            />
 
-                            </WrapInputDetail>
-                        </TouchableOpacity>
-
-                    </Section3>
-                </ScrollView>
-            </KeyboardAvoidingView>
-        </Container>
-    );
+            <TouchableOpacity onPress={() => setOpen(true)}>
+              <WrapInputDetail>
+                <Button onPress={() => setOpen(true)}>
+                  <AddButton source={IC_ADD} />
+                </Button>
+                <Birthday> Ngày sinh: {params?.birthday}</Birthday>
+                <DatePicker
+                  modal
+                  open={open}
+                  date={date}
+                  mode={'date'}
+                  onConfirm={date => {
+                    setOpen(false);
+                    setDate(date);
+                    onChangeText('birthday', date.toDateString());
+                  }}
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                />
+              </WrapInputDetail>
+            </TouchableOpacity>
+          </Section3>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Container>
+  );
 };
 
 export default AddContactScreen;
@@ -245,8 +256,7 @@ const Section2 = styled.View`
   margin-top: 20px;
 `;
 
-const WrapInputText = styled.View`
-`;
+const WrapInputText = styled.View``;
 
 const Section3 = styled.View`
   margin-top: 24px;
@@ -254,17 +264,14 @@ const Section3 = styled.View`
 
 const WrapInputDetail = styled.View`
   flex-direction: row;
-  margin: 0 16px;
+  margin: 10px 16px 0;
   border-bottom-width: 1px;
   border-bottom-color: #0000001a;
-  align-items: center;
   height: 44px;
-  margin-top: 10px
 `;
 const AddButton = styled.Image`
   margin-top: 10px;
 `;
-
 
 const Birthday = styled.Text`
   font-weight: 500;
@@ -272,5 +279,5 @@ const Birthday = styled.Text`
   letter-spacing: -0.41px;
   color: #333333;
   margin-left: 14px;
-  margin-top: 10px;;
+  margin-top: 10px; ;
 `;

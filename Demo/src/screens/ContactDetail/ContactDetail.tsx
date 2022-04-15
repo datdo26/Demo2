@@ -1,4 +1,4 @@
-import {Platform, StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Alert, Platform, StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
@@ -15,21 +15,36 @@ const ContactDetail = () => {
     const navigation = useNavigation<any>();
     // @ts-ignore
     const contact = useContacts(route.params?.id)
-    const deleteItem = useCallback(() => {
-        // @ts-ignore
-        dispatch(removeContactActions(route.params?.id));
-        navigation.goBack();
-    }, [contact]);
+
 
     const goBack = useCallback(() => {
         navigation.goBack()
     }, [navigation])
+
 
     const onEdit = useCallback(() => {
         navigation.navigate('AddContactScreen', {
             id: contact?.id || ''
         });
     }, [navigation, contact?.id]);
+
+    const onAlert = useCallback(() => {
+        Alert.alert('Delete Contact', '', [
+            {
+                text: "Delete",
+                style: 'cancel',
+                onPress: () => {
+                    // @ts-ignore
+                    dispatch(removeContactActions(route.params?.id));
+                    navigation.goBack()
+                }
+            },
+            {
+                text: 'Cancel',
+                style: 'default'
+            }
+        ])
+    }, [contact])
 
     return (
         <Container>
@@ -107,7 +122,7 @@ const ContactDetail = () => {
             </MsgSection>
 
             <DeleteSection>
-                <ButtonMsg onPress={deleteItem}>
+                <ButtonMsg onPress={onAlert}>
                     <DeleteTitle>Xoá người gọi</DeleteTitle>
                 </ButtonMsg>
             </DeleteSection>
@@ -117,7 +132,6 @@ const ContactDetail = () => {
 
 export default ContactDetail;
 
-const styles = StyleSheet.create({});
 
 const Container = styled.View`
   background-color: #fff;
@@ -230,7 +244,7 @@ const PhoneNumber = styled.Text`
 `;
 
 const PhoneSection = styled.View`
-  margin: 9px 16px 0px;
+  margin: 9px 16px 0;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
 `;
@@ -248,8 +262,7 @@ const NoteTitle = styled(PhoneTitle)`
 `;
 
 const NoteSection = styled.View`
-  margin: 0 16px;
-  margin-top: 8px;
+  margin: 8px 16px 0;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
 `

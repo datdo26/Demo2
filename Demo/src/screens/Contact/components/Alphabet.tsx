@@ -15,7 +15,6 @@ import {IC_PROFILE, IC_SEARCH} from '../../../assets';
 import {store, useContactIds} from "../../../store";
 import FastImage from "react-native-fast-image";
 import {RawContact} from "../../../store/types";
-
 const char = [
     'A',
     'B',
@@ -101,7 +100,8 @@ const Alphabet = () => {
         return {length: 64, offset: 64 * index, index}
     }
 
-    const onScrollToLocation = (index) => {
+    const onScrollToLocation = useCallback((key: string) => {
+        const index = groupBy(contactData).map(item=>item.keyName).indexOf(key)
         // @ts-ignore
         listRef.current.scrollToLocation({
             animated: true,
@@ -109,8 +109,7 @@ const Alphabet = () => {
             sectionIndex: index,
             viewOffset: 0
         })
-    }
-
+    }, [contactData])
 
 
     const renderItem = ({item}) => {
@@ -153,7 +152,7 @@ const Alphabet = () => {
                     {char.map((char, key) =>
                     {
                         return (
-                            <SideCharBtn key={key} onPress={onScrollToLocation}>
+                            <SideCharBtn key={key} onPress={()=> onScrollToLocation(char)}>
                                 <SideCharText>{char}</SideCharText>
                             </SideCharBtn>
                         )
@@ -176,6 +175,7 @@ const Alphabet = () => {
                 getItemLayout={getItemLayout}
                 showsVerticalScrollIndicator={false}
             />
+
             <KeyboardSpacer/>
 
         </Container>
