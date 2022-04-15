@@ -17,7 +17,6 @@ const contactSlice = createSlice({
                 const oldContacts = state;
                 const newContact = actions.payload;
                 let data = {};
-                console.log('newContact', newContact )
                 if (!data[newContact.id]) {
                     data[newContact.id] = newContact;
                 } else {
@@ -69,10 +68,6 @@ export const updateContactActions = (_contact: RawContact) => {
     return store.dispatch(update(_contact));
 };
 
-
-export const useContactsName = (name: string) => {
-    return useSelector((state: RootStateOrAny) => state.contactReducer.byId[name]);
-};
 
 export const removeContactActions = (key: string) => {
     return store.dispatch(remove({key}));

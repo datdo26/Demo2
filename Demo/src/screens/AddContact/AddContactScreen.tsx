@@ -11,7 +11,7 @@ import {RawContact} from '../../store/types';
 import {updateContactActions, useContactIds, useContacts} from '../../store';
 import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-date-picker';
-import {IC_ADD, IMG_AVTAR, IC_PROFILE} from '../../assets';
+import {IC_ADD,  IC_PROFILE} from '../../assets';
 import InputInfo from '../../components/InputInfo';
 import InputInfoArray from '../../components/InputInfoArray';
 import FastImage from "react-native-fast-image";

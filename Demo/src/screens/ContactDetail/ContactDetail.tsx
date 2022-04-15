@@ -86,7 +86,7 @@ const ContactDetail = () => {
                     contact?.phone.map((item, index) => {
                         return (
                             <ButtonPhone>
-                                <PhoneNumber key={index}>{item}</PhoneNumber>
+                                <PhoneNumber>{item}</PhoneNumber>
                             </ButtonPhone>
 
                         )

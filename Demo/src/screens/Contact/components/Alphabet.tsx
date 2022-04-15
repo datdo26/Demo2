@@ -4,7 +4,7 @@ import {
     ScrollView, PixelRatio,
 } from 'react-native';
 // @ts-ignore
-import React, {useCallback, useState} from 'react';
+import React, {memo, useCallback, useRef, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
@@ -12,9 +12,10 @@ import {useSelector} from 'react-redux';
 import _, {first, result} from 'lodash';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {IC_PROFILE, IC_SEARCH} from '../../../assets';
-import {store, useContactIds, useContactsName} from "../../../store";
+import {store, useContactIds} from "../../../store";
 import FastImage from "react-native-fast-image";
 import {RawContact} from "../../../store/types";
+
 const char = [
     'A',
     'B',
@@ -45,7 +46,6 @@ const char = [
 ];
 const groupBy = items => {
     const _obj = _.groupBy(items, item => item.firstName[0]);
-    console.log('_obj', _obj)
     return Object.keys(_obj).map(item => {
         return {
             keyName: item,
@@ -64,7 +64,6 @@ const getObject = ids => {
 };
 
 
-
 const Alphabet = () => {
     const navigation = useNavigation<any>();
     const [searchText, setSearchText] = useState('');
@@ -72,20 +71,22 @@ const Alphabet = () => {
     const contacts = useSelector((state: any) => state.contactReducer);
     const contact_ids = useContactIds('all');
     const contactData = getObject(contact_ids);
+    const listRef = useRef()
 
     const searchFilter = useCallback((text: string) => {
-        if(text){
-            const newData: RawContact[] = Object.values(contact_ids)
+        if (text) {
+            const newData: RawContact[] = Object.values(contactData)
             const Data = newData.filter(item => {
                 return item.firstName.includes(text)
             })
             setFilterData(Data)
             setSearchText(text)
         } else {
-            setFilterData(Object.values(contact_ids))
+            setFilterData(Object.values(contactData))
             setSearchText(text)
         }
-    }, [])
+    }, [contactData])
+
 
     const handleNavigation = useCallback(
         ({item}) => {
@@ -95,6 +96,21 @@ const Alphabet = () => {
         },
         [contacts],
     );
+
+    const getItemLayout = (data, index) => {
+        return {length: 64, offset: 64 * index, index}
+    }
+
+    const onScrollToLocation = (index) => {
+        // @ts-ignore
+        listRef.current.scrollToLocation({
+            animated: true,
+            itemIndex: 0,
+            sectionIndex: index,
+            viewOffset: 0
+        })
+    }
+
 
 
     const renderItem = ({item}) => {
@@ -115,6 +131,7 @@ const Alphabet = () => {
         );
     };
 
+
     return (
         <Container>
             <SearchSection>
@@ -125,38 +142,42 @@ const Alphabet = () => {
                     placeholder={'Tìm kiếm danh bạ'}
                     placeholderTextColor='black'
                     onChangeText={text => {
-                        setSearchText(text);
+                        searchFilter(text);
                     }}
+                    value={searchText}
                 />
             </SearchSection>
 
             <SideCharView>
                 <SideChar>
-                    {char.map((char, key) => (
-                        <SideCharBtn key={key}>
-                            <SideCharText>{char}</SideCharText>
-                        </SideCharBtn>
-                    ))}
+                    {char.map((char, key) =>
+                    {
+                        return (
+                            <SideCharBtn key={key} onPress={onScrollToLocation}>
+                                <SideCharText>{char}</SideCharText>
+                            </SideCharBtn>
+                        )
+                    }
+
+                    )}
                 </SideChar>
             </SideCharView>
 
-
             <SectionList
-                sections={groupBy(contactData).filter(result =>
-                    result.keyName.toLowerCase().includes(searchText.toLowerCase()),
-                ) || []}
-                keyExtractor={(item, index) => item + index}
+                sections={searchText ? Object.values(groupBy(filterData)) : Object.values(groupBy(contactData))}
                 renderItem={renderItem}
+                ref={listRef}
+                keyExtractor={(item) => `key-${item.id}` }
                 renderSectionHeader={({section: {keyName}}) => (
                     <SectionHeader>
                         <SectionHeaderText>{keyName.toUpperCase()} </SectionHeaderText>
                     </SectionHeader>
                 )}
+                getItemLayout={getItemLayout}
+                showsVerticalScrollIndicator={false}
             />
-            {
-
-            }
             <KeyboardSpacer/>
+
         </Container>
     );
 };
@@ -208,7 +229,6 @@ const Avatar = styled(FastImage)`
 const PhoneNumber = styled.Text`
   font-size: 14px;
   line-height: 16px;
-  text-align: center;
   letter-spacing: 0.12px;
   color: #828282;
   text-align: left;
