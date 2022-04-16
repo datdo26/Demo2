@@ -2,17 +2,16 @@ import {StatusBar} from 'react-native';
 // @ts-ignore
 import React from 'react';
 import Header from '../../components/Header';
-import Alphabet from './components/Alphabet';
+import  {AlphabetScreen} from './components/Alphabet';
 import styled from 'styled-components/native';
 
 
 const ContactScreen = () => {
-
   return (
     <SafeAreaView>
       <StatusBar hidden={false} />
       <Header title="Liên hệ" />
-      <Alphabet />
+      <AlphabetScreen />
     </SafeAreaView>
   );
 };

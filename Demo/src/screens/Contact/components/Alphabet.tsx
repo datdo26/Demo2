@@ -1,13 +1,12 @@
 import {
     TouchableOpacity,
     SectionList,
-    ScrollView, PixelRatio,
+    ScrollView
 } from 'react-native';
 // @ts-ignore
 import React, {memo, useCallback, useRef, useState} from 'react';
 import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
 // @ts-ignore
 import _, {first, result} from 'lodash';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
@@ -15,6 +14,7 @@ import {IC_PROFILE, IC_SEARCH} from '../../../assets';
 import {store, useContactIds} from "../../../store";
 import FastImage from "react-native-fast-image";
 import {RawContact} from "../../../store/types";
+
 const char = [
     'A',
     'B',
@@ -54,20 +54,19 @@ const groupBy = items => {
 };
 
 const getObject = ids => {
-    let a = [];
+    let contact_array = [];
     ids?.map(item => {
         const contact = store.getState().contactReducer.byId[item]
-        a.push(contact)
+        contact_array.push(contact)
     })
-    return a
+    return contact_array
 };
 
 
-const Alphabet = () => {
+export const AlphabetScreen = memo(function Alphabet() {
     const navigation = useNavigation<any>();
     const [searchText, setSearchText] = useState('');
     const [filterData, setFilterData] = useState([])
-    const contacts = useSelector((state: any) => state.contactReducer);
     const contact_ids = useContactIds('all');
     const contactData = getObject(contact_ids);
     const listRef = useRef()
@@ -87,32 +86,19 @@ const Alphabet = () => {
     }, [contactData])
 
 
-    const handleNavigation = useCallback(
-        ({item}) => {
-            navigation.navigate('ContactDetail', {
-                id: item.id,
-            });
-        },
-        [contacts],
-    );
-
     const getItemLayout = (data, index) => {
         return {length: 64, offset: 64 * index, index}
     }
 
-    const onScrollToLocation = useCallback((key: string) => {
-        const index = groupBy(contactData).map(item=>item.keyName).indexOf(key)
-        // @ts-ignore
-        listRef.current.scrollToLocation({
-            animated: true,
-            itemIndex: 0,
-            sectionIndex: index,
-            viewOffset: 0
-        })
-    }, [contactData])
-
-
-    const renderItem = ({item}) => {
+    const renderItem = useCallback(({item}) => {
+        const handleNavigation = useCallback(
+            ({item}) => {
+                navigation.navigate('ContactDetail', {
+                    id: item.id,
+                });
+            },
+            [navigation],
+        );
         return (
             <ScrollView>
                 <TouchableOpacity onPress={() => handleNavigation({item})}>
@@ -128,8 +114,32 @@ const Alphabet = () => {
                 </TouchableOpacity>
             </ScrollView>
         );
-    };
+    },[navigation])
 
+    const SideChar = useCallback(() => {
+        const onScrollToLocation = useCallback((key: string) => {
+            const index = groupBy(contactData).map(item => item.keyName).indexOf(key)
+            // @ts-ignore
+            listRef.current.scrollToLocation({
+                animated: true,
+                itemIndex: 0,
+                sectionIndex: index,
+                viewOffset: 0
+            })
+        }, [contactData])
+        return (
+            <Char>
+            {char.map((char, key) => {
+                    return (
+                        <SideCharBtn key={key} onPress={() => onScrollToLocation(char)}>
+                            <SideCharText>{char}</SideCharText>
+                        </SideCharBtn>
+                    )
+                }
+            )}
+        </Char>)
+
+    }, [contactData])
 
     return (
         <Container>
@@ -138,35 +148,22 @@ const Alphabet = () => {
                     source={IC_SEARCH}
                 />
                 <SearchInput
-                    placeholder={'Tìm kiếm danh bạ'}
+                    placeholder={"Tìm kiếm ở đây"}
                     placeholderTextColor='black'
-                    onChangeText={text => {
-                        searchFilter(text);
-                    }}
+                    onChangeText={searchFilter}
                     value={searchText}
                 />
             </SearchSection>
 
             <SideCharView>
-                <SideChar>
-                    {char.map((char, key) =>
-                    {
-                        return (
-                            <SideCharBtn key={key} onPress={()=> onScrollToLocation(char)}>
-                                <SideCharText>{char}</SideCharText>
-                            </SideCharBtn>
-                        )
-                    }
-
-                    )}
-                </SideChar>
+               <SideChar/>
             </SideCharView>
 
             <SectionList
                 sections={searchText ? Object.values(groupBy(filterData)) : Object.values(groupBy(contactData))}
                 renderItem={renderItem}
                 ref={listRef}
-                keyExtractor={(item) => `key-${item.id}` }
+                keyExtractor={(item, index) => item + index}
                 renderSectionHeader={({section: {keyName}}) => (
                     <SectionHeader>
                         <SectionHeaderText>{keyName.toUpperCase()} </SectionHeaderText>
@@ -177,13 +174,11 @@ const Alphabet = () => {
             />
 
             <KeyboardSpacer/>
-
         </Container>
     );
-};
+})
 
 
-export default Alphabet;
 
 const Container = styled.View`
   flex: 1`
@@ -194,7 +189,7 @@ const SideCharView = styled.View`
   right: 0;
 `;
 
-const SideChar = styled.View`
+const Char = styled.View`
   right: 10px;
   top: 50px;
 `;
@@ -259,6 +254,7 @@ const SearchInput = styled.TextInput`
   font-size: 13px;
   line-height: 16px;
   letter-spacing: 0.12px;
+  flex: auto;
 `
 
 const WrapText = styled.View`

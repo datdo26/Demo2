@@ -1,4 +1,4 @@
-import {Alert, Platform, StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Alert, Platform, View} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
@@ -44,6 +44,20 @@ const ContactDetail = () => {
                 style: 'default'
             }
         ])
+    }, [contact])
+
+    const PhoneList = useCallback(() => {
+        return (
+            contact?.phone.map((item) => {
+                return (
+                    <ButtonPhone>
+                        <PhoneNumber>{item}</PhoneNumber>
+                    </ButtonPhone>
+
+                )
+            })
+        )
+
     }, [contact])
 
     return (
@@ -97,16 +111,7 @@ const ContactDetail = () => {
 
             <PhoneSection>
                 <PhoneTitle>Điện thoại</PhoneTitle>
-                {
-                    contact?.phone.map((item, index) => {
-                        return (
-                            <ButtonPhone>
-                                <PhoneNumber>{item}</PhoneNumber>
-                            </ButtonPhone>
-
-                        )
-                    })
-                }
+                <PhoneList/>
             </PhoneSection>
 
             <NoteSection>
@@ -230,9 +235,10 @@ const TextButtonMail = styled.Text`
   color: #bdbdbd;
 `;
 
-const ButtonPhone = styled(Button)`
+const ButtonPhone = styled.TouchableOpacity`
   margin-top: 3px;
   align-items: flex-start;
+
 `;
 
 const PhoneNumber = styled.Text`
@@ -240,7 +246,7 @@ const PhoneNumber = styled.Text`
   font-size: 17px;
   letter-spacing: -0.41px;
   color: #2f80ed;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 `;
 
 const PhoneSection = styled.View`
@@ -255,9 +261,15 @@ const PhoneTitle = styled.Text`
   line-height: 22px;
   letter-spacing: -0.41px;
   color: #333333;
+  margin-top: 9px;
 `;
 
-const NoteTitle = styled(PhoneTitle)`
+const NoteTitle = styled.Text`
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 22px;
+  letter-spacing: -0.41px;
+  color: #333333;
   margin-top: 9px;
 `;
 
