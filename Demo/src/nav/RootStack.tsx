@@ -32,7 +32,6 @@ const RootStack = () => {
           name="MainTab"
           component={MainTab}
           options={{headerShown: false}}
-          key={'key-123'}
         />
         <Stack.Screen
           name="AddContactScreen"

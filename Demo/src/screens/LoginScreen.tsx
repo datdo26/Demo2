@@ -5,6 +5,7 @@ import {Dimensions} from 'react-native';
 import {IMG_BANNER, IMG_LOGIN_CIRCLE, IMG_LOGO} from '../assets';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../nav/RootStack';
+import FastImage from "react-native-fast-image";
 
 const {width} = Dimensions.get('window');
 
@@ -18,7 +19,7 @@ const Section1 = styled.View`
   justify-content: flex-end;
 `;
 
-const Banner = styled.Image`
+const Banner = styled(FastImage)`
   position: absolute;
   z-index: -1;
   bottom: 0;
@@ -27,7 +28,7 @@ const Banner = styled.Image`
   height: ${(width * 9) / 16}px;
 `;
 
-const LogoApp = styled.Image`
+const LogoApp = styled(FastImage)`
   width: 160px;
   height: 160px;
   align-self: center;
@@ -60,7 +61,7 @@ const RemainingView = styled.View`
   justify-content: center;
 `;
 
-const Circle = styled.Image`
+const Circle = styled(FastImage)`
   width: 32px;
   height: 32px;
   align-self: center;

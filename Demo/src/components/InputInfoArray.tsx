@@ -17,10 +17,11 @@ interface Props {
     title: string;
     onDelete: (keyName: string, index: number) => void;
     _onInfoChange: (keyName: string, index: number, value: string) => void;
+    typeKeyboard: any
 }
 
 const Item = (props: Props) => {
-    const {keyName, index, data, title, onDelete, _onInfoChange} = props;
+    const {keyName, index, data, title, onDelete, _onInfoChange, typeKeyboard} = props;
     const onChangeInfo = useCallback(value => {
         _onInfoChange(keyName, index, value);
     }, []);
@@ -36,7 +37,7 @@ const Item = (props: Props) => {
                 value={data[index]}
                 onChangeText={onChangeInfo}
                 autoFocus={true}
-
+            keyboardType={typeKeyboard}
             />
         </WrapItem>
     );
@@ -47,10 +48,11 @@ interface CustomInputProps extends TextInputProps {
     data: string[];
     title: string;
     setParams: (prev: any) => void;
+    typeKeyboard: any
 }
 
 const InputInfoArray = (props: CustomInputProps) => {
-    const {title, keyName, data, setParams} = props;
+    const {title, keyName, data, setParams, typeKeyboard} = props;
 
     const onChangeValue = useCallback(
         (keyName: string, index: number, value: string) => {
@@ -97,6 +99,7 @@ const InputInfoArray = (props: CustomInputProps) => {
                             title={title}
                             onDelete={onDelte}
                             _onInfoChange={onChangeValue}
+                            typeKeyboard={typeKeyboard}
                         />
                     </View>
                 );
@@ -119,15 +122,14 @@ const WrapItem = styled.View`
   flex-direction: row;
   border-bottom-width: 1px;
   border-bottom-color: #0000001a;
-  margin-top: 24px;
   height: 44px;
 `
 
 const WrapView = styled.View`
-  margin: 0 16px;
+  margin: 10px 16px 0px;
   border-bottom-width: 1px;
   border-bottom-color: #0000001a;
- margin-top: 10px;`
+`
 
 const AddBtn = styled.TouchableOpacity`
   flex-direction: row;

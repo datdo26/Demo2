@@ -3,7 +3,7 @@ import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
 import styled from 'styled-components/native';
 import {IC_ITEM} from "../../assets";
-
+import FastImage from "react-native-fast-image";
 const ItemDropDown = ({title}) => {
   return (
     <TouchableOpacity>
@@ -21,7 +21,7 @@ export default ItemDropDown;
 
 const styles = StyleSheet.create({});
 
-const Icon = styled.Image`
+const Icon = styled(FastImage)`
   width: 20px;
   height: 20px;
   margin: 14px 16px 14px 16px;

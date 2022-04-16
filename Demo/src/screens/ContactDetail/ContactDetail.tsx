@@ -1,123 +1,137 @@
-import {
-  Platform,
-  StatusBar,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import {Alert, Platform, StatusBar, StyleSheet, Text, TextInput, View} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useState} from 'react';
 import styled from 'styled-components/native';
 import {removeContactActions, useContacts} from '../../store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
-import {
-  IC_BACK,
-  IC_CALL,
-  IC_EMAIL,
-  IC_MSG,
-  IC_PROFILE,
-  IC_VID_CALL,
-} from '../../assets';
-import statusBarHeight from '../../components/statusBarHeight';
+import {IC_BACK, IC_CALL, IC_EMAIL, IC_MSG, IC_PROFILE, IC_VID_CALL} from "../../assets";
+import statusBarHeight from "../../components/statusBarHeight";
+import FastImage from "react-native-fast-image";
 
 const ContactDetail = () => {
-  const route = useRoute();
-  const dispatch = useDispatch();
-  const navigation = useNavigation<any>();
-  const [image, setImage] = useState<any>(true);
+    const route = useRoute();
+    const dispatch = useDispatch();
+    const navigation = useNavigation<any>();
+    // @ts-ignore
+    const contact = useContacts(route.params?.id)
 
-  const contact = useContacts(route.params?.id);
 
-  const deleteItem = useCallback(async () => {
-    await dispatch(removeContactActions(route.params?.id));
-    navigation.goBack();
-  }, [contact]);
+    const goBack = useCallback(() => {
+        navigation.goBack()
+    }, [navigation])
 
-  const goBack = useCallback(() => {
-    navigation.goBack();
-  }, [navigation]);
 
-  const onEdit = useCallback(() => {
-    navigation.navigate('AddContactScreen', {
-      id: contact?.id || '',
-    });
-  }, [navigation, contact?.id]);
+    const onEdit = useCallback(() => {
+        navigation.navigate('AddContactScreen', {
+            id: contact?.id || ''
+        });
+    }, [navigation, contact?.id]);
 
-  return (
-    <Container>
-      <View>
-        <Background />
-        <HeaderSection platform={Platform.OS}>
-          <WrapViewHeader>
-            <ButtonBack onPress={goBack}>
-              <Back source={IC_BACK} />
-            </ButtonBack>
-            <ButtonDone onPress={onEdit}>
-              <TextHeader>Sửa</TextHeader>
-            </ButtonDone>
-          </WrapViewHeader>
-          <Avatar source={image ? {uri: contact?.avatar} : IC_PROFILE} />
-        </HeaderSection>
+    const onAlert = useCallback(() => {
+        Alert.alert('Delete Contact', '', [
+            {
+                text: "Delete",
+                style: 'cancel',
+                onPress: () => {
+                    // @ts-ignore
+                    dispatch(removeContactActions(route.params?.id));
+                    navigation.goBack()
+                }
+            },
+            {
+                text: 'Cancel',
+                style: 'default'
+            }
+        ])
+    }, [contact])
 
-        <WrapView>
-          <Name>
-            {contact?.firstName} {contact?.lastName}
-          </Name>
-          <Job>UI/UX Design</Job>
-        </WrapView>
+    return (
+        <Container>
+            <View>
+                <Background/>
+                <HeaderSection platform={Platform.OS}>
+                    <WrapViewHeader>
+                        <ButtonBack onPress={goBack}>
+                            <Back source={IC_BACK}/>
+                        </ButtonBack>
+                        <ButtonDone onPress={onEdit}>
+                            <TextHeader>Sửa</TextHeader>
+                        </ButtonDone>
+                    </WrapViewHeader>
+                    <Avatar
+                        source={
+                            contact.avatar
+                                ? {uri: contact?.avatar}
+                                : IC_PROFILE
+                        }
+                    />
+                </HeaderSection>
 
-        <WrapButton>
-          <Button>
-            <IconButton source={IC_CALL} />
-            <TextButton>Nhấn gọi điện</TextButton>
-          </Button>
-          <Button>
-            <IconButton source={IC_MSG} />
-            <TextButton>Nhắn tin</TextButton>
-          </Button>
-          <Button>
-            <IconButton source={IC_VID_CALL} />
-            <TextButton>Facetime</TextButton>
-          </Button>
-          <View>
-            <IconButton source={IC_EMAIL} />
-            <TextButtonMail>Gửi mail</TextButtonMail>
-          </View>
-        </WrapButton>
-      </View>
+                <WrapView>
+                    <Name>
+                        {contact?.firstName} {contact?.lastName}
+                    </Name>
+                    <Job>UI/UX Design</Job>
+                </WrapView>
 
-      <PhoneSection>
-        <PhoneTitle>Điện thoại</PhoneTitle>
-        <ButtonPhone>
-          <PhoneNumber>{contact?.phone[0]}</PhoneNumber>
-        </ButtonPhone>
-      </PhoneSection>
+                <WrapButton>
+                    <Button>
+                        <IconButton source={IC_CALL}/>
+                        <TextButton>Nhấn gọi điện</TextButton>
+                    </Button>
+                    <Button>
+                        <IconButton source={IC_MSG}/>
+                        <TextButton>Nhắn tin</TextButton>
+                    </Button>
+                    <Button>
+                        <IconButton source={IC_VID_CALL}/>
+                        <TextButton>Facetime</TextButton>
+                    </Button>
+                    <View>
+                        <IconButton source={IC_EMAIL}/>
+                        <TextButtonMail>Gửi mail</TextButtonMail>
+                    </View>
+                </WrapButton>
+            </View>
 
-      <NoteSection>
-        <NoteTitle>Ghi Chú</NoteTitle>
-        <Note />
-      </NoteSection>
+            <PhoneSection>
+                <PhoneTitle>Điện thoại</PhoneTitle>
+                {
+                    contact?.phone.map((item, index) => {
+                        return (
+                            <ButtonPhone>
+                                <PhoneNumber>{item}</PhoneNumber>
+                            </ButtonPhone>
 
-      <MsgSection>
-        <ButtonMsg>
-          <MsgTitle>Gửi tin nhắn</MsgTitle>
-        </ButtonMsg>
-      </MsgSection>
+                        )
+                    })
+                }
+            </PhoneSection>
 
-      <DeleteSection>
-        <ButtonMsg onPress={deleteItem}>
-          <DeleteTitle>Xoá người gọi</DeleteTitle>
-        </ButtonMsg>
-      </DeleteSection>
-    </Container>
-  );
+            <NoteSection>
+                <NoteTitle>Ghi Chú</NoteTitle>
+                <Note
+                    multiline={true}/>
+            </NoteSection>
+
+            <MsgSection>
+                <ButtonMsg>
+                    <MsgTitle>Gửi tin nhắn</MsgTitle>
+                </ButtonMsg>
+            </MsgSection>
+
+            <DeleteSection>
+                <ButtonMsg onPress={onAlert}>
+                    <DeleteTitle>Xoá người gọi</DeleteTitle>
+                </ButtonMsg>
+            </DeleteSection>
+        </Container>
+    );
 };
 
 export default ContactDetail;
 
-const styles = StyleSheet.create({});
 
 const Container = styled.View`
   background-color: #fff;
@@ -131,11 +145,11 @@ const Background = styled.View`
   left: 0;
   right: 0;
   bottom: -5px;
-  opacity: 0.2;
+  opacity: 0.05;
 `;
 
-const HeaderSection = styled.View<{platform?: string}>`
-  margin-top: ${statusBarHeight + 10}px;
+const HeaderSection = styled.View<{ platform?: string }>`
+  margin-top: ${statusBarHeight}px;
 `;
 
 const WrapViewHeader = styled.View`
@@ -161,9 +175,9 @@ const TextHeader = styled.Text`
 `;
 const WrapView = styled.View``;
 
-const Avatar = styled.Image`
-  width: 100px;
-  height: 100px;
+const Avatar = styled(FastImage)`
+  width: 110px;
+  height: 110px;
   border-radius: 100px;
   align-self: center;
 `;
@@ -226,12 +240,11 @@ const PhoneNumber = styled.Text`
   font-size: 17px;
   letter-spacing: -0.41px;
   color: #2f80ed;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 `;
 
 const PhoneSection = styled.View`
-  margin: 0 16px;
-  margin-top: 9px;
+  margin: 9px 16px 0;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
 `;
@@ -249,15 +262,14 @@ const NoteTitle = styled(PhoneTitle)`
 `;
 
 const NoteSection = styled.View`
-  margin: 0 16px;
-  margin-top: 8px;
+  margin: 8px 16px 0;
   border-bottom-width: 0.5px;
   border-bottom-color: #0000001a;
-`;
+`
 
 const Note = styled.TextInput`
-  margin-top: 10px;
-`;
+  margin-bottom: 5px;
+`
 
 const ButtonMsg = styled.TouchableOpacity`
   margin-bottom: 10px;
@@ -270,7 +282,7 @@ const MsgSection = styled.View`
   border-bottom-color: #0000001a;
   flex-direction: row;
   align-items: center;
-`;
+`
 
 const MsgTitle = styled.Text`
   font-weight: 400;
@@ -278,7 +290,7 @@ const MsgTitle = styled.Text`
   line-height: 22px;
   letter-spacing: -0.41px;
   color: #333333;
-`;
+`
 
 const DeleteSection = styled.View`
   margin: 0 16px;
@@ -286,11 +298,11 @@ const DeleteSection = styled.View`
   border-bottom-color: #0000001a;
   align-items: center;
   flex-direction: row;
-`;
+`
 const DeleteTitle = styled.Text`
   font-weight: 400;
   font-size: 15px;
   line-height: 22px;
   letter-spacing: -0.41px;
-  color: #ff4a4a;
+  color: #FF4A4A;
 `;

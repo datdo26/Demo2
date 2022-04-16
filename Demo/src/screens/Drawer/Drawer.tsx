@@ -1,4 +1,4 @@
-import {StyleSheet, View, TouchableOpacity, Image, Text} from 'react-native';
+import { View,Text} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useState} from 'react';
 import {createDrawerNavigator, DrawerItemList} from '@react-navigation/drawer';
@@ -7,85 +7,84 @@ import styled from 'styled-components/native';
 import statusBarHeight from '../../components/statusBarHeight';
 import ItemDropDown from './ItemDropDown';
 import {AVATAR, IC_ADD_COLLECTION} from "../../assets";
+import FastImage from "react-native-fast-image";
 
 const Drawer = createDrawerNavigator();
 
 const CustomDrawer = props => {
-  const [isActive, setIsActive] = useState(false);
-  const BtnCollections = useCallback(() => {
-    setIsActive(!isActive);
-  }, [isActive]);
+    const [isActive, setIsActive] = useState(true);
 
-  const OpenItem = () => {
+    const BtnCollections = useCallback(() => {
+        setIsActive(!isActive);
+    }, [isActive]);
+
+    const OpenItem = () => {
+        return (
+            <View>
+                <ItemDropDown title={'All'}/>
+                <ItemDropDown title={'General'}/>
+                <ItemDropDown title={'Investors'}/>
+                <ItemDropDown title={'Lead'}/>
+            </View>
+        );
+    };
     return (
-      <View>
-        <ItemDropDown title={'All'} />
-        <ItemDropDown title={'General'} />
-        <ItemDropDown title={'Investors'} />
-        <ItemDropDown title={'Lead'} />
-      </View>
-    );
-  };
-  return (
-    <Container>
-      <DrawerSection>
-        <DrawerContent>
-          <Avatar source={AVATAR} />
-          <View>
-            <Name>Nguyến Tiến Nam</Name>
-            <Phone>0123456789</Phone>
-          </View>
-        </DrawerContent>
-      </DrawerSection>
-      <View>
-        <DrawerItemList {...props} />
-      </View>
+        <Container>
+            <DrawerSection>
+                <DrawerContent>
+                    <Avatar source={AVATAR}/>
+                    <View>
+                        <Name>Nguyến Tiến Nam</Name>
+                        <Phone>Admin Admin</Phone>
+                    </View>
+                </DrawerContent>
+            </DrawerSection>
+            <CollectionSection>
+                <DrawerItemList {...props} />
+            </CollectionSection>
 
-      <AddCollectionSection>
-        <AddBtn>
-          <TouchableOpacity onPress={BtnCollections}>
-            {isActive ? <Text>▼</Text> : <Text>▶︎</Text>}
-          </TouchableOpacity>
-          <Collections>COLLECTIONS</Collections>
-        </AddBtn>
-        <TouchableOpacity>
-          <Edit>Edit</Edit>
-        </TouchableOpacity>
-      </AddCollectionSection>
-      {isActive ? <OpenItem /> : null}
-    </Container>
-  );
+            <AddCollectionSection>
+                <CollectionsBtn onPress={BtnCollections}>
+                    {isActive ? <Text>▼</Text> : <Text>▶︎</Text>}
+                    <Collections>COLLECTIONS</Collections>
+                </CollectionsBtn>
+                <EditBtn>
+                    <Edit>Edit</Edit>
+                </EditBtn>
+            </AddCollectionSection>
+            {isActive ? <OpenItem/> : null}
+        </Container>
+    );
 };
 
 const SideDrawer = () => {
-  return (
-    <Drawer.Navigator
-      screenOptions={{headerShown: false}}
-      drawerContent={props => <CustomDrawer {...props} />}>
-      <Drawer.Screen
-        name="New Collection"
-        component={MainTab}
-        options={{
-          drawerIcon: () => (
-            <DrawerIcon
-              source={IC_ADD_COLLECTION}
+    return (
+        <Drawer.Navigator
+            screenOptions={{headerShown: false}}
+            drawerContent={props => <CustomDrawer {...props} />}>
+            <Drawer.Screen
+                name="New Collection"
+                component={MainTab}
+                options={{
+                    drawerIcon: () => (
+                        <DrawerIcon
+                            source={IC_ADD_COLLECTION}
+                        />
+                    ),
+                    drawerLabelStyle: {
+                        fontSize: 15,
+                        letterSpacing: 0.12,
+                        color: '#333333',
+                    },
+                    drawerActiveTintColor: '#fff',
+                }}
             />
-          ),
-          drawerLabelStyle: {
-            fontSize: 15,
-            letterSpacing: 0.12,
-            color: '#333333',
-          },
-          drawerActiveTintColor: '#fff',
-        }}
-      />
-    </Drawer.Navigator>
-  );
+        </Drawer.Navigator>
+    );
 };
 
 export default SideDrawer;
 
-const styles = StyleSheet.create({});
 
 const Container = styled.View`
   display: flex;
@@ -94,7 +93,6 @@ const Container = styled.View`
 
 const Name = styled.Text`
   font-size: 16px;
-  text-align: center;
   letter-spacing: 0.12px;
   color: #ffffff;
   font-weight: 500;
@@ -107,7 +105,7 @@ const Phone = styled.Text`
   color: #ffffff;
 `;
 
-const Avatar = styled.Image`
+const Avatar = styled(FastImage)`
   margin-right: 9px;
   width: 40px;
   height: 40px;
@@ -118,9 +116,8 @@ const Avatar = styled.Image`
 const DrawerSection = styled.View`
   display: flex;
   flex-direction: row;
-  padding: ${statusBarHeight}px 20px 20px 20px;
+  padding: ${statusBarHeight}px 20px 12px 0px;
   background-color: #f2a54a;
-  align-items: center;
 `;
 
 const DrawerContent = styled.View`
@@ -128,18 +125,19 @@ const DrawerContent = styled.View`
   align-items: center;
 `;
 
-const DrawerIcon = styled.Image`
+const DrawerIcon = styled(FastImage)`
   width: 20px;
   height: 20px;
 `;
 
+const CollectionSection = styled.View``
 const Edit = styled.Text`
   font-weight: 500;
   font-size: 13px;
   line-height: 16px;
   letter-spacing: 0.12px;
   color: #f2a54a;
-  margin-right: 16px;
+  margin: 0 16px
 `;
 
 const Collections = styled.Text`
@@ -152,10 +150,19 @@ const Collections = styled.Text`
   margin-left: 16px;
 `;
 
-const AddBtn = styled.View`
-  margin: 0 16px;
+const CollectionsBtn = styled.TouchableOpacity`
   flex-direction: row;
-`;
+  align-items: center;
+  margin: 0 16px;
+`
+
+const EditBtn = styled.TouchableOpacity`
+  width: 60px;
+  height: 44px;
+  justify-content: center;
+  align-items: center;
+`
+
 
 const AddCollectionSection = styled.View`
   background-color: rgba(242, 165, 74, 0.1);
