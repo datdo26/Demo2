@@ -1,5 +1,5 @@
 // @ts-ignore
-import React, {useCallback} from 'react';
+import React, {memo, useCallback} from 'react';
 import styled from 'styled-components/native';
 import {TextInputProps} from 'react-native';
 interface Props extends TextInputProps {
@@ -8,14 +8,14 @@ interface Props extends TextInputProps {
   onChangeValue: (keyName: string, value: string) => void;
 }
 
-const InputInfo = (props: Props) => {
+const InputInfo = (props: Props) =>  {
   const {title, keyName, onChangeValue, ...restProps} = props;
 
   const onChangeText = useCallback(
     (value: string) => {
       onChangeValue(keyName, value);
     },
-    [onChangeValue],
+    [onChangeValue, keyName],
   );
 
   return (
@@ -26,7 +26,7 @@ const InputInfo = (props: Props) => {
       onChangeText={onChangeText}
     />
   );
-};
+}
 
 export default InputInfo;
 
@@ -35,4 +35,5 @@ const InputValue = styled.TextInput`
   border-bottom-color: #0000001a;
   height: 44px;
   margin: 0 16px;
+  flex: auto;
 `;
