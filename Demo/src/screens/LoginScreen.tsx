@@ -5,7 +5,7 @@ import {Dimensions} from 'react-native';
 import {IMG_BANNER, IMG_LOGIN_CIRCLE, IMG_LOGO} from '../assets';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../nav/RootStack';
-import FastImage from "react-native-fast-image";
+import FastImage from 'react-native-fast-image';
 
 const {width} = Dimensions.get('window');
 

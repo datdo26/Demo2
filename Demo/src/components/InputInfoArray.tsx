@@ -1,13 +1,7 @@
 // @ts-ignore
-import React, {memo, useCallback, useState} from 'react';
+import React, {memo, useCallback, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
-import {
-  TextInputProps,
-  TouchableOpacity,
-  View,
-  Text,
-  TextInput,
-} from 'react-native';
+import {TextInputProps, TouchableOpacity, View, Text} from 'react-native';
 import {IC_ADD, IC_MINUS} from '../assets';
 
 interface Props {
@@ -20,7 +14,7 @@ interface Props {
   typeKeyboard: any;
 }
 
-const Item = (props: Props) => {
+const Item = memo((props: Props) => {
   const {keyName, index, data, title, onDelete, _onInfoChange, typeKeyboard} =
     props;
 
@@ -28,12 +22,16 @@ const Item = (props: Props) => {
     value => {
       _onInfoChange(keyName, index, value);
     },
-    [keyName, index, _onInfoChange],
+    [keyName, index],
   );
+
+  const _onDelete = useCallback(() => {
+    onDelete(keyName, index);
+  }, [keyName, index]);
 
   return (
     <WrapItem>
-      <TouchableOpacity onPress={() => onDelete(keyName, index)}>
+      <TouchableOpacity onPress={_onDelete}>
         <Icon source={IC_MINUS} />
       </TouchableOpacity>
       <InputValue
@@ -45,7 +43,7 @@ const Item = (props: Props) => {
       />
     </WrapItem>
   );
-};
+});
 
 interface CustomInputProps extends TextInputProps {
   keyName: string;
@@ -55,19 +53,8 @@ interface CustomInputProps extends TextInputProps {
   typeKeyboard: any;
 }
 
-const InputInfoArray = (props: CustomInputProps) => {
+export const InputInfoArray = memo((props: CustomInputProps) => {
   const {title, keyName, data, setParams, typeKeyboard} = props;
-
-  const onChangeValue = useCallback(
-    (keyName: string, index: number, value: string) => {
-      setParams(prev => {
-        let inputData = [...prev[keyName]];
-        inputData[index] = value;
-        return {...prev, [keyName]: inputData};
-      });
-    },
-    [keyName, setParams],
-  );
 
   const onAddValue = useCallback(
     (keyName: string) => {
@@ -77,23 +64,53 @@ const InputInfoArray = (props: CustomInputProps) => {
         return {...prev, [keyName]: newData};
       });
     },
-    [data, setParams],
+    [data],
   );
 
-  const onDelete = useCallback(
-    (keyName: string, index: number) => {
+  const onChangeValue = useCallback(
+    (keyName: string, index: number, value: string) => {
       setParams(prev => {
-        let removeData = [...prev[keyName]];
-        removeData.splice(index, 1);
-        return {...prev, [keyName]: removeData};
+        let inputData = [...prev[keyName]];
+        inputData[index] = value;
+        return {...prev, [keyName]: inputData};
       });
     },
-    [data, setParams],
+    [data],
   );
+
+  const onDelete = useCallback((keyName: string, index: number) => {
+    setParams(prev => {
+      let removeData = [...prev[keyName]];
+      removeData.splice(index, 1);
+      return {...prev, [keyName]: removeData};
+    });
+  }, []);
 
   const onPress = useCallback(() => {
     onAddValue(keyName);
   }, [onAddValue, keyName]);
+
+  const InputItem = useCallback(() => {
+    return (
+      <View>
+        {data?.map((item, index) => {
+          return (
+            <View key={item + index}>
+              <Item
+                keyName={keyName}
+                index={index}
+                data={data}
+                title={title}
+                onDelete={onDelete}
+                _onInfoChange={onChangeValue}
+                typeKeyboard={typeKeyboard}
+              />
+            </View>
+          );
+        })}
+      </View>
+    );
+  }, [data]);
 
   return (
     <WrapView>
@@ -118,9 +135,7 @@ const InputInfoArray = (props: CustomInputProps) => {
       </AddBtn>
     </WrapView>
   );
-};
-
-export default InputInfoArray;
+});
 
 const WrapItem = styled.View`
   align-items: center;
@@ -153,18 +168,3 @@ const InputValue = styled.TextInput`
 function UseMemo(arg0: (props: Props) => JSX.Element, arg1: undefined[]) {
   throw new Error('Function not implemented.');
 }
-//   {data?.map((item, index) => {
-//     return (
-//       <View key={item + index}>
-//         <Item
-//           keyName={keyName}
-//           index={index}
-//           data={data}
-//           title={title}
-//           onDelete={onDelete}
-//           _onInfoChange={onChangeValue}
-//           typeKeyboard={typeKeyboard}
-//         />
-//       </View>
-//     );
-//   })}

@@ -9,4 +9,3 @@ export interface RawContact {
   address: string[];
   birthday: string;
 }
-

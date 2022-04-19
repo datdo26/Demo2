@@ -8,7 +8,7 @@ interface Props extends TextInputProps {
   onChangeValue: (keyName: string, value: string) => void;
 }
 
-const InputInfo = (props: Props) =>  {
+const InputInfo = (props: Props) => {
   const {title, keyName, onChangeValue, ...restProps} = props;
 
   const onChangeText = useCallback(
@@ -24,9 +24,10 @@ const InputInfo = (props: Props) =>  {
       {...restProps}
       placeholder={title}
       onChangeText={onChangeText}
+      placeholderTextColor={'gray'}
     />
   );
-}
+};
 
 export default InputInfo;
 
@@ -36,4 +37,5 @@ const InputValue = styled.TextInput`
   height: 44px;
   margin: 0 16px;
   flex: auto;
+  font-weight: 400;
 `;

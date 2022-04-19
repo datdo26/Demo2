@@ -39,7 +39,7 @@ const char = [
   'Y',
   'Z',
 ];
-const groupBy = items => {
+export const groupBy = items => {
   const _obj = _.groupBy(items, item => item.firstName[0]);
   return Object.keys(_obj).map(item => {
     return {
@@ -49,7 +49,7 @@ const groupBy = items => {
   });
 };
 
-const getObject = ids => {
+export const getObject = ids => {
   let contact_array = [];
   ids?.map(item => {
     const contact = store.getState().contactReducer.byId[item];
@@ -134,9 +134,9 @@ export const AlphabetScreen = memo(function Alphabet() {
     );
     return (
       <Char>
-        {char.map((char, key) => {
+        {char.map((char, index) => {
           return (
-            <SideCharBtn key={key} onPress={() => onScrollToLocation(char)}>
+            <SideCharBtn key={index} onPress={() => onScrollToLocation(char)}>
               <SideCharText>{char}</SideCharText>
             </SideCharBtn>
           );
@@ -178,7 +178,6 @@ export const AlphabetScreen = memo(function Alphabet() {
         getItemLayout={getItemLayout}
         showsVerticalScrollIndicator={false}
       />
-
       <KeyboardSpacer />
     </Container>
   );
@@ -231,9 +230,9 @@ const PhoneNumber = styled.Text`
   letter-spacing: 0.12px;
   color: #828282;
   text-align: left;
-  margin-top: 8px;
   font-weight: 400;
   margin-bottom: 10px;
+  margin-top: 6px;
 `;
 
 const SearchSection = styled.View`

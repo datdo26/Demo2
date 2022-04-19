@@ -1,4 +1,4 @@
-import {ScrollView, TouchableOpacity, Platform, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
@@ -9,7 +9,7 @@ import ImagePicker from 'react-native-image-crop-picker';
 import DatePicker from 'react-native-date-picker';
 import {IC_ADD, IC_PROFILE} from '../../assets';
 import InputInfo from '../../components/InputInfo';
-import InputInfoArray from '../../components/InputInfoArray';
+import {InputInfoArray} from '../../components/InputInfoArray';
 import FastImage from 'react-native-fast-image';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 
@@ -78,7 +78,7 @@ const AddContactScreen = () => {
 
   const onCancel = useCallback(() => {
     navigation.goBack();
-  }, []);
+  }, [navigation]);
 
   const onChangeText = useCallback(
     (keyName: string, value: string) => {
@@ -106,9 +106,10 @@ const AddContactScreen = () => {
           </Button>
         </HeaderSection>
       </Section1>
+
       {/* <KeyboardAvoidingView
         behavior={'padding'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}> */}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 20}> */}
       <ScrollView>
         <AvatarBtn onPress={chooseFromLibrary}>
           <Avatar
@@ -273,4 +274,5 @@ const Birthday = styled.Text`
   color: #333333;
   margin-left: 14px;
   margin-top: 10px;
+  font-weight: 400;
 `;

@@ -1,11 +1,22 @@
-import {Alert, Platform, View, Linking, Image} from 'react-native';
+import {
+  Alert,
+  Platform,
+  View,
+  Linking,
+  Image,
+  Text,
+  TouchableOpacity,
+  SafeAreaView,
+  Dimensions,
+} from 'react-native';
 // @ts-ignore
-import React, {useCallback, useMemo} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
 import {removeContactActions, useContacts} from '../../store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import SendSMS from 'react-native-sms';
+import Modal from 'react-native-modal';
 
 import {
   IC_BACK,
@@ -25,6 +36,17 @@ const ContactDetail = () => {
   const navigation = useNavigation<any>();
   // @ts-ignore
   const contact = useContacts(route.params?.id);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const getTime = useCallback(() => {
+    const hours = new Date().getHours();
+    const min = new Date().getMinutes();
+    return `${('0' + hours).slice(-2)}:${('0' + min).slice(-2)}`;
+  }, []);
+
+  const toggleModal = useCallback(() => {
+    setModalVisible(!modalVisible);
+  }, [modalVisible]);
 
   const goBack = useCallback(() => {
     navigation.goBack();
@@ -54,15 +76,24 @@ const ContactDetail = () => {
     ]);
   }, [contact]);
 
+  const onDoneMail = useMemo(() => {
+    return {
+      backgroundColor: contact.email.length == 0 ? '#fff' : '#f2a54a',
+    };
+  }, [contact.email]);
+
   const PhoneList = useCallback(() => {
     return contact?.phone.map(item => {
+      const Calling = () => {
+        Linking.openURL(`tel: ${item}`);
+      };
       return (
-        <ButtonPhone>
+        <ButtonPhone key={item} onPress={Calling}>
           <PhoneNumber key={item}>{item}</PhoneNumber>
         </ButtonPhone>
       );
     });
-  }, [contact]);
+  }, [contact.phone]);
 
   const colorDone = useMemo(() => {
     return {
@@ -70,27 +101,17 @@ const ContactDetail = () => {
     };
   }, [contact.email]);
 
-  const CallMeBaby = useCallback(() => {
-    Linking.openURL(`tel: ${contact.phone}`);
+  const CallNumber = useCallback(() => {
+    return contact.phone.map((item, index) => {
+      Linking.openURL(`tel: ${item}`);
+    });
   }, [contact.phone]);
-
-  // const bgEmailDone = useCallback(() => {
-  //   return {
-  //     width: 40,
-  //     height: 40,
-  //     borderRadius: 100,
-  //     alignItems: 'center',
-  //     justifyContent: 'center',
-  //     backgroundColor: contact.email.length == 0 ? '#fff' : '#f2a54a',
-  //   };
-  // }, [contact.email]);
 
   const TextMe = useCallback(() => {
     SendSMS.send(
       {
         body: 'hello',
         recipients: contact.phone,
-        successTypes: ['sent', 'queued'],
         allowAndroidSendWithoutReadPermission: true,
       },
       (completed, cancelled, error) => {
@@ -104,7 +125,13 @@ const ContactDetail = () => {
         );
       },
     );
-  }, []);
+  }, [contact.phone]);
+
+  const SendEmail = useCallback(() => {
+    Linking.openURL(
+      `mailto:${contact.email}?subject=mailSubject&body=mailBody`,
+    ).then();
+  }, [contact.email]);
 
   return (
     <Container>
@@ -123,7 +150,6 @@ const ContactDetail = () => {
             source={contact.avatar ? {uri: contact?.avatar} : IC_PROFILE}
           />
         </HeaderSection>
-
         <WrapView>
           <Name>
             {contact?.firstName} {contact?.lastName}
@@ -132,39 +158,45 @@ const ContactDetail = () => {
         </WrapView>
 
         <WrapButton>
-          <Button onPress={CallMeBaby}>
+          <Button onPress={toggleModal}>
             <BgBtn>
               <Image source={IC_CALL} />
             </BgBtn>
             <TextButton>Gọi điện</TextButton>
           </Button>
 
-          <Button>
+          <Button onPress={TextMe}>
             <BgBtn>
               <Image source={IC_MSG} />
             </BgBtn>
             <TextButton>Nhắn tin</TextButton>
           </Button>
 
-          <Button>
+          <Button onPress={toggleModal}>
             <BgBtn>
               <Image source={IC_VID_CALL} />
             </BgBtn>
             <TextButton>Facetime</TextButton>
           </Button>
-
-          <Button disabled={contact.email.length == 0}>
-            <BgBtn
-              style={{
-                backgroundColor: contact.email.length == 0 ? '#fff' : '#f2a54a',
-              }}>
+          <Button disabled={contact.email.length == 0} onPress={SendEmail}>
+            <BgBtnMail style={onDoneMail}>
               <Image
                 source={contact.email.length == 0 ? IC_EMAIL : IC_EMAIL_LIGHT}
               />
-            </BgBtn>
+            </BgBtnMail>
             <TextButtonMail style={colorDone}>Gửi mail</TextButtonMail>
           </Button>
         </WrapButton>
+
+        <Modal
+          isVisible={modalVisible}
+          animationIn="slideInUp"
+          onBackdropPress={() => setModalVisible(false)}>
+          <CallModalView>
+            <PhoneTitle>Số điện thoại: </PhoneTitle>
+            <PhoneList />
+          </CallModalView>
+        </Modal>
       </View>
 
       <PhoneSection>
@@ -194,12 +226,6 @@ const ContactDetail = () => {
 
 export default ContactDetail;
 
-// const styles = StyleSheet.create({
-//   BgEmailDone: {
-//     backgroundColor: contact.email.length == 0 ? '#fff' : '#f2a54a',
-//   },
-// });
-
 const Container = styled.View`
   background-color: #fff;
   flex: 1;
@@ -211,7 +237,7 @@ const Background = styled.View`
   top: 0;
   left: 0;
   right: 0;
-  bottom: -16px;
+  bottom: -8px;
   opacity: 0.5;
 `;
 
@@ -256,6 +282,7 @@ const Name = styled.Text`
   color: #333333;
   text-align: center;
   margin-top: 16px;
+  font-weight: 400;
 `;
 
 const Job = styled.Text`
@@ -286,6 +313,14 @@ const BgBtn = styled.View`
   background-color: #f2a54a;
 `;
 
+const BgBtnMail = styled.View`
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  justify-content: center;
+  align-items: center;
+`;
+
 const TextButton = styled.Text`
   font-style: normal;
   font-weight: 400;
@@ -314,7 +349,7 @@ const PhoneNumber = styled.Text`
   font-size: 17px;
   letter-spacing: -0.41px;
   color: #2f80ed;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
 
 const PhoneSection = styled.View`
@@ -329,7 +364,6 @@ const PhoneTitle = styled.Text`
   line-height: 22px;
   letter-spacing: -0.41px;
   color: #333333;
-  margin-top: 9px;
 `;
 
 const NoteTitle = styled.Text`
@@ -385,4 +419,11 @@ const DeleteTitle = styled.Text`
   line-height: 22px;
   letter-spacing: -0.41px;
   color: #ff4a4a;
+`;
+
+const CallModalView = styled.View`
+  background-color: #fff;
+  margin: 0 86px;
+  align-items: center;
+  border-radius: 40px;
 `;

@@ -1,14 +1,13 @@
-import {StyleSheet, View, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
 // @ts-ignore
-import React from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import Header from '../../components/Header';
 import styled from 'styled-components/native';
-import {IC_INFO_OUTLINE, IC_PHONE} from "../../assets";
-
+import {IC_INFO_OUTLINE, IC_PHONE} from '../../assets';
 
 const RecentScreen = () => {
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: '#fff'}}>
+    <Container>
       <Header title="Lịch sử" />
       <View style={{marginTop: 18}}>
         <View>
@@ -24,15 +23,13 @@ const RecentScreen = () => {
                 <Date>Hôm Nay</Date>
               </WrapDate>
               <WrapIconRight>
-                <IconRight
-                  source={IC_INFO_OUTLINE}
-                />
+                <IconRight source={IC_INFO_OUTLINE} />
               </WrapIconRight>
             </WrapCard>
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </Container>
   );
 };
 
@@ -40,7 +37,7 @@ export default RecentScreen;
 
 const styles = StyleSheet.create({});
 
-const SafeAreaView = styled.SafeAreaView`
+const Container = styled.SafeAreaView`
   flex: 1;
   background-color: #fff;
 `;
@@ -87,4 +84,3 @@ const Date = styled.Text`
   color: #828282;
   text-align: right; ;
 `;
-
