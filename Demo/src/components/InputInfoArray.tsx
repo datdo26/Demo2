@@ -86,37 +86,15 @@ export const InputInfoArray = memo((props: CustomInputProps) => {
     });
   }, []);
 
-  const onPress = useCallback(() => {
+  const _onAddValue = useCallback(() => {
     onAddValue(keyName);
   }, [onAddValue, keyName]);
 
-  const InputItem = useCallback(() => {
-    return (
-      <View>
-        {data?.map((item, index) => {
-          return (
-            <View key={item + index}>
-              <Item
-                keyName={keyName}
-                index={index}
-                data={data}
-                title={title}
-                onDelete={onDelete}
-                _onInfoChange={onChangeValue}
-                typeKeyboard={typeKeyboard}
-              />
-            </View>
-          );
-        })}
-      </View>
-    );
-  }, [data]);
-
   return (
     <WrapView>
-      {data?.map((item, index) => {
+      {data.map((item, index) => {
         return (
-          <View key={item + index}>
+          <View key={index}>
             <Item
               keyName={keyName}
               index={index}
@@ -129,7 +107,7 @@ export const InputInfoArray = memo((props: CustomInputProps) => {
           </View>
         );
       })}
-      <AddBtn onPress={onPress}>
+      <AddBtn onPress={_onAddValue}>
         <Icon source={IC_ADD} />
         <Text>{title}</Text>
       </AddBtn>
@@ -146,7 +124,7 @@ const WrapItem = styled.View`
 `;
 
 const WrapView = styled.View`
-  margin: 10px 16px 0px;
+  margin: 10px 16px 0;
   border-bottom-width: 1px;
   border-bottom-color: #0000001a;
 `;

@@ -7030,10 +7030,9 @@ react-native-keyboard-aware-scroll-view@^0.9.5:
     prop-types "^15.6.2"
     react-native-iphone-x-helper "^1.0.3"
 
-react-native-keyboard-spacer@^0.4.1:
+react-native-keyboard-spacer@Andr3wHur5t/react-native-keyboard-spacer#66/head:
   version "0.4.1"
-  resolved "https://registry.yarnpkg.com/react-native-keyboard-spacer/-/react-native-keyboard-spacer-0.4.1.tgz#46f18a320432098a25ea9fa89f5143dd254d332d"
-  integrity sha1-RvGKMgQyCYol6p+on1FD3SVNMy0=
+  resolved "https://codeload.github.com/Andr3wHur5t/react-native-keyboard-spacer/tar.gz/5a3422a3593e2ebced21c9c6430297b69e2cecc6"
 
 react-native-modal@^13.0.1:
   version "13.0.1"
