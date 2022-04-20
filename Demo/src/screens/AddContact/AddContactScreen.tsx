@@ -1,4 +1,4 @@
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {ScrollView, TouchableOpacity, View, Image} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
@@ -23,6 +23,9 @@ export const defaultValue = {
   address: [],
   birthday: '',
   avatar: '',
+  actionLog: '',
+  historyLog: '',
+  totalAction: 0,
 };
 
 const AddContactScreen = () => {
@@ -94,6 +97,7 @@ const AddContactScreen = () => {
       color: params.phone.length == 0 ? '#828282' : '#f2a54a',
     };
   }, [params.phone]);
+
   return (
     <Container>
       <Section1>
@@ -107,9 +111,6 @@ const AddContactScreen = () => {
         </HeaderSection>
       </Section1>
 
-      {/* <KeyboardAvoidingView
-        behavior={'padding'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 20 : 20}> */}
       <ScrollView>
         <AvatarBtn onPress={chooseFromLibrary}>
           <Avatar

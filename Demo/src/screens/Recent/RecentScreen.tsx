@@ -1,86 +1,157 @@
-import {StyleSheet, View, TouchableOpacity, FlatList} from 'react-native';
+import {FlatList} from 'react-native';
 // @ts-ignore
 import React, {memo, useEffect, useState} from 'react';
 import Header from '../../components/Header';
 import styled from 'styled-components/native';
-import {IC_INFO_OUTLINE, IC_PHONE} from '../../assets';
+import {IC_INFO_OUTLINE, IC_MISSED_CALL, IC_MISSED_VID_CALL} from '../../assets';
+import {useIsFocused} from '@react-navigation/native';
+import {useContactIds} from '../../store';
+import {getObject} from '../Contact/components/Alphabet';
+import {RawContact} from '../../store/types';
+
+const Item = ({firstName, lastName, phone, action, time, totalAction,}) => (
+    <BtnCard>
+        <Card>
+            <ViewIconLeft>
+                <IconLeft source={ action =='CallAction' ? IC_MISSED_CALL : IC_MISSED_VID_CALL}/>
+            </ViewIconLeft>
+
+            <CardContent>
+                <ContentName>
+                    {totalAction == 1 ? <Name>{firstName}{lastName}</Name> :
+                        <Name>{firstName}{lastName} ({totalAction})</Name>}
+                    <Phone>{phone}</Phone>
+                </ContentName>
+
+                <WrapTimeRight>
+                <ContentTime>
+                    <Time>{time}</Time>
+                </ContentTime>
+                <IconRight source={IC_INFO_OUTLINE}/>
+                </WrapTimeRight>
+
+
+            </CardContent>
+        </Card>
+    </BtnCard>
+);
+
 
 const RecentScreen = () => {
-  return (
-    <Container>
-      <Header title="Lịch sử" />
-      <View style={{marginTop: 18}}>
-        <View>
-          <TouchableOpacity>
-            <WrapCard>
-              <IconLeft source={IC_PHONE} />
-              <WrapInfo>
-                <Name>Nguyễn Tiến Nam</Name>
-                <Phone>0977272123</Phone>
-              </WrapInfo>
-              <View />
-              <WrapDate>
-                <Date>Hôm Nay</Date>
-              </WrapDate>
-              <WrapIconRight>
-                <IconRight source={IC_INFO_OUTLINE} />
-              </WrapIconRight>
-            </WrapCard>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Container>
-  );
+    const isFocused = useIsFocused();
+    const [history, setHistory] = useState([]);
+    const contact_ids = useContactIds('all');
+    const contactData = getObject(contact_ids);
+
+    useEffect(() => {
+        const newData: RawContact[] = Object.values(contactData);
+        const data = newData.filter(item => {
+            return item.historyLog != '';
+        });
+
+        const sorted = data.sort((a: RawContact, b: RawContact) => {
+            const dateA = `${a.historyLog}`.valueOf();
+            const dateB = `${b.historyLog}`.valueOf();
+
+            if (dateA > dateB) {
+                return 0;
+            }
+            return 1;
+        });
+        setHistory(sorted);
+    }, [isFocused]);
+
+    const renderItem = ({item}) => (
+        <Item
+            firstName={item.firstName}
+            lastName={item.lastName}
+            phone={item.phone[item.phone.length - 1]}
+            action={item.actionLog}
+            time={item.historyLog}
+            totalAction={item.totalAction}
+        />
+    );
+
+    return (
+        <Container>
+            <Header title="Lịch sử"/>
+            <FlatList
+                data={history}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index + item}
+            />
+        </Container>
+    );
 };
 
 export default RecentScreen;
 
-const styles = StyleSheet.create({});
 
 const Container = styled.SafeAreaView`
   flex: 1;
   background-color: #fff;
 `;
 
-const WrapCard = styled.View`
+const BtnCard = styled.TouchableOpacity`
+  margin-top: 12px;
+`
+
+const Card = styled.View`
   flex-direction: row;
   justify-content: space-between;
-`;
+  height: 60px;
+`
 
-const WrapInfo = styled.View``;
+const ViewIconLeft = styled.View`
+  align-self: center;
+`
 
 const IconLeft = styled.Image`
-  left: 16px;
-`;
+  margin: 0 16px`
+
 
 const IconRight = styled.Image`
-  right: 16px;
-`;
+  margin: 0 16px;
+  align-self: center;
+`
 
-const WrapDate = styled.View`
-  justify-content: center;
-`;
 
-const WrapIconRight = styled.View`
-  justify-content: center;
-`;
+const CardContent = styled.View`
+  flex-direction: row;
+  align-items: center;
+  width: 340px;
+  border-bottom-width: 0.5px;
+  justify-content: space-between;
+  border-bottom-color: rgba(0, 0, 0, 0.1);;
+`
+const ContentName = styled.View``
+
+
 const Name = styled.Text`
   font-weight: 500;
   font-size: 16px;
+  text-align: left;
   letter-spacing: 0.12px;
-  color: #333333;
-`;
+  color: #333333;`
+
+const WrapTimeRight = styled.View`
+flex-direction: row`
+
+const ContentTime = styled.View`
+align-self: center`
+
 
 const Phone = styled.Text`
   font-weight: 400;
   font-size: 14px;
   letter-spacing: 0.12px;
   color: #828282;
-`;
-const Date = styled.Text`
+  margin-top: 8px;
+`
+
+const Time = styled.Text`
   font-weight: 400;
   font-size: 13px;
   letter-spacing: 0.12px;
   color: #828282;
-  text-align: right; ;
-`;
+`

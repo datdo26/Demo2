@@ -23,3 +23,5 @@ export const IC_PROFILE = require('./icons/ic_profile.png');
 export const IC_VID_CALL = require('./icons/ic_vidcall.png');
 export const IC_RECENT = require('./icons/ic_recent.png');
 export const IC_SEARCH = require('./icons/ic_search.png');
+export const IC_CHANGE_AVT = require('./icons/ic_change_avt.png');
+export const IC_MISSED_CALL = require('./icons/ic_missed_call.png')

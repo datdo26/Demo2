@@ -1,4 +1,4 @@
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {StatusBar} from 'react-native';
 // @ts-ignore
 import React from 'react';
 import {isIphoneX, getStatusBarHeight} from 'react-native-iphone-x-helper';
@@ -9,4 +9,3 @@ const statusBarHeight = isIphoneX()
 
 export default statusBarHeight;
 
-const styles = StyleSheet.create({});

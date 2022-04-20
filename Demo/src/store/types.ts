@@ -8,4 +8,7 @@ export interface RawContact {
   email: string[];
   address: string[];
   birthday: string;
+  actionLog: string;
+  historyLog: string;
+  totalAction: number;
 }
