@@ -1,4 +1,4 @@
-import {ScrollView, TouchableOpacity, View, Image} from 'react-native';
+import {ScrollView, TouchableOpacity, View} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
@@ -12,6 +12,7 @@ import InputInfo from '../../components/InputInfo';
 import {InputInfoArray} from '../../components/InputInfoArray';
 import FastImage from 'react-native-fast-image';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 export const defaultValue = {
   id: '',
@@ -56,7 +57,7 @@ const AddContactScreen = () => {
     setImage('');
   }, [params, image]);
 
-  const chooseFromLibrary = () => {
+  const chooseFromLibrary = async () => {
     ImagePicker.openPicker({
       width: 300,
       height: 400,
@@ -111,92 +112,100 @@ const AddContactScreen = () => {
         </HeaderSection>
       </Section1>
 
-      <ScrollView>
-        <AvatarBtn onPress={chooseFromLibrary}>
-          <Avatar
-            source={
-              params.avatar
-                ? {uri: params.avatar}
-                : image
-                ? {uri: image}
-                : IC_PROFILE
-            }
-          />
-        </AvatarBtn>
+      {/* <KeyboardAvoidingView
+        behavior={Platform.OS === 'android' ? 'padding' : null}
+        keyboardVerticalOffset={Platform.OS === 'android' ? 40 : 12}> */}
 
-        <Section2>
-          <WrapInputText>
-            <InputInfo
-              title={'Họ'}
-              keyName={'firstName'}
-              value={params?.firstName}
-              onChangeValue={onChangeText}
-            />
-
-            <InputInfo
-              title={'Tên'}
-              keyName={'lastName'}
-              value={params?.lastName}
-              onChangeValue={onChangeText}
-            />
-            <InputInfo
-              title={'Công ty'}
-              keyName={'company'}
-              value={params?.company}
-              onChangeValue={onChangeText}
-            />
-          </WrapInputText>
-        </Section2>
-
-        <Section3>
-          <InputInfoArray
-            keyName={'phone'}
-            data={params?.phone}
-            title={'Thêm số điện thoại'}
-            setParams={setParams}
-            typeKeyboard={'number-pad'}
-          />
-
-          <InputInfoArray
-            keyName={'email'}
-            data={params?.email}
-            title={'Thêm email'}
-            setParams={setParams}
-            typeKeyboard={'email-address'}
-          />
-
-          <InputInfoArray
-            keyName={'address'}
-            data={params?.address}
-            title={'Thêm địa chỉ'}
-            setParams={setParams}
-            typeKeyboard={'default'}
-          />
-
-          <TouchableOpacity onPress={toggleDate}>
-            <WrapInputDetail>
-              <View>
-                <AddButton source={IC_ADD} />
-              </View>
-              <Birthday> Ngày sinh: {params?.birthday}</Birthday>
-              <DatePicker
-                modal
-                open={open}
-                date={date}
-                mode={'date'}
-                onConfirm={date => {
-                  toggleDate();
-                  setDate(date);
-                  onChangeText('birthday', date.toDateString());
-                }}
-                onCancel={toggleDate}
+      <KeyboardAwareScrollView>
+        <View>
+          <ScrollView>
+            <AvatarBtn onPress={chooseFromLibrary}>
+              <Avatar
+                source={
+                  params.avatar
+                    ? {uri: params.avatar}
+                    : image
+                    ? {uri: image}
+                    : IC_PROFILE
+                }
               />
-            </WrapInputDetail>
-          </TouchableOpacity>
-        </Section3>
-      </ScrollView>
+            </AvatarBtn>
+
+            <Section2>
+              <WrapInputText>
+                <InputInfo
+                  title={'Họ'}
+                  keyName={'firstName'}
+                  value={params?.firstName}
+                  onChangeValue={onChangeText}
+                />
+
+                <InputInfo
+                  title={'Tên'}
+                  keyName={'lastName'}
+                  value={params?.lastName}
+                  onChangeValue={onChangeText}
+                />
+                <InputInfo
+                  title={'Công ty'}
+                  keyName={'company'}
+                  value={params?.company}
+                  onChangeValue={onChangeText}
+                />
+              </WrapInputText>
+            </Section2>
+
+            <Section3>
+              <InputInfoArray
+                keyName={'phone'}
+                data={params?.phone}
+                title={'Thêm số điện thoại'}
+                setParams={setParams}
+                typeKeyboard={'number-pad'}
+              />
+
+              <InputInfoArray
+                keyName={'email'}
+                data={params?.email}
+                title={'Thêm email'}
+                setParams={setParams}
+                typeKeyboard={'email-address'}
+              />
+
+              <InputInfoArray
+                keyName={'address'}
+                data={params?.address}
+                title={'Thêm địa chỉ'}
+                setParams={setParams}
+                typeKeyboard={'default'}
+              />
+
+              <TouchableOpacity onPress={toggleDate}>
+                <WrapInputDetail>
+                  <View>
+                    <AddButton source={IC_ADD} />
+                  </View>
+                  <Birthday> Ngày sinh: {params?.birthday}</Birthday>
+                  <DatePicker
+                    modal
+                    open={open}
+                    date={date}
+                    mode={'date'}
+                    onConfirm={date => {
+                      toggleDate();
+                      setDate(date);
+                      onChangeText('birthday', date.toDateString());
+                    }}
+                    onCancel={toggleDate}
+                  />
+                </WrapInputDetail>
+              </TouchableOpacity>
+            </Section3>
+          </ScrollView>
+        </View>
+      </KeyboardAwareScrollView>
       {/* </KeyboardAvoidingView> */}
-      <KeyboardSpacer />
+      {/* <KeyboardSpacer /> */}
     </Container>
   );
 };

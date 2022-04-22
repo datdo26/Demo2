@@ -16,6 +16,8 @@ target 'Demo' do
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'react-native-sms', :path => '../node_modules/react-native-sms'
+
   target 'DemoTests' do
     inherit! :complete
     # Pods for testing

@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, StatusBar} from 'react-native';
+import {View, Text, StyleSheet, Platform} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useState} from 'react';
 import {createDrawerNavigator, DrawerItemList} from '@react-navigation/drawer';
@@ -30,7 +30,7 @@ const CustomDrawer = props => {
   }, []);
   return (
     <Container>
-      <DrawerSection>
+      <DrawerSection style={styles.drawerSection}>
         <DrawerContent>
           <Avatar source={AVATAR} />
           <View>
@@ -83,6 +83,26 @@ const styles = StyleSheet.create({
     letterSpacing: 0.12,
     color: '#333333',
   },
+
+  drawerSection: {
+    display: 'flex',
+    backgroundColor: '#f2a54a',
+    flexDirection: 'row',
+    ...Platform.select({
+      android: {
+        paddingTop: statusBarHeight - 16,
+        paddingBottom: 12,
+        paddingRight: 0,
+        paddingLeft: 20,
+      },
+      ios: {
+        paddingTop: statusBarHeight,
+        paddingBottom: 12,
+        paddingRight: 0,
+        paddingLeft: 20,
+      },
+    }),
+  },
 });
 
 const Container = styled.View`
@@ -109,14 +129,13 @@ const Avatar = styled(FastImage)`
   width: 40px;
   height: 40px;
   border-radius: 100px;
-  margin-left: 20px;
 `;
 
 const DrawerSection = styled.View`
-  display: flex;
-  flex-direction: row;
-  padding: ${statusBarHeight}px 20px 12px 0px;
-  background-color: #f2a54a;
+  // display: flex;
+  // flex-direction: row;
+  // padding: ${statusBarHeight - 16}px 20px 12px 0px;
+  // background-color: #f2a54a;
 `;
 
 const DrawerContent = styled.View`

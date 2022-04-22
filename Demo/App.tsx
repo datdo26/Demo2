@@ -2,9 +2,9 @@ import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import RootStack from './src/nav/RootStack';
 import {Provider} from 'react-redux';
-import {store} from './src/store';
+import store, {persistor} from './src/store';
 import SplashScreen from 'react-native-splash-screen';
-
+import {PersistGate} from 'redux-persist/lib/integration/react';
 const App = () => {
   React.useEffect(() => {
     SplashScreen.hide();
@@ -12,7 +12,9 @@ const App = () => {
 
   return (
     <Provider store={store}>
-      <RootStack />
+      <PersistGate loading={null} persistor={persistor}>
+        <RootStack />
+      </PersistGate>
     </Provider>
   );
 };

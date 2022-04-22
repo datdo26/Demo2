@@ -7,7 +7,7 @@ import {useNavigation} from '@react-navigation/native';
 import _ from 'lodash';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import {IC_PROFILE, IC_SEARCH} from '../../../assets';
-import {store, useContactIds} from '../../../store';
+import store, {useContactIds} from '../../../store';
 import FastImage from 'react-native-fast-image';
 import {RawContact} from '../../../store/types';
 
@@ -98,19 +98,17 @@ export const AlphabetScreen = memo(function Alphabet() {
         [navigation],
       );
       return (
-        <ScrollView>
-          <TouchableOpacity onPress={() => handleNavigation({item})}>
-            <WrapCard>
-              <Avatar source={item?.avatar ? {uri: item.avatar} : IC_PROFILE} />
-              <WrapText>
-                <Name>
-                  {item.firstName} {item.lastName}
-                </Name>
-                <PhoneNumber>{item.phone[item.phone.length - 1]}</PhoneNumber>
-              </WrapText>
-            </WrapCard>
-          </TouchableOpacity>
-        </ScrollView>
+        <TouchableOpacity onPress={() => handleNavigation({item})}>
+          <WrapCard>
+            <Avatar source={item?.avatar ? {uri: item.avatar} : IC_PROFILE} />
+            <WrapText>
+              <Name>
+                {item.firstName} {item.lastName}
+              </Name>
+              <PhoneNumber>{item.phone[item.phone.length - 1]}</PhoneNumber>
+            </WrapText>
+          </WrapCard>
+        </TouchableOpacity>
       );
     },
     [navigation],
@@ -178,7 +176,6 @@ export const AlphabetScreen = memo(function Alphabet() {
         getItemLayout={getItemLayout}
         showsVerticalScrollIndicator={false}
       />
-      <KeyboardSpacer />
     </Container>
   );
 });
@@ -264,6 +261,7 @@ const WrapText = styled.View`
   border-bottom-width: 0.5px;
   border-bottom-color: rgba(0, 0, 0, 0.1);
   width: 273px;
+  height: 64px;
 `;
 const WrapCard = styled.View`
   background-color: white;

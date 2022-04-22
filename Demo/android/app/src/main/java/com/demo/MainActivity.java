@@ -1,5 +1,6 @@
 package com.demo;
-
+import android.content.Intent; // <-- include if not already there
+import com.tkporter.sendsms.SendSMSPackage;
 import com.facebook.react.ReactActivity;
 // react-native-splash-screen >= 0.3.1
 import android.os.Bundle;
@@ -22,4 +23,12 @@ public class MainActivity extends ReactActivity {
         SplashScreen.show(this);  // here
         super.onCreate(savedInstanceState);
     }
+
+    @Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	super.onActivityResult(requestCode, resultCode, data);
+	//probably some other stuff here
+	SendSMSPackage.getInstance().onActivityResult(requestCode, resultCode, data);
+}
+
 }

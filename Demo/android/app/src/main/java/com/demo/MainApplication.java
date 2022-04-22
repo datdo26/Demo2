@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.tkporter.sendsms.SendSMSPackage;
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
 import org.umhan35.RNSearchBarPackage;
 import com.facebook.react.ReactInstanceManager;

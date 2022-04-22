@@ -1,4 +1,12 @@
-import {Alert, Platform, View, Linking, Image} from 'react-native';
+import {
+  Alert,
+  Platform,
+  View,
+  Linking,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 // @ts-ignore
 import React, {useCallback, useMemo, useState} from 'react';
 import styled from 'styled-components/native';
@@ -6,219 +14,200 @@ import {removeContactActions, useContacts} from '../../store';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 // @ts-ignore
-import SendSMS from 'react-native-sms';
 import Modal from 'react-native-modal';
 
 import {
-    IC_BACK,
-    IC_CALL,
-    IC_EMAIL,
-    IC_EMAIL_LIGHT,
-    IC_MSG,
-    IC_PROFILE,
-    IC_VID_CALL,
+  IC_BACK,
+  IC_CALL,
+  IC_EMAIL,
+  IC_EMAIL_LIGHT,
+  IC_MSG,
+  IC_PROFILE,
+  IC_VID_CALL,
 } from '../../assets';
 import statusBarHeight from '../../components/statusBarHeight';
 import FastImage from 'react-native-fast-image';
 import {updateContactActionCount, updateContactHistory} from '../../store';
 
 const ContactDetail = () => {
-    const route = useRoute();
-    const dispatch = useDispatch();
-    const navigation = useNavigation<any>();
-    // @ts-ignore
-    const contact = useContacts(route.params?.id);
-    const [modalVisible, setModalVisible] = useState(false);
+  const route = useRoute();
+  const dispatch = useDispatch();
+  const navigation = useNavigation<any>();
+  // @ts-ignore
+  const contact = useContacts(route.params?.id);
+  const [modalVisible, setModalVisible] = useState(false);
 
-    const getTime = useCallback(() => {
-        const hours = new Date().getHours();
-        const min = new Date().getMinutes();
-        return `${('0' + hours).slice(-2)}:${('0' + min).slice(-2)}`;
-    }, []);
+  const getTime = useCallback(() => {
+    const hours = new Date().getHours();
+    const min = new Date().getMinutes();
+    return `${('0' + hours).slice(-2)}:${('0' + min).slice(-2)}`;
+  }, []);
 
-    const toggleModal = useCallback(() => {
-        setModalVisible(!modalVisible);
-    }, [modalVisible]);
+  const toggleModal = useCallback(() => {
+    setModalVisible(!modalVisible);
+  }, [modalVisible]);
 
-    const goBack = useCallback(() => {
-        navigation.goBack();
-    }, [navigation]);
+  const goBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
 
-    const onEdit = useCallback(() => {
-        navigation.navigate('AddContactScreen', {
-            id: contact?.id || '',
-        });
-    }, [navigation, contact?.id]);
+  const onEdit = useCallback(() => {
+    navigation.navigate('AddContactScreen', {
+      id: contact?.id || '',
+    });
+  }, [navigation, contact?.id]);
 
-    const onAlert = useCallback(() => {
-        Alert.alert('Delete Contact', '', [
-            {
-                text: 'Delete',
-                style: 'cancel',
-                onPress: () => {
-                    // @ts-ignore
-                    dispatch(removeContactActions(route.params?.id));
-                    navigation.goBack();
-                },
-            },
-            {
-                text: 'Cancel',
-                style: 'default',
-            },
-        ]);
-    }, [contact]);
-
-    const onDoneMail = useMemo(() => {
-        return {
-            backgroundColor: contact?.email.length == 0 ? '#fff' : '#f2a54a',
-        };
-    }, [contact?.email]);
-
-    const Calling = useCallback(
-        ({item}) => {
-            // @ts-ignore
-            updateContactHistory(route.params?.id, 'CallAction', `${getTime()}`);
-            // @ts-ignore
-            updateContactActionCount(route.params?.id);
-            Linking.openURL(`tel: ${item}`).then();
+  const onAlert = useCallback(() => {
+    Alert.alert('Delete Contact', '', [
+      {
+        text: 'Delete',
+        style: 'cancel',
+        onPress: () => {
+          // @ts-ignore
+          dispatch(removeContactActions(route.params?.id));
+          navigation.goBack();
         },
-        // @ts-ignore
-        [route.params?.id],
-    );
+      },
+      {
+        text: 'Cancel',
+        style: 'default',
+      },
+    ]);
+  }, [contact]);
 
-    const PhoneList = useCallback(() => {
-        return contact.phone.map(item => {
-            return (
-                <ButtonPhone key={item} onPress={() => Calling({item})}>
-                    <PhoneNumber key={item}>{item}</PhoneNumber>
-                </ButtonPhone>
-            );
-        });
-    }, [contact?.phone]);
+  const onDoneMail = useMemo(() => {
+    return {
+      backgroundColor: contact?.email.length == 0 ? '#fff' : '#f2a54a',
+    };
+  }, [contact?.email]);
 
-    const colorDone = useMemo(() => {
-        return {
-            color: contact.email.length == 0 ? '#828282' : '#f2a54a',
-        };
-    }, [contact.email]);
+  const Calling = useCallback(
+    ({item}) => {
+      // @ts-ignore
+      updateContactHistory(route.params?.id, 'CallAction', `${getTime()}`);
+      // @ts-ignore
+      updateContactActionCount(route.params?.id);
+      Linking.openURL(`tel: ${item}`).then();
+    },
+    // @ts-ignore
+    [route.params?.id],
+  );
 
-    const TextMe = useCallback(() => {
-        SendSMS.send(
-            {
-                body: 'hello',
-                recipients: contact.phone,
-                allowAndroidSendWithoutReadPermission: true,
-            },
-            (completed, cancelled, error) => {
-                console.log(
-                    'SMS Callback: completed: ' +
-                    completed +
-                    ' cancelled: ' +
-                    cancelled +
-                    'error: ' +
-                    error,
-                );
-            },
-        ).then();
-    }, [contact.phone]);
+  const PhoneList = useCallback(() => {
+    return contact.phone.map(item => {
+      return (
+        <ButtonPhone key={item} onPress={() => Calling({item})}>
+          <PhoneNumber key={item}>{item}</PhoneNumber>
+        </ButtonPhone>
+      );
+    });
+  }, [contact?.phone]);
 
-    const SendEmail = useCallback(() => {
+  const colorDone = useMemo(() => {
+    return {
+      color: contact.email.length == 0 ? '#828282' : '#f2a54a',
+    };
+  }, [contact.email]);
 
-        Linking.openURL(
-            `mailto:${contact.email}?subject=mailSubject&body=mailBody`,
-        ).then();
+  const TextMe = useCallback(() => {
+    const separator = Platform.OS === 'ios' ? '&' : '?';
+    const url = `sms:${contact?.phone} ${separator}body=${'hello'}`;
+    Linking.openURL(url);
+  }, [contact.phone]);
 
-    }, [contact.email]);
+  const SendEmail = useCallback(() => {
+    Linking.openURL(`mailto:${contact.email}`);
+  }, [contact.email]);
 
-    return (
-        <Container>
-            <View>
-                <Background/>
-                <HeaderSection platform={Platform.OS}>
-                    <WrapViewHeader>
-                        <ButtonBack onPress={goBack}>
-                            <Back source={IC_BACK}/>
-                        </ButtonBack>
-                        <ButtonDone onPress={onEdit}>
-                            <TextHeader>Sửa</TextHeader>
-                        </ButtonDone>
-                    </WrapViewHeader>
-                    <Avatar
-                        source={contact.avatar ? {uri: contact?.avatar} : IC_PROFILE}
-                    />
-                </HeaderSection>
-                <WrapView>
-                    <Name>
-                        {contact?.firstName} {contact?.lastName}
-                    </Name>
-                    <Job>UI/UX Design</Job>
-                </WrapView>
+  return (
+    <Container>
+      <View>
+        <Background />
+        <HeaderSection>
+          <WrapViewHeader>
+            <ButtonBack onPress={goBack}>
+              <Back source={IC_BACK} />
+            </ButtonBack>
+            <ButtonDone onPress={onEdit}>
+              <TextHeader>Sửa</TextHeader>
+            </ButtonDone>
+          </WrapViewHeader>
+          <Avatar
+            source={contact.avatar ? {uri: contact?.avatar} : IC_PROFILE}
+          />
+        </HeaderSection>
+        <WrapView>
+          <Name>
+            {contact?.firstName} {contact?.lastName}
+          </Name>
+          <Job>UI/UX Design</Job>
+        </WrapView>
 
-                <WrapButton>
-                    <Button onPress={toggleModal}>
-                        <BgBtn>
-                            <Image source={IC_CALL}/>
-                        </BgBtn>
-                        <TextButton>Gọi điện</TextButton>
-                    </Button>
+        <WrapButton>
+          <Button onPress={toggleModal}>
+            <BgBtn>
+              <Image source={IC_CALL} />
+            </BgBtn>
+            <TextButton>Gọi điện</TextButton>
+          </Button>
 
-                    <Button onPress={TextMe}>
-                        <BgBtn>
-                            <Image source={IC_MSG}/>
-                        </BgBtn>
-                        <TextButton>Nhắn tin</TextButton>
-                    </Button>
+          <Button onPress={TextMe}>
+            <BgBtn>
+              <Image source={IC_MSG} />
+            </BgBtn>
+            <TextButton>Nhắn tin</TextButton>
+          </Button>
 
-                    <Button onPress={toggleModal}>
-                        <BgBtn>
-                            <Image source={IC_VID_CALL}/>
-                        </BgBtn>
-                        <TextButton>Facetime</TextButton>
-                    </Button>
-                    <Button disabled={contact.email.length == 0} onPress={SendEmail}>
-                        <BgBtnMail style={onDoneMail}>
-                            <Image
-                                source={contact.email.length == 0 ? IC_EMAIL : IC_EMAIL_LIGHT}
-                            />
-                        </BgBtnMail>
-                        <TextButtonMail style={colorDone}>Gửi mail</TextButtonMail>
-                    </Button>
-                </WrapButton>
+          <Button onPress={toggleModal}>
+            <BgBtn>
+              <Image source={IC_VID_CALL} />
+            </BgBtn>
+            <TextButton>Facetime</TextButton>
+          </Button>
+          <Button disabled={contact.email.length == 0} onPress={SendEmail}>
+            <BgBtnMail style={onDoneMail}>
+              <Image
+                source={contact.email.length == 0 ? IC_EMAIL : IC_EMAIL_LIGHT}
+              />
+            </BgBtnMail>
+            <TextButtonMail style={colorDone}>Gửi mail</TextButtonMail>
+          </Button>
+        </WrapButton>
 
-                <Modal
-                    isVisible={modalVisible}
-                    animationIn="slideInUp"
-                    onBackdropPress={() => setModalVisible(false)}>
-                    <CallModalView>
-                        <PhoneTitle>Số điện thoại: </PhoneTitle>
-                        <PhoneList/>
-                    </CallModalView>
-                </Modal>
-            </View>
+        <Modal
+          isVisible={modalVisible}
+          animationIn="slideInUp"
+          onBackdropPress={() => setModalVisible(false)}>
+          <CallModalView>
+            <PhoneTitle>Số điện thoại: </PhoneTitle>
+            <PhoneList />
+          </CallModalView>
+        </Modal>
+      </View>
 
-            <PhoneSection>
-                <PhoneTitle>Điện thoại</PhoneTitle>
-                <PhoneList/>
-            </PhoneSection>
+      <PhoneSection>
+        <PhoneTitle>Điện thoại</PhoneTitle>
+        <PhoneList />
+      </PhoneSection>
 
-            <NoteSection>
-                <NoteTitle>Ghi Chú</NoteTitle>
-                <Note multiline={true}/>
-            </NoteSection>
+      <NoteSection>
+        <NoteTitle>Ghi Chú</NoteTitle>
+        <Note multiline={true} />
+      </NoteSection>
 
-            <MsgSection>
-                <ButtonMsg onPress={TextMe}>
-                    <MsgTitle>Gửi tin nhắn</MsgTitle>
-                </ButtonMsg>
-            </MsgSection>
+      <MsgSection>
+        <ButtonMsg onPress={TextMe}>
+          <MsgTitle>Gửi tin nhắn</MsgTitle>
+        </ButtonMsg>
+      </MsgSection>
 
-            <DeleteSection>
-                <ButtonMsg onPress={onAlert}>
-                    <DeleteTitle>Xoá người gọi</DeleteTitle>
-                </ButtonMsg>
-            </DeleteSection>
-        </Container>
-    );
+      <DeleteSection>
+        <ButtonMsg onPress={onAlert}>
+          <DeleteTitle>Xoá người gọi</DeleteTitle>
+        </ButtonMsg>
+      </DeleteSection>
+    </Container>
+  );
 };
 
 export default ContactDetail;
@@ -238,8 +227,8 @@ const Background = styled.View`
   opacity: 0.5;
 `;
 
-const HeaderSection = styled.View<{ platform?: string }>`
-  margin-top: ${statusBarHeight}px;
+const HeaderSection = styled.View`
+  margin-top: ${statusBarHeight - 6}px;
 `;
 
 const WrapViewHeader = styled.View`
@@ -424,3 +413,5 @@ const CallModalView = styled.View`
   align-items: center;
   border-radius: 40px;
 `;
+
+const Modal1 = styled(Modal)``;

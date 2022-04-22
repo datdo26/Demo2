@@ -8,7 +8,7 @@ import styled from 'styled-components/native';
 const ContactScreen = () => {
   return (
     <SafeAreaView>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="default" />
       <Header title="Liên hệ" />
       <AlphabetScreen />
     </SafeAreaView>
